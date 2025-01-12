@@ -23,19 +23,17 @@ There is no test yet. It works in Windows 11 running in a ARM VM running on a Ma
 
 Installation is easy:
 ```
-pip install pywinauto
+pip3 install -U -r requirements.txt
 ```
 
 and you are good.
 
-You need to edit the top of the script:
-- where is your easy program
-- where do you want to store the output
+Now just start the app:
+```
+python3 .\app.py
+```
 
-You need to edit the bottom of the script:
-- for each speaker, where is the associated GLL file
-
-More ergonomic versions coming if I have the time.
+A binary will come soon.
 
 # History
 
