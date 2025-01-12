@@ -14,7 +14,6 @@ ease_full = "C:\\Program Files (x86)\\AFMG\\EASE GLLViewer\\EASE GLLViewer.exe"
 output_dir = "C:\\Users\\pierre\\Documents"
 
 
-
 def dump(widget) -> None:
     """Small debug layer"""
     if not debug:
@@ -61,17 +60,30 @@ def load_gll(app, gll_file: str):
     openGLLFile.type_keys("{ENTER}")
 
 
+def load_config(app, view, config_file: str | None):
+    if config_file is None:
+        return
+    view.wait("visible")
+    view.type_keys("%fc")
+    openConfigFile = app.OpenGLLConfigurationFile
+    openConfigFile.wait("visible")
+    openConfigFile.set_focus()
+    openConfigFile.type_keys(config_file, with_spaces=True)
+    openConfigFile.type_keys("{ENTER}")
+
+
 def set_parameters_balloon(parameters):
     if debug:
-        alloon = parameters["Balloon Parameters"]
-        # dump(balloon)
+        balloon = parameters["Balloon Parameters"]
+        dump(balloon)
 
     resolution = parameters["Resolution :ComboBox"]
     angles = {a: i for i, a in enumerate(resolution.item_texts())}
     resolution.select(angles["Intermediate (5°)"])
 
     distance = parameters["Distance [m] :ComboBox"]
-    dump(distance)
+    if debug:
+        dump(distance)
     meters = {a: i for i, a in enumerate(distance.item_texts())}
     distance.select(meters["10"])
 
@@ -82,7 +94,8 @@ def set_parameters_air_properties(parameters):
         dump(air_properties)
 
     enable_air_attenuation = parameters["Enable Air Attenuation"]
-    dump(enable_air_attenuation)
+    if debug:
+        dump(enable_air_attenuation)
 
     # not a checkbox
     enable_air_attenuation.click()
@@ -94,17 +107,17 @@ def set_parameters_input_signal(parameters):
         dump(input_signal)
 
     aes2 = parameters["AES2 Broadband (Pink Noise)Button"]
-    dump(aes2)
+    if debug:
+        dump(aes2)
     aes2.check_by_click()
 
 
 def set_parameters(app):
     parameters = app.CalculationParameters
-
+    parameters.wait("visible")
     set_parameters_balloon(parameters)
     set_parameters_air_properties(parameters)
     set_parameters_input_signal(parameters)
-
     ok_button = parameters["&OKButton"]
     ok_button.click()
 
@@ -118,13 +131,13 @@ def get_parallels() -> list[str]:
 
 
 def build_speakerdir(output_dir: str, speaker_name: str) -> str:
+    os.makedirs(output_dir, mode=0o755, exist_ok=True)
     dir = "{0}\\{1}".format(output_dir, speaker_name)
-    if not os.path.exists(dir):
-        os.mkdir(path=dir, mode=0o755)
+    os.makedirs(dir, mode=0o755, exist_ok=True)
     return dir
 
 
-def build_outputfilename(
+def build_spl_filename(
     output_dir: str, speaker_name: str, meridian: str, parallel: str
 ) -> str:
     return "{0}\\{1}\\{1} -M{2}-P{3}.txt".format(
@@ -132,28 +145,36 @@ def build_outputfilename(
     )
 
 
+def build_sensitivity_filename(output_dir: str, speaker_name: str) -> str:
+    return "{0}\\{1}\\{1} - sensitivity.txt".format(output_dir, speaker_name)
+
+
+def build_maxspl_filename(output_dir: str, speaker_name: str) -> str:
+    return "{0}\\{1}\\{1} - maxSPL.txt".format(output_dir, speaker_name)
+
+
 def build_zipfilename(output_dir: str, speaker_name: str) -> str:
     return "{}\\{}.zip".format(output_dir, speaker_name)
 
 
 def extract_spl(
-    app : pywinauto.Application,
+    app,
     view,
     output_dir,
     speaker_name,
 ):
-    if not os.path.exists(output_dir):
-        os.mkdir(path=output_dir, mode=0o644)
-
     # go to graphs -> frequency spectrum
+    app.wait_cpu_usage_lower(threshold=5)
+    view.wait("visible")
     view.type_keys("^+F")
     time.sleep(1)
 
     # got the 2 boxes
     wm = view["Meridian : ComboBox"]
     wp = view["Parallel : Combobox"]
-    dump(wm)
-    dump(wp)
+    if debug:
+        dump(wm)
+        dump(wp)
 
     # angles we want for a spinorama
     meridians = get_meridians()
@@ -164,7 +185,7 @@ def extract_spl(
 
     for m in meridians:
         for p in parallels:
-            output_file = build_outputfilename(output_dir, speaker_name, m, p)
+            output_file = build_spl_filename(output_dir, speaker_name, m, p)
             if os.path.exists(output_file):
                 print(
                     "Skipping medidian {} and parallel {} for {}".format(
@@ -189,7 +210,59 @@ def extract_spl(
             app.wait_cpu_usage_lower(threshold=5)
 
 
-def check_all_spl(
+def extract_sensitivity(
+    app,
+    view,
+    output_dir,
+    speaker_name,
+):
+    # go to graphs -> frequency spectrum
+    app.wait_cpu_usage_lower(threshold=5)
+    view.wait("visible")
+    view.type_keys("^+S")
+
+    export = app["Export Graph Data"]
+
+    # go to File -> Send Table To -> File
+    app.wait_cpu_usage_lower(threshold=5)
+    view.type_keys("%ftf")
+    export.wait("visible")
+    # copy filename
+    export.type_keys("%n{BACKSPACE}")
+    sensitivity_file = build_sensitivity_filename(output_dir, speaker_name)
+    export.type_keys(sensitivity_file, with_spaces=True)
+    export.type_keys("{ENTER}")
+    export.wait_not("visible")
+    app.wait_cpu_usage_lower(threshold=5)
+
+
+def extract_maxspl(
+    app,
+    view,
+    output_dir,
+    speaker_name,
+):
+    # go to graphs -> frequency spectrum
+    app.wait_cpu_usage_lower(threshold=5)
+    view.wait("visible")
+    view.type_keys("^+M")
+
+    export = app["Export Graph Data"]
+
+    # go to File -> Send Table To -> File
+    app.wait_cpu_usage_lower(threshold=5)
+    view.type_keys("%ftf")
+    export.wait("visible")
+    # copy filename
+    export.type_keys("%n{BACKSPACE}")
+    maxspl_file = build_maxspl_filename(output_dir, speaker_name)
+    export.type_keys(maxspl_file, with_spaces=True)
+    export.type_keys("{ENTER}")
+    export.wait_not("visible")
+    app.wait_cpu_usage_lower(threshold=5)
+
+
+def check_all_files(
     output_dir: str,
     speaker_name: str,
 ) -> bool:
@@ -198,9 +271,13 @@ def check_all_spl(
 
     for m in meridians:
         for p in parallels:
-            f = build_outputfilename(output_dir, speaker_name, m, p)
+            f = build_spl_filename(output_dir, speaker_name, m, p)
             if not os.path.exists(f):
                 return False
+
+    if not os.path.exists(build_sensitivity_filename(output_dir, speaker_name)):
+        return False
+
     return True
 
 
@@ -208,8 +285,8 @@ def generate_zip(
     output_dir: str,
     speaker_name: str,
 ) -> bool:
-    if not check_all_spl(output_dir, speaker_name):
-        print("Error not all SPL files generated")
+    if not check_all_files(output_dir, speaker_name):
+        print("Error not all files generated")
         return False
     zfname = build_zipfilename(output_dir, speaker_name)
     if os.path.exists(zfname):
@@ -220,29 +297,30 @@ def generate_zip(
         parallels = get_parallels()
         for m in meridians:
             for p in parallels:
-                f = build_outputfilename(output_dir, speaker_name, m, p)
+                f = build_spl_filename(output_dir, speaker_name, m, p)
                 zf.write(f)
+        s = build_sensitivity_filename(output_dir, speaker_name)
+        zf.write(s)
+        m = build_maxspl_filename(output_dir, speaker_name)
+        zf.write(m)
     return True
 
 
 def extract_speaker(
-    output_dir,
-    speaker_name,
-    gll_file,
+    output_dir: str, speaker_name: str, gll_file: str, config_file: str | None
 ):
     build_speakerdir(output_dir, speaker_name)
-    if not check_all_spl(output_dir, speaker_name):
+    if not check_all_files(output_dir, speaker_name):
         app = win.Application(backend="win32").start(ease_full)
-        time.sleep(1)
         load_gll(app, gll_file)
-        time.sleep(1)
-        dump(app)
         view = app["ViewGLL: NXW 44-A [{}]".format(gll_file)]
+        load_config(app, view, config_file)
         view.type_keys("{F5}")
         set_parameters(app)
-        time.sleep(1)
         extract_spl(app, view, output_dir, speaker_name)
-        app.close()
+        extract_sensitivity(app, view, output_dir, speaker_name)
+        extract_maxspl(app, view, output_dir, speaker_name)
+        view.close()
 
     if generate_zip(output_dir, speaker_name):
         print("Success for {}!".format(speaker_name))
@@ -252,12 +330,17 @@ def extract_speaker(
 
 if __name__ == "__main__":
     to_be_processed = (
-        # name of speaker,        name of gll file
-        ("RCF NXW 44-A", "Z:\\GLL\\RCF\\GLL-NXW 44-A.gll"),
-        ("RCF NX 945-A", "Z:\\GLL\\RCF\\GLL-NX 945-A.gll"),
-        ("RCF NX 932-A", "Z:\\GLL\\RCF\\GLL-NX 932-A.gll"),
+        # name of speaker,        name of gll file        name of config file
+        ("RCF NXW 44-A", "Z:\\GLL\\RCF\\GLL-NXW 44-A.gll", None),
+        ("RCF NX 945-A", "Z:\\GLL\\RCF\\GLL-NX 945-A.gll", None),
+        ("RCF NX 932-A", "Z:\\GLL\\RCF\\GLL-NX 932-A.gll", None),
+        (
+            "Alcons Audio LR7",
+            "Z:\\GLL\\Alcons Audio\\LR7-V1_32.gll",
+            "Z:\\GLL\\Alcons Audio\\Alcons Audio LR7 - single.xglc",
+        ),
     )
 
     # Timings.slow()
-    for speaker_name, gll_file in to_be_processed:
-        extract_speaker(output_dir, speaker_name, gll_file)
+    for speaker_name, gll_file, config_file in to_be_processed:
+        extract_speaker(output_dir, speaker_name, gll_file, config_file)
