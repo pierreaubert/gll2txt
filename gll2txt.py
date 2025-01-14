@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 
-from pprint import pp
+import logging
 import os
 import time
 import zipfile
+from pprint import pp
 
 import pywinauto as win
-from pywinauto.timings import Timings
 
-# constant
-debug = True
+from logger import log_message
+
+# constants
+debug = False
 ease_full = "C:\\Program Files (x86)\\AFMG\\EASE GLLViewer\\EASE GLLViewer.exe"
 output_dir = "C:\\Users\\pierre\\Documents"
 
@@ -18,36 +20,54 @@ def dump(widget) -> None:
     """Small debug layer"""
     if not debug:
         return
-    print("======================================================================")
-    print(widget.element_info)
+    log_message(
+        logging.DEBUG,
+        "======================================================================",
+    )
+    log_message(logging.DEBUG, widget.element_info)
     try:
         properties = widget.get_properties()
-        print("- properties ---------------------------------------------------------")
+        log_message(
+            logging.DEBUG,
+            "- properties ---------------------------------------------------------",
+        )
         pp(properties)
     except AttributeError:
         pass
     try:
         children = widget.get_children()
-        print("- children -----------------------------------------------------------")
+        log_message(
+            logging.DEBUG,
+            "- children -----------------------------------------------------------",
+        )
         for child in children:
             dump(child)
     except AttributeError:
         pass
     if isinstance(widget, dict):
-        print("- keys if dict--------------------------------------------------------")
+        log_message(
+            logging.DEBUG,
+            "- keys if dict--------------------------------------------------------",
+        )
         keys = widget.keys()
         for key in keys:
             dump(widget[key])
     try:
         items = widget.item_texts()
-        print("- item texts ---------------------------------------------------------")
-        print(items)
+        log_message(
+            logging.DEBUG,
+            "- item texts ---------------------------------------------------------",
+        )
+        log_message(logging.DEBUG, items)
     except Exception:
         pass
     try:
         items = widget.print_control_identifier()
-        print("- control identifiers ------------------------------------------------")
-        print(items)
+        log_message(
+            logging.DEBUG,
+            "- control identifiers ------------------------------------------------",
+        )
+        log_message(logging.DEBUG, items)
     except Exception:
         pass
 
@@ -187,10 +207,11 @@ def extract_spl(
         for p in parallels:
             output_file = build_spl_filename(output_dir, speaker_name, m, p)
             if os.path.exists(output_file):
-                print(
+                log_message(
+                    logging.INFO,
                     "Skipping medidian {} and parallel {} for {}".format(
                         m, p, speaker_name
-                    )
+                    ),
                 )
                 continue
             # select m and p
@@ -205,7 +226,10 @@ def extract_spl(
             export.type_keys(output_file, with_spaces=True)
             export.type_keys("{ENTER}")
             export.wait_not("visible")
-            print("Saved medidian {} and parallel {} for {}".format(m, p, speaker_name))
+            log_message(
+                logging.INFO,
+                "Saved medidian {} and parallel {} for {}".format(m, p, speaker_name),
+            )
             # to prevent the windows app from crashing
             app.wait_cpu_usage_lower(threshold=5)
 
@@ -286,11 +310,11 @@ def generate_zip(
     speaker_name: str,
 ) -> bool:
     if not check_all_files(output_dir, speaker_name):
-        print("Error not all files generated")
+        log_message(logging.ERROR, "Not all files have been generated")
         return False
     zfname = build_zipfilename(output_dir, speaker_name)
     if os.path.exists(zfname):
-        print("Nothing to do {} already exist!".format(zfname))
+        log_message(logging.INFO, "Nothing to do {} already exist!".format(zfname))
         return True
     with zipfile.ZipFile(zfname, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         meridians = get_meridians()
@@ -309,7 +333,13 @@ def generate_zip(
 def extract_speaker(
     output_dir: str, speaker_name: str, gll_file: str, config_file: str | None
 ):
-    build_speakerdir(output_dir, speaker_name)
+    log_message(logging.INFO, f"Processing speaker: {speaker_name}")
+    log_message(logging.INFO, f"GLL File: {gll_file}")
+    # Create speaker directory
+    speakerdir = build_speakerdir(output_dir, speaker_name)
+    log_message(logging.INFO, f"Output directory: {speakerdir}")
+
+    # Rest of the function remains the same, but use log_message instead of print
     if not check_all_files(output_dir, speaker_name):
         app = win.Application(backend="win32").start(ease_full)
         load_gll(app, gll_file)
@@ -323,9 +353,9 @@ def extract_speaker(
         view.close()
 
     if generate_zip(output_dir, speaker_name):
-        print("Success for {}!".format(speaker_name))
+        log_message(logging.INFO, "Success for {}!".format(speaker_name))
     else:
-        print("Failed for {}!".format(speaker_name))
+        log_message(logging.WARNING, "Failed for {}!".format(speaker_name))
 
 
 if __name__ == "__main__":
