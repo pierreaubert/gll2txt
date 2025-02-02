@@ -275,3 +275,416 @@ TypeError: 'bool' object is not iterable
 2025-02-02 09:09:44,927 - DEBUG - Disconnecting process manager signals
 2025-02-02 09:09:44,927 - DEBUG - Disconnecting database signals
 2025-02-02 09:09:44,927 - INFO - Cleanup complete
+2025-02-02 09:23:53,257 - INFO - Starting GLL2TXT application
+2025-02-02 09:23:53,288 - INFO - Initializing main window
+2025-02-02 09:23:53,288 - DEBUG - Loading settings
+2025-02-02 09:23:53,288 - DEBUG - Initializing database
+2025-02-02 09:23:53,303 - DEBUG - Setting up UI layout
+2025-02-02 09:23:53,657 - DEBUG - Displaying initial information
+2025-02-02 09:23:53,688 - INFO - Main window initialization complete
+2025-02-02 09:23:53,779 - INFO - Main window initialized and shown
+2025-02-02 09:25:06,447 - ERROR - Uncaught exception
+Traceback (most recent call last):
+  File "Z:\gll\gll2txt\app.py", line 253, in open_speaker_management
+    gll_files.extend(gll_path.rglob(f"*{ext}"))
+  File "C:\Users\pierre\AppData\Local\Programs\Python\Python312\Lib\pathlib.py", line 1109, in rglob
+    for p in selector.select_from(self):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pierre\AppData\Local\Programs\Python\Python312\Lib\pathlib.py", line 236, in _select_from
+    for starting_point in self._iterate_directories(parent_path):
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pierre\AppData\Local\Programs\Python\Python312\Lib\pathlib.py", line 230, in _iterate_directories
+    for dirpath, dirnames, _ in parent_path.walk():
+                                ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\pierre\AppData\Local\Programs\Python\Python312\Lib\pathlib.py", line 1129, in walk
+    scandir_it = path._scandir()
+                 ^^^^^^^^^^^^^^^
+  File "C:\Users\pierre\AppData\Local\Programs\Python\Python312\Lib\pathlib.py", line 1063, in _scandir
+    return os.scandir(self)
+           ^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+2025-02-02 09:49:34,503 - INFO - Starting GLL2TXT application
+2025-02-02 09:49:34,518 - INFO - Initializing main window
+2025-02-02 09:49:34,518 - DEBUG - Loading settings
+2025-02-02 09:49:34,518 - DEBUG - Initializing database
+2025-02-02 09:49:34,518 - DEBUG - Setting up UI layout
+2025-02-02 09:49:34,660 - DEBUG - Displaying initial information
+2025-02-02 09:49:34,676 - INFO - Main window initialization complete
+2025-02-02 09:49:34,705 - INFO - Main window initialized and shown
+2025-02-02 09:49:47,108 - INFO - Application shutting down
+2025-02-02 09:49:47,108 - DEBUG - Stopping process thread
+2025-02-02 10:02:25,385 - INFO - Starting GLL2TXT application
+2025-02-02 10:02:25,401 - INFO - Initializing main window
+2025-02-02 10:02:25,401 - DEBUG - Loading settings
+2025-02-02 10:02:25,401 - DEBUG - Initializing database
+2025-02-02 10:02:25,401 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:02:25,401 - DEBUG - Creating database engine
+2025-02-02 10:02:25,416 - DEBUG - Creating database tables
+2025-02-02 10:02:25,432 - INFO - Created tables: speakers, config_files
+2025-02-02 10:02:25,432 - DEBUG - Verified table exists: speakers
+2025-02-02 10:02:25,432 - DEBUG - Verified table exists: config_files
+2025-02-02 10:02:25,432 - ERROR - Failed to initialize database
+Traceback (most recent call last):
+  File "Z:\gll\gll2txt\app.py", line 61, in __init__
+    self.speaker_db.log_signal.connect(self.log_message)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'SpeakerDatabase' object has no attribute 'log_signal'
+2025-02-02 10:02:25,448 - ERROR - Failed to initialize main window
+Traceback (most recent call last):
+  File "Z:\gll\gll2txt\app.py", line 61, in __init__
+    self.speaker_db.log_signal.connect(self.log_message)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'SpeakerDatabase' object has no attribute 'log_signal'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "Z:\gll\gll2txt\app.py", line 64, in __init__
+    raise RuntimeError("Failed to initialize database") from e
+RuntimeError: Failed to initialize database
+2025-02-02 10:02:25,448 - ERROR - Failed to initialize main window
+Traceback (most recent call last):
+  File "Z:\gll\gll2txt\app.py", line 61, in __init__
+    self.speaker_db.log_signal.connect(self.log_message)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'SpeakerDatabase' object has no attribute 'log_signal'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "Z:\gll\gll2txt\app.py", line 405, in main
+    main_window = MainWindow()
+                  ^^^^^^^^^^^^
+  File "Z:\gll\gll2txt\app.py", line 64, in __init__
+    raise RuntimeError("Failed to initialize database") from e
+RuntimeError: Failed to initialize database
+2025-02-02 10:02:25,448 - ERROR - Fatal error in main
+Traceback (most recent call last):
+  File "Z:\gll\gll2txt\app.py", line 61, in __init__
+    self.speaker_db.log_signal.connect(self.log_message)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'SpeakerDatabase' object has no attribute 'log_signal'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "Z:\gll\gll2txt\app.py", line 405, in main
+    main_window = MainWindow()
+                  ^^^^^^^^^^^^
+  File "Z:\gll\gll2txt\app.py", line 64, in __init__
+    raise RuntimeError("Failed to initialize database") from e
+RuntimeError: Failed to initialize database
+2025-02-02 10:02:25,463 - ERROR - Application crashed
+Traceback (most recent call last):
+  File "Z:\gll\gll2txt\app.py", line 61, in __init__
+    self.speaker_db.log_signal.connect(self.log_message)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'SpeakerDatabase' object has no attribute 'log_signal'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "Z:\gll\gll2txt\app.py", line 420, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "Z:\gll\gll2txt\app.py", line 405, in main
+    main_window = MainWindow()
+                  ^^^^^^^^^^^^
+  File "Z:\gll\gll2txt\app.py", line 64, in __init__
+    raise RuntimeError("Failed to initialize database") from e
+RuntimeError: Failed to initialize database
+2025-02-02 14:03:56,406 - INFO - Starting GLL2TXT application
+2025-02-02 14:03:59,505 - INFO - Initializing main window
+2025-02-02 14:03:59,506 - DEBUG - Loading settings
+2025-02-02 14:03:59,508 - DEBUG - Initializing database
+2025-02-02 14:03:59,509 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-02 14:03:59,509 - DEBUG - Creating database engine
+2025-02-02 14:03:59,542 - DEBUG - Creating database tables
+2025-02-02 14:03:59,593 - INFO - Created tables: speakers, config_files
+2025-02-02 14:03:59,593 - DEBUG - Verified table exists: speakers
+2025-02-02 14:03:59,594 - DEBUG - Verified table exists: config_files
+2025-02-02 14:03:59,594 - DEBUG - Setting up UI layout
+2025-02-02 14:04:23,486 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-02 14:04:23,486 - DEBUG - Creating database engine
+2025-02-02 14:04:23,486 - DEBUG - Creating database tables
+2025-02-02 14:04:23,486 - INFO - Created tables: speakers, config_files
+2025-02-02 14:04:23,487 - DEBUG - Verified table exists: speakers
+2025-02-02 14:04:23,487 - DEBUG - Verified table exists: config_files
+2025-02-02 14:04:23,487 - DEBUG - Displaying initial information
+2025-02-02 14:04:23,488 - INFO - Main window initialization complete
+2025-02-02 14:04:23,490 - INFO - Main window initialized and shown
+2025-02-02 14:05:01,763 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-02 14:05:01,763 - DEBUG - Creating database engine
+2025-02-02 14:05:01,763 - DEBUG - Creating database tables
+2025-02-02 14:05:01,763 - INFO - Created tables: speakers, config_files
+2025-02-02 14:05:01,763 - DEBUG - Verified table exists: speakers
+2025-02-02 14:05:01,763 - DEBUG - Verified table exists: config_files
+2025-02-02 14:05:54,251 - INFO - Application shutting down
+2025-02-02 14:05:54,252 - DEBUG - Disconnecting process manager signals
+2025-02-02 14:05:54,252 - DEBUG - Disconnecting database signals
+2025-02-02 14:05:54,253 - INFO - Cleanup complete
+2025-02-02 10:11:37,147 - INFO - Starting GLL2TXT application
+2025-02-02 10:11:37,163 - INFO - Initializing main window
+2025-02-02 10:11:37,163 - DEBUG - Loading settings
+2025-02-02 10:11:37,163 - DEBUG - Initializing database
+2025-02-02 10:11:37,163 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:11:37,163 - DEBUG - Creating database engine
+2025-02-02 10:11:37,179 - DEBUG - Creating database tables
+2025-02-02 10:11:37,179 - INFO - Created tables: speakers, config_files
+2025-02-02 10:11:37,179 - DEBUG - Verified table exists: speakers
+2025-02-02 10:11:37,179 - DEBUG - Verified table exists: config_files
+2025-02-02 10:11:37,179 - DEBUG - Setting up UI layout
+2025-02-02 10:11:37,304 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:11:37,304 - DEBUG - Creating database engine
+2025-02-02 10:11:37,304 - DEBUG - Creating database tables
+2025-02-02 10:11:37,304 - INFO - Created tables: speakers, config_files
+2025-02-02 10:11:37,304 - DEBUG - Verified table exists: speakers
+2025-02-02 10:11:37,304 - DEBUG - Verified table exists: config_files
+2025-02-02 10:11:37,304 - DEBUG - Displaying initial information
+2025-02-02 10:11:37,304 - INFO - Main window initialization complete
+2025-02-02 10:11:37,351 - INFO - Main window initialized and shown
+2025-02-02 10:13:13,130 - INFO - Application shutting down
+2025-02-02 10:13:13,146 - DEBUG - Stopping process thread
+2025-02-02 14:22:31,892 - INFO - Starting GLL2TXT application
+2025-02-02 14:22:31,956 - INFO - Initializing main window
+2025-02-02 14:22:31,956 - DEBUG - Loading settings
+2025-02-02 14:22:31,956 - DEBUG - Initializing database
+2025-02-02 14:22:31,956 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-02 14:22:31,956 - DEBUG - Creating database engine
+2025-02-02 14:22:31,962 - DEBUG - Creating database tables
+2025-02-02 14:22:31,963 - INFO - Created tables: speakers, config_files
+2025-02-02 14:22:31,963 - DEBUG - Verified table exists: speakers
+2025-02-02 14:22:31,963 - DEBUG - Verified table exists: config_files
+2025-02-02 14:22:31,963 - DEBUG - Setting up UI layout
+2025-02-02 14:22:32,061 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-02 14:22:32,061 - DEBUG - Creating database engine
+2025-02-02 14:22:32,061 - DEBUG - Creating database tables
+2025-02-02 14:22:32,062 - INFO - Created tables: speakers, config_files
+2025-02-02 14:22:32,062 - DEBUG - Verified table exists: speakers
+2025-02-02 14:22:32,062 - DEBUG - Verified table exists: config_files
+2025-02-02 14:22:32,062 - DEBUG - Displaying initial information
+2025-02-02 14:22:32,062 - INFO - Main window initialization complete
+2025-02-02 14:22:32,065 - INFO - Main window initialized and shown
+2025-02-02 14:23:25,265 - INFO - Application shutting down
+2025-02-02 14:23:25,266 - DEBUG - Disconnecting process manager signals
+2025-02-02 14:23:25,266 - DEBUG - Disconnecting database signals
+2025-02-02 14:23:25,266 - INFO - Cleanup complete
+2025-02-02 14:23:27,212 - INFO - Starting GLL2TXT application
+2025-02-02 14:23:27,277 - INFO - Initializing main window
+2025-02-02 14:23:27,277 - DEBUG - Loading settings
+2025-02-02 14:23:27,277 - DEBUG - Initializing database
+2025-02-02 14:23:27,277 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-02 14:23:27,277 - DEBUG - Creating database engine
+2025-02-02 14:23:27,283 - DEBUG - Creating database tables
+2025-02-02 14:23:27,284 - INFO - Created tables: speakers, config_files
+2025-02-02 14:23:27,284 - DEBUG - Verified table exists: speakers
+2025-02-02 14:23:27,284 - DEBUG - Verified table exists: config_files
+2025-02-02 14:23:27,284 - DEBUG - Setting up UI layout
+2025-02-02 14:23:27,383 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-02 14:23:27,383 - DEBUG - Creating database engine
+2025-02-02 14:23:27,384 - DEBUG - Creating database tables
+2025-02-02 14:23:27,384 - INFO - Created tables: speakers, config_files
+2025-02-02 14:23:27,384 - DEBUG - Verified table exists: speakers
+2025-02-02 14:23:27,384 - DEBUG - Verified table exists: config_files
+2025-02-02 14:23:27,384 - DEBUG - Displaying initial information
+2025-02-02 14:23:27,385 - INFO - Main window initialization complete
+2025-02-02 14:23:27,387 - INFO - Main window initialized and shown
+2025-02-02 14:23:30,277 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-02 14:23:30,277 - DEBUG - Creating database engine
+2025-02-02 14:23:30,277 - DEBUG - Creating database tables
+2025-02-02 14:23:30,278 - INFO - Created tables: speakers, config_files
+2025-02-02 14:23:30,278 - DEBUG - Verified table exists: speakers
+2025-02-02 14:23:30,278 - DEBUG - Verified table exists: config_files
+2025-02-02 14:23:47,994 - INFO - Application shutting down
+2025-02-02 14:23:47,995 - DEBUG - Disconnecting process manager signals
+2025-02-02 14:23:47,995 - DEBUG - Disconnecting database signals
+2025-02-02 14:23:47,996 - INFO - Cleanup complete
+2025-02-02 10:28:41,939 - INFO - Starting GLL2TXT application
+2025-02-02 10:28:41,955 - INFO - Initializing main window
+2025-02-02 10:28:41,955 - DEBUG - Loading settings
+2025-02-02 10:28:41,955 - DEBUG - Initializing database
+2025-02-02 10:28:41,955 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:28:41,955 - DEBUG - Creating database engine
+2025-02-02 10:28:41,987 - DEBUG - Creating database tables
+2025-02-02 10:28:41,987 - INFO - Created tables: speakers, config_files
+2025-02-02 10:28:41,987 - DEBUG - Verified table exists: speakers
+2025-02-02 10:28:41,987 - DEBUG - Verified table exists: config_files
+2025-02-02 10:28:41,987 - DEBUG - Setting up UI layout
+2025-02-02 10:28:42,081 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:28:42,081 - DEBUG - Creating database engine
+2025-02-02 10:28:42,081 - DEBUG - Creating database tables
+2025-02-02 10:28:42,095 - INFO - Created tables: speakers, config_files
+2025-02-02 10:28:42,096 - DEBUG - Verified table exists: speakers
+2025-02-02 10:28:42,096 - DEBUG - Verified table exists: config_files
+2025-02-02 10:28:42,096 - DEBUG - Displaying initial information
+2025-02-02 10:28:42,104 - INFO - Main window initialization complete
+2025-02-02 10:28:42,145 - INFO - Main window initialized and shown
+2025-02-02 10:29:26,849 - INFO - Application shutting down
+2025-02-02 10:29:26,865 - DEBUG - Stopping process thread
+2025-02-02 10:33:16,561 - INFO - Starting GLL2TXT application
+2025-02-02 10:33:16,576 - INFO - Initializing main window
+2025-02-02 10:33:16,576 - DEBUG - Loading settings
+2025-02-02 10:33:16,576 - DEBUG - Initializing database
+2025-02-02 10:33:16,576 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:33:16,576 - DEBUG - Creating database engine
+2025-02-02 10:33:16,592 - DEBUG - Creating database tables
+2025-02-02 10:33:16,592 - INFO - Created tables: speakers, config_files
+2025-02-02 10:33:16,592 - DEBUG - Verified table exists: speakers
+2025-02-02 10:33:16,592 - DEBUG - Verified table exists: config_files
+2025-02-02 10:33:16,592 - DEBUG - Setting up UI layout
+2025-02-02 10:33:16,686 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:33:16,686 - DEBUG - Creating database engine
+2025-02-02 10:33:16,686 - DEBUG - Creating database tables
+2025-02-02 10:33:16,686 - INFO - Created tables: speakers, config_files
+2025-02-02 10:33:16,686 - DEBUG - Verified table exists: speakers
+2025-02-02 10:33:16,686 - DEBUG - Verified table exists: config_files
+2025-02-02 10:33:16,686 - DEBUG - Displaying initial information
+2025-02-02 10:33:16,701 - INFO - Main window initialization complete
+2025-02-02 10:33:16,736 - INFO - Main window initialized and shown
+2025-02-02 10:33:33,969 - INFO - Application shutting down
+2025-02-02 10:33:33,969 - DEBUG - Stopping process thread
+2025-02-02 10:36:15,177 - INFO - Starting GLL2TXT application
+2025-02-02 10:36:15,208 - INFO - Initializing main window
+2025-02-02 10:36:15,208 - DEBUG - Loading settings
+2025-02-02 10:36:15,208 - DEBUG - Initializing database
+2025-02-02 10:36:15,208 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:36:15,208 - DEBUG - Creating database engine
+2025-02-02 10:36:15,223 - DEBUG - Creating database tables
+2025-02-02 10:36:15,223 - INFO - Created tables: speakers, config_files
+2025-02-02 10:36:15,223 - DEBUG - Verified table exists: speakers
+2025-02-02 10:36:15,223 - DEBUG - Verified table exists: config_files
+2025-02-02 10:36:15,223 - DEBUG - Setting up UI layout
+2025-02-02 10:36:15,317 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:36:15,317 - DEBUG - Creating database engine
+2025-02-02 10:36:15,317 - DEBUG - Creating database tables
+2025-02-02 10:36:15,317 - INFO - Created tables: speakers, config_files
+2025-02-02 10:36:15,317 - DEBUG - Verified table exists: speakers
+2025-02-02 10:36:15,317 - DEBUG - Verified table exists: config_files
+2025-02-02 10:36:15,317 - DEBUG - Displaying initial information
+2025-02-02 10:36:15,333 - INFO - Main window initialization complete
+2025-02-02 10:36:15,364 - INFO - Main window initialized and shown
+2025-02-02 10:37:35,193 - INFO - Application shutting down
+2025-02-02 10:37:35,193 - DEBUG - Stopping process thread
+2025-02-02 10:43:56,824 - INFO - Starting GLL2TXT application
+2025-02-02 10:43:56,839 - INFO - Initializing main window
+2025-02-02 10:43:56,839 - DEBUG - Loading settings
+2025-02-02 10:43:56,839 - DEBUG - Initializing database
+2025-02-02 10:43:56,839 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:43:56,839 - DEBUG - Creating database engine
+2025-02-02 10:43:56,855 - DEBUG - Creating database tables
+2025-02-02 10:43:56,855 - INFO - Created tables: speakers, config_files
+2025-02-02 10:43:56,855 - DEBUG - Verified table exists: speakers
+2025-02-02 10:43:56,855 - DEBUG - Verified table exists: config_files
+2025-02-02 10:43:56,855 - DEBUG - Setting up UI layout
+2025-02-02 10:43:56,964 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:43:56,964 - DEBUG - Creating database engine
+2025-02-02 10:43:56,964 - DEBUG - Creating database tables
+2025-02-02 10:43:56,964 - INFO - Created tables: speakers, config_files
+2025-02-02 10:43:56,964 - DEBUG - Verified table exists: speakers
+2025-02-02 10:43:56,964 - DEBUG - Verified table exists: config_files
+2025-02-02 10:43:56,964 - DEBUG - Displaying initial information
+2025-02-02 10:43:56,964 - INFO - Main window initialization complete
+2025-02-02 10:43:57,030 - INFO - Main window initialized and shown
+2025-02-02 10:44:21,184 - INFO - Starting GLL2TXT application
+2025-02-02 10:44:21,215 - INFO - Initializing main window
+2025-02-02 10:44:21,215 - DEBUG - Loading settings
+2025-02-02 10:44:21,215 - DEBUG - Initializing database
+2025-02-02 10:44:21,215 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:44:21,215 - DEBUG - Creating database engine
+2025-02-02 10:44:21,230 - DEBUG - Creating database tables
+2025-02-02 10:44:21,230 - INFO - Created tables: speakers, config_files
+2025-02-02 10:44:21,230 - DEBUG - Verified table exists: speakers
+2025-02-02 10:44:21,230 - DEBUG - Verified table exists: config_files
+2025-02-02 10:44:21,230 - DEBUG - Setting up UI layout
+2025-02-02 10:44:21,308 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:44:21,308 - DEBUG - Creating database engine
+2025-02-02 10:44:21,308 - DEBUG - Creating database tables
+2025-02-02 10:44:21,308 - INFO - Created tables: speakers, config_files
+2025-02-02 10:44:21,308 - DEBUG - Verified table exists: speakers
+2025-02-02 10:44:21,308 - DEBUG - Verified table exists: config_files
+2025-02-02 10:44:21,308 - DEBUG - Displaying initial information
+2025-02-02 10:44:21,324 - INFO - Main window initialization complete
+2025-02-02 10:44:21,385 - INFO - Main window initialized and shown
+2025-02-02 10:44:52,723 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:44:52,723 - DEBUG - Creating database engine
+2025-02-02 10:44:52,723 - DEBUG - Creating database tables
+2025-02-02 10:44:52,723 - INFO - Created tables: speakers, config_files
+2025-02-02 10:44:52,723 - DEBUG - Verified table exists: speakers
+2025-02-02 10:44:52,723 - DEBUG - Verified table exists: config_files
+2025-02-02 10:45:13,555 - INFO - Application shutting down
+2025-02-02 10:45:13,555 - DEBUG - Disconnecting process manager signals
+2025-02-02 10:45:13,555 - DEBUG - Disconnecting database signals
+2025-02-02 10:45:13,555 - INFO - Cleanup complete
+2025-02-02 10:45:24,950 - INFO - Starting GLL2TXT application
+2025-02-02 10:45:24,981 - INFO - Initializing main window
+2025-02-02 10:45:24,981 - DEBUG - Loading settings
+2025-02-02 10:45:24,981 - DEBUG - Initializing database
+2025-02-02 10:45:24,981 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:45:24,981 - DEBUG - Creating database engine
+2025-02-02 10:45:24,997 - DEBUG - Creating database tables
+2025-02-02 10:45:24,997 - INFO - Created tables: speakers, config_files
+2025-02-02 10:45:24,997 - DEBUG - Verified table exists: speakers
+2025-02-02 10:45:24,997 - DEBUG - Verified table exists: config_files
+2025-02-02 10:45:24,997 - DEBUG - Setting up UI layout
+2025-02-02 10:45:25,091 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:45:25,091 - DEBUG - Creating database engine
+2025-02-02 10:45:25,091 - DEBUG - Creating database tables
+2025-02-02 10:45:25,091 - INFO - Created tables: speakers, config_files
+2025-02-02 10:45:25,091 - DEBUG - Verified table exists: speakers
+2025-02-02 10:45:25,091 - DEBUG - Verified table exists: config_files
+2025-02-02 10:45:25,091 - DEBUG - Displaying initial information
+2025-02-02 10:45:25,106 - INFO - Main window initialization complete
+2025-02-02 10:45:25,137 - INFO - Main window initialized and shown
+2025-02-02 10:45:56,350 - INFO - Application shutting down
+2025-02-02 10:45:56,350 - DEBUG - Disconnecting process manager signals
+2025-02-02 10:45:56,350 - DEBUG - Disconnecting database signals
+2025-02-02 10:45:56,350 - INFO - Cleanup complete
+2025-02-02 10:46:59,511 - INFO - Starting GLL2TXT application
+2025-02-02 10:46:59,526 - INFO - Initializing main window
+2025-02-02 10:46:59,526 - DEBUG - Loading settings
+2025-02-02 10:46:59,526 - DEBUG - Initializing database
+2025-02-02 10:46:59,542 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:46:59,542 - DEBUG - Creating database engine
+2025-02-02 10:46:59,558 - DEBUG - Creating database tables
+2025-02-02 10:46:59,558 - INFO - Created tables: speakers, config_files
+2025-02-02 10:46:59,558 - DEBUG - Verified table exists: speakers
+2025-02-02 10:46:59,558 - DEBUG - Verified table exists: config_files
+2025-02-02 10:46:59,558 - DEBUG - Setting up UI layout
+2025-02-02 10:46:59,667 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:46:59,667 - DEBUG - Creating database engine
+2025-02-02 10:46:59,667 - DEBUG - Creating database tables
+2025-02-02 10:46:59,667 - INFO - Created tables: speakers, config_files
+2025-02-02 10:46:59,667 - DEBUG - Verified table exists: speakers
+2025-02-02 10:46:59,667 - DEBUG - Verified table exists: config_files
+2025-02-02 10:46:59,667 - DEBUG - Displaying initial information
+2025-02-02 10:46:59,683 - INFO - Main window initialization complete
+2025-02-02 10:46:59,714 - INFO - Main window initialized and shown
+2025-02-02 10:47:31,076 - INFO - Application shutting down
+2025-02-02 10:47:31,076 - DEBUG - Stopping process thread
+2025-02-02 10:47:37,428 - DEBUG - Disconnecting process manager signals
+2025-02-02 10:47:37,428 - DEBUG - Disconnecting database signals
+2025-02-02 10:47:37,428 - INFO - Cleanup complete
+2025-02-02 10:49:32,948 - INFO - Starting GLL2TXT application
+2025-02-02 10:49:32,979 - INFO - Initializing main window
+2025-02-02 10:49:32,979 - DEBUG - Loading settings
+2025-02-02 10:49:32,979 - DEBUG - Initializing database
+2025-02-02 10:49:32,979 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:49:32,979 - DEBUG - Creating database engine
+2025-02-02 10:49:32,994 - DEBUG - Creating database tables
+2025-02-02 10:49:32,994 - INFO - Created tables: speakers, config_files
+2025-02-02 10:49:32,994 - DEBUG - Verified table exists: speakers
+2025-02-02 10:49:32,994 - DEBUG - Verified table exists: config_files
+2025-02-02 10:49:32,994 - DEBUG - Setting up UI layout
+2025-02-02 10:49:33,104 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 10:49:33,104 - DEBUG - Creating database engine
+2025-02-02 10:49:33,120 - DEBUG - Creating database tables
+2025-02-02 10:49:33,120 - INFO - Created tables: speakers, config_files
+2025-02-02 10:49:33,120 - DEBUG - Verified table exists: speakers
+2025-02-02 10:49:33,120 - DEBUG - Verified table exists: config_files
+2025-02-02 10:49:33,120 - DEBUG - Displaying initial information
+2025-02-02 10:49:33,120 - INFO - Main window initialization complete
+2025-02-02 10:49:33,171 - INFO - Main window initialized and shown
+2025-02-02 10:49:36,966 - INFO - Application shutting down
+2025-02-02 10:49:36,966 - DEBUG - Disconnecting database signals
+2025-02-02 10:49:36,966 - DEBUG - Cleaning up database
+2025-02-02 10:49:36,966 - INFO - Cleanup complete

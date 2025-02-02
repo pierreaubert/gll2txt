@@ -6,13 +6,16 @@ from typing import Optional, Dict, List, Any
 from pathlib import Path
 from sqlalchemy import create_engine, text, select
 from sqlalchemy.orm import sessionmaker
+from PySide6.QtCore import QObject, Signal
 
 from models.speaker import Base, Speaker
 from models.config_file import ConfigFile
 
 
-class SpeakerDatabase:
+class SpeakerDatabase(QObject):
     """Database for storing speaker information"""
+
+    log_signal = Signal(int, str)  # level and message
 
     def __init__(self, db_path: Optional[str] = None):
         """
@@ -22,43 +25,48 @@ class SpeakerDatabase:
             db_path (str, optional): Path to SQLite database file.
                                    If None, use default path in user's home directory.
         """
+        super().__init__()
         try:
             # Set database path
             if db_path is None:
                 db_path = str(Path.home() / "Documents" / "GLL2TXT_Speakers.db")
-            logging.debug(f"Using database path: {db_path}")
+            self.log_message(logging.DEBUG, f"Using database path: {db_path}")
 
             self.db_path = db_path
 
             # Ensure directory exists
             db_dir = os.path.dirname(db_path)
             if db_dir and not os.path.exists(db_dir):
-                logging.debug(f"Creating database directory: {db_dir}")
+                self.log_message(
+                    logging.DEBUG, f"Creating database directory: {db_dir}"
+                )
                 try:
                     os.makedirs(db_dir)
                 except Exception as e:
-                    logging.error(
-                        f"Failed to create database directory: {db_dir}", exc_info=True
+                    self.log_message(
+                        logging.ERROR, f"Failed to create database directory: {db_dir}"
                     )
                     raise RuntimeError(
                         f"Could not create database directory: {db_dir}"
                     ) from e
 
             # Create engine and session factory
-            logging.debug("Creating database engine")
+            self.log_message(logging.DEBUG, "Creating database engine")
             try:
                 self.engine = create_engine(f"sqlite:///{self.db_path}", echo=False)
                 self.Session = sessionmaker(bind=self.engine)
 
                 # Create tables
-                logging.debug("Creating database tables")
+                self.log_message(logging.DEBUG, "Creating database tables")
                 Base.metadata.create_all(self.engine)
 
                 # Verify tables exist
                 with self.engine.connect() as conn:
                     # Get list of tables
                     tables = Base.metadata.tables.keys()
-                    logging.info(f"Created tables: {', '.join(tables)}")
+                    self.log_message(
+                        logging.INFO, f"Created tables: {', '.join(tables)}"
+                    )
 
                     # Verify each table exists
                     for table in tables:
@@ -69,18 +77,23 @@ class SpeakerDatabase:
                         )
                         if not result.fetchone():
                             raise RuntimeError(f"Table {table} was not created")
-                        logging.debug(f"Verified table exists: {table}")
+                        self.log_message(
+                            logging.DEBUG, f"Verified table exists: {table}"
+                        )
 
             except Exception as e:
-                logging.error("Failed to initialize database", exc_info=True)
+                self.log_message(logging.ERROR, "Failed to initialize database")
                 raise RuntimeError("Could not initialize database") from e
 
         except Exception:
-            logging.error("Database initialization failed", exc_info=True)
+            self.log_message(logging.ERROR, "Database initialization failed")
             raise
 
     def log_message(self, level: int, message: str):
-        """Helper method to emit log messages with level"""
+        """Helper method to emit log messages with level and also log to system logger"""
+        # Emit signal for Qt UI
+        self.log_signal.emit(level, message)
+        # Also log to system logger
         logging.log(level, message)
 
     def save_speaker_data(
@@ -102,7 +115,9 @@ class SpeakerDatabase:
         with self.Session() as session:
             speaker = session.get(Speaker, gll_file)
             if not speaker:
-                speaker = Speaker(gll_file=gll_file, speaker_name=speaker_name, skip=skip)
+                speaker = Speaker(
+                    gll_file=gll_file, speaker_name=speaker_name, skip=skip
+                )
                 session.add(speaker)
             else:
                 speaker.speaker_name = speaker_name
@@ -172,25 +187,31 @@ class SpeakerDatabase:
                 session.commit()
 
     def cleanup(self):
-        """Clean up database resources and optionally remove the database file"""
+        """Clean up database resources"""
         try:
-            # Close all connections
-            self.Session.close_all()
-            self.engine.dispose()
+            if hasattr(self, "Session"):
+                # Close all connections
+                self.Session.close_all()
+                if hasattr(self, "engine"):
+                    self.engine.dispose()
+                delattr(self, "Session")
+                delattr(self, "engine")
         except Exception as e:
-            logging.error("Error during database cleanup", exc_info=True)
-            raise RuntimeError("Failed to clean up database") from e
+            self.log_message(logging.ERROR, f"Error during database cleanup: {str(e)}")
 
     def remove_database(self):
         """Remove the database file"""
         try:
             self.cleanup()
-            if os.path.exists(self.db_path):
+            if hasattr(self, "db_path") and os.path.exists(self.db_path):
                 os.remove(self.db_path)
         except Exception as e:
-            logging.error("Error removing database file", exc_info=True)
-            raise RuntimeError("Failed to remove database file") from e
+            self.log_message(logging.ERROR, f"Error removing database file: {str(e)}")
 
     def __del__(self):
         """Cleanup engine on object destruction"""
-        self.cleanup()
+        try:
+            self.cleanup()
+        except:
+            # Suppress errors during deletion
+            pass

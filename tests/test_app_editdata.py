@@ -4,7 +4,7 @@ from PySide6.QtCore import Qt, QSettings
 from PySide6.QtWidgets import QTableWidget, QCheckBox, QTableWidgetItem
 
 from app_editdata import MissingSpeakerDialog
-from app_db import SpeakerDatabase
+from database import SpeakerDatabase
 
 
 @pytest.fixture

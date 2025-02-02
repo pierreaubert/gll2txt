@@ -17,7 +17,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from app_db import SpeakerDatabase
+from database import SpeakerDatabase
 
 
 class MissingSpeakerDialog(QDialog):

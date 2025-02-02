@@ -1,13 +1,7 @@
 pywinauto
-pyinstaller
 pyside6
 pyside6-stubs
-
-ruff
-pyright
-isort
-mypy
-
-pytest
+sqlalchemy
+alembic
 
 

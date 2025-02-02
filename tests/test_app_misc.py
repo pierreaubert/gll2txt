@@ -1,4 +1,3 @@
-
 from app_misc import (
     create_default_settings,
     validate_settings,

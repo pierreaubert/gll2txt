@@ -160,7 +160,7 @@ def build_spl_filename(
     output_dir: str, speaker_name: str, meridian: str, parallel: str
 ) -> str:
     return "{0}\\{1}\\{1} -M{2}-P{3}.txt".format(
-        output_dir, speaker_name, meridian[:-1], parallel[:-1]
+        output_dir.replace("/", "\\"), speaker_name, meridian[:-1], parallel[:-1]
     )
 
 

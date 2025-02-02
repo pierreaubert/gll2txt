@@ -25,7 +25,7 @@ from app_editdata import MissingSpeakerDialog
 from app_processmanager import ProcessManager
 from app_processthread import ProcessThread
 from app_settings import SettingsDialog
-from app_db import SpeakerDatabase
+from database import SpeakerDatabase
 
 
 class MainWindow(QMainWindow):
@@ -149,28 +149,23 @@ class MainWindow(QMainWindow):
                 self.process_thread.quit()
                 self.process_thread.wait()
 
-            # Disconnect all signals
-            if self.process_manager:
-                logging.debug("Disconnecting process manager signals")
-                self.process_manager.log_signal.disconnect()
-                self.process_manager.progress_signal.disconnect()
-                self.process_manager.process_complete_signal.disconnect()
-                self.process_manager.speaker_data_required_signal.disconnect()
-
+            # Clean up database
             if self.speaker_db:
                 logging.debug("Disconnecting database signals")
-                self.speaker_db.log_signal.disconnect()
-
-            # Clear references
-            self.process_thread = None
-            self.process_manager = None
-            self.speaker_db = None
+                try:
+                    self.speaker_db.log_signal.disconnect()
+                except TypeError:
+                    pass  # Signal might not be connected
+                logging.debug("Cleaning up database")
+                self.speaker_db.cleanup()
+                self.speaker_db = None
 
             logging.info("Cleanup complete")
             event.accept()
+
         except Exception:
-            logging.error("Error during cleanup", exc_info=True)
-            event.accept()  # Still close even if cleanup fails
+            logging.error("Error during shutdown", exc_info=True)
+            event.ignore()
 
     def display_initial_informations(self):
         is_valid, errors = validate_settings(self.settings)

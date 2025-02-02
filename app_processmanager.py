@@ -1,11 +1,11 @@
 import logging
 from pathlib import Path
-
+import os
 from PySide6.QtCore import QObject, Signal
 
 from gll2txt import extract_speaker as gll_extract_speaker
 from logger import set_global_logger
-from app_db import SpeakerDatabase
+from database import SpeakerDatabase
 
 
 class ProcessManager(QObject):
@@ -60,10 +60,15 @@ class ProcessManager(QObject):
         # Search for both .GLL and .gll files using pathlib
         gll_files = []
         for ext in [".GLL", ".gll"]:
-            gll_files.extend(gll_path.rglob(f"*{ext}"))
+            gll_paths = list(gll_path.rglob(f"*{ext}"))
+            print(gll_paths)
+            self.log_message("found %d gll files", len(gll_paths))
+            gll_files.extend(gll_paths)
 
-        # Convert Path objects to strings and remove duplicates
-        gll_files = [str(f) for f in gll_files]
+        # Convert paths to strings using os.fspath() for cross-platform compatibility
+        gll_files = [os.fspath(f) for f in gll_files]
+        # Normalize paths to handle different path separators
+        gll_files = [str(Path(f)) for f in gll_files]
         gll_files = list(set(gll_files))
         total_files = len(gll_files)
 

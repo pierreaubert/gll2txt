@@ -41,10 +41,14 @@ class SettingsDialog(QDialog):
         ease_binary_label.setObjectName("ease_binary_label")
         ease_binary_input = QLineEdit()
         ease_binary_input.setObjectName("ease_binary")
-        ease_binary_input.setText(self.settings.value("ease_binary_path", DEFAULT_EASE_PATH))
+        ease_binary_input.setText(
+            self.settings.value("ease_binary_path", DEFAULT_EASE_PATH)
+        )
         ease_binary_browse = QPushButton("Browse...")
         ease_binary_browse.setObjectName("browse_ease")
-        ease_binary_browse.clicked.connect(lambda: self.browse_file("ease_binary_path", ease_binary_input))
+        ease_binary_browse.clicked.connect(
+            lambda: self.browse_file("ease_binary_path", ease_binary_input)
+        )
 
         ease_binary_layout = QHBoxLayout()
         ease_binary_layout.addWidget(ease_binary_label)
@@ -57,10 +61,14 @@ class SettingsDialog(QDialog):
         gll_dir_label.setObjectName("gll_directory_label")
         gll_dir_input = QLineEdit()
         gll_dir_input.setObjectName("gll_directory")
-        gll_dir_input.setText(self.settings.value("gll_files_directory", DEFAULT_GLL_PATH))
+        gll_dir_input.setText(
+            self.settings.value("gll_files_directory", DEFAULT_GLL_PATH)
+        )
         gll_dir_browse = QPushButton("Browse...")
         gll_dir_browse.setObjectName("browse_gll")
-        gll_dir_browse.clicked.connect(lambda: self.browse_directory("gll_files_directory", gll_dir_input))
+        gll_dir_browse.clicked.connect(
+            lambda: self.browse_directory("gll_files_directory", gll_dir_input)
+        )
 
         gll_dir_layout = QHBoxLayout()
         gll_dir_layout.addWidget(gll_dir_label)
@@ -85,7 +93,9 @@ class SettingsDialog(QDialog):
         )
         output_dir_browse = QPushButton("Browse...")
         output_dir_browse.setObjectName("browse_output")
-        output_dir_browse.clicked.connect(lambda: self.browse_directory("output_directory", output_dir_input))
+        output_dir_browse.clicked.connect(
+            lambda: self.browse_directory("output_directory", output_dir_input)
+        )
 
         output_dir_layout = QHBoxLayout()
         output_dir_layout.addWidget(output_dir_label)
