@@ -1,5 +1,5 @@
 import logging
-import glob
+from pathlib import Path
 
 from PySide6.QtCore import QObject, Signal
 
@@ -25,20 +25,46 @@ class ProcessManager(QObject):
         """Helper method to emit log messages with level"""
         self.log_signal.emit(level, message)
 
+    def cleanup(self):
+        """Clean up resources"""
+        if hasattr(self, "speaker_db"):
+            self.speaker_db = None
+
     def process_gll_files(self):
         """Process GLL files using Ease binary."""
         # List all GLL files
+        gll_directory = self.settings.value("gll_files_directory", "")
+        if not gll_directory:
+            self.log_message(
+                logging.ERROR,
+                "GLL files directory not set in settings",
+            )
+            self.process_complete_signal.emit(False)
+            return
+
         self.log_message(
             logging.INFO,
-            f"Searching GLL files {self.settings.value('gll_files_directory', '(error)')}",
-        )
-        gll_files = list(
-            glob.iglob(
-                self.settings.value("gll_files_directory") + "\\**\\*.GLL",
-                recursive=True,
-            )
+            f"Searching GLL files in {gll_directory}",
         )
 
+        # Convert to Path object for cross-platform compatibility
+        gll_path = Path(gll_directory)
+        if not gll_path.exists():
+            self.log_message(
+                logging.ERROR,
+                f"Directory does not exist: {gll_directory}",
+            )
+            self.process_complete_signal.emit(False)
+            return
+
+        # Search for both .GLL and .gll files using pathlib
+        gll_files = []
+        for ext in [".GLL", ".gll"]:
+            gll_files.extend(gll_path.rglob(f"*{ext}"))
+
+        # Convert Path objects to strings and remove duplicates
+        gll_files = [str(f) for f in gll_files]
+        gll_files = list(set(gll_files))
         total_files = len(gll_files)
 
         if total_files == 0:
@@ -48,7 +74,7 @@ class ProcessManager(QObject):
             self.process_complete_signal.emit(False)
             return
 
-        self.log_message(logging.INFO, f" Found {total_files} GLL files.")
+        self.log_message(logging.INFO, f"Found {total_files} GLL files.")
 
         # Process each GLL file
         self.log_message(

@@ -55,10 +55,12 @@ class MissingSpeakerDialog(QDialog):
         # Missing Speaker Section
         if self.missing_gll_files:
             missing_label = QLabel("Missing Speaker Information:")
+            missing_label.setObjectName("missing_label")
             main_layout.addWidget(missing_label)
 
             # Missing Speaker Table
             self.missing_table = QTableWidget()
+            self.missing_table.setObjectName("missing_table")
             self.missing_table.setColumnCount(4)
             self.missing_table.setHorizontalHeaderLabels(
                 ["GLL File", "Speaker Name", "Config Files", "Skip"]
@@ -79,10 +81,12 @@ class MissingSpeakerDialog(QDialog):
 
                 # Speaker Name column
                 speaker_input = QLineEdit()
+                speaker_input.setObjectName("speaker_input")
                 self.missing_table.setCellWidget(row, 1, speaker_input)
 
                 # Config Files column
                 config_btn = QPushButton("Add Config Files")
+                config_btn.setObjectName("config_btn")
                 config_btn.clicked.connect(
                     lambda checked, r=row: self.add_config_files(r, is_missing=True)
                 )
@@ -90,6 +94,7 @@ class MissingSpeakerDialog(QDialog):
 
                 # Skip checkbox column
                 skip_checkbox = QCheckBox()
+                skip_checkbox.setObjectName("skip_checkbox")
                 skip_checkbox.setChecked(False)
                 skip_checkbox.stateChanged.connect(
                     lambda state, r=row: self.on_missing_skip_changed(r, state)
@@ -105,10 +110,12 @@ class MissingSpeakerDialog(QDialog):
 
         # Existing Speaker Section
         existing_label = QLabel("Existing Speaker Information:")
+        existing_label.setObjectName("existing_label")
         main_layout.addWidget(existing_label)
 
         # Existing Speaker Table
         self.existing_table = QTableWidget()
+        self.existing_table.setObjectName("existing_table")
         self.existing_table.setColumnCount(5)
         self.existing_table.setHorizontalHeaderLabels(
             ["GLL File", "Speaker Name", "Config Files", "Skip", "Actions"]
@@ -122,8 +129,10 @@ class MissingSpeakerDialog(QDialog):
         # Buttons
         button_layout = QHBoxLayout()
         save_btn = QPushButton("Save Changes")
+        save_btn.setObjectName("save_btn")
         save_btn.clicked.connect(self.save_all_changes)
         cancel_btn = QPushButton("Cancel")
+        cancel_btn.setObjectName("cancel_btn")
         cancel_btn.clicked.connect(self.reject)
 
         button_layout.addWidget(save_btn)
@@ -147,10 +156,12 @@ class MissingSpeakerDialog(QDialog):
             # Speaker Name (Editable)
             speaker_input = QLineEdit()
             speaker_input.setText(data["speaker_name"])
+            speaker_input.setObjectName("speaker_input")
             self.existing_table.setCellWidget(row, 1, speaker_input)
 
             # Config Files
             config_btn = QPushButton(f"Config Files ({len(data['config_files'])})")
+            config_btn.setObjectName("config_btn")
             config_btn.clicked.connect(
                 lambda checked, d=data: self.edit_config_files(d)
             )
@@ -162,6 +173,7 @@ class MissingSpeakerDialog(QDialog):
             skip_checkbox.stateChanged.connect(
                 lambda state, d=data: self.on_existing_skip_changed(d, state)
             )
+            skip_checkbox.setObjectName("skip_checkbox")
             skip_cell_widget = QWidget()
             skip_layout = QHBoxLayout(skip_cell_widget)
             skip_layout.addWidget(skip_checkbox)
@@ -171,6 +183,7 @@ class MissingSpeakerDialog(QDialog):
 
             # Delete Button
             delete_btn = QPushButton("Delete")
+            delete_btn.setObjectName("delete_btn")
             delete_btn.clicked.connect(lambda checked, d=data: self.delete_speaker(d))
             self.existing_table.setCellWidget(row, 4, delete_btn)
 

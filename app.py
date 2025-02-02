@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-import glob
 import logging
 import sys
 import webbrowser
+import traceback
+from pathlib import Path
 
 from PySide6.QtWidgets import (
     QApplication,
@@ -29,68 +30,152 @@ from app_db import SpeakerDatabase
 
 class MainWindow(QMainWindow):
     def __init__(self):
-        super().__init__()
-        self.setWindowTitle("GLL2TXT Converter")
-        self.resize(1000, 700)
-        self.settings = create_default_settings()
+        try:
+            super().__init__()
+            logging.info("Initializing main window")
 
-        # Initialize database
-        self.speaker_db = SpeakerDatabase()
-        self.speaker_db.log_signal.connect(self.log_message)
+            # Initialize instance variables
+            self.process_thread = None
+            self.process_manager = None
+            self.speaker_db = None
+            self.settings = None
+            self.log_area = None
+            self.progress_bar = None
+            self.process_button = None
+            self.exit_button = None
 
-        # Central widget and main layout
-        central_widget = QWidget()
-        main_layout = QVBoxLayout()
-        central_widget.setLayout(main_layout)
-        self.setCentralWidget(central_widget)
+            self.setWindowTitle("GLL2TXT Converter")
+            self.resize(1000, 700)
 
-        # Create menu bar
-        self.create_menu_bar()
+            logging.debug("Loading settings")
+            try:
+                self.settings = create_default_settings()
+            except Exception as e:
+                logging.error("Failed to load settings", exc_info=True)
+                raise RuntimeError("Failed to load application settings") from e
 
-        # Log area
-        self.log_area = QTextEdit()
-        self.log_area.setReadOnly(True)
-        self.log_area.setAcceptRichText(True)
-        self.log_area.setDocumentTitle("Logs")
-        main_layout.addWidget(self.log_area)
+            # Initialize database
+            logging.debug("Initializing database")
+            try:
+                self.speaker_db = SpeakerDatabase()
+                self.speaker_db.log_signal.connect(self.log_message)
+            except Exception as e:
+                logging.error("Failed to initialize database", exc_info=True)
+                raise RuntimeError("Failed to initialize database") from e
 
-        # Process button and progress area
-        bottom_layout = QHBoxLayout()
+            # Central widget and main layout
+            logging.debug("Setting up UI layout")
+            try:
+                central_widget = QWidget()
+                main_layout = QVBoxLayout()
+                central_widget.setLayout(main_layout)
+                self.setCentralWidget(central_widget)
 
-        self.process_button = QPushButton("Process GLL Files")
-        self.process_button.clicked.connect(self.start_processing)
-        bottom_layout.addWidget(self.process_button)
+                # Create menu bar
+                self.create_menu_bar()
 
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setVisible(False)
-        bottom_layout.addWidget(self.progress_bar)
+                # Log area
+                self.log_area = QTextEdit()
+                self.log_area.setReadOnly(True)
+                self.log_area.setAcceptRichText(True)
+                self.log_area.setDocumentTitle("Logs")
+                main_layout.addWidget(self.log_area)
 
-        # Exit button
-        self.exit_button = QPushButton("Exit")
-        self.exit_button.setVisible(True)
-        self.exit_button.clicked.connect(self.close)
-        bottom_layout.addWidget(self.exit_button)
+                # Process button and progress area
+                bottom_layout = QHBoxLayout()
 
-        main_layout.addLayout(bottom_layout)
+                self.process_button = QPushButton("Process GLL Files")
+                self.process_button.clicked.connect(self.start_processing)
+                bottom_layout.addWidget(self.process_button)
 
-        # Process manager setup
-        self.process_manager = ProcessManager(self.settings)
-        self.process_thread = None
+                self.progress_bar = QProgressBar()
+                self.progress_bar.setVisible(False)
+                bottom_layout.addWidget(self.progress_bar)
 
-        # Connect signals
-        self.process_manager.log_signal.connect(self.log_message)
-        self.process_manager.progress_signal.connect(self.update_progress)
-        self.process_manager.process_complete_signal.connect(self.processing_complete)
-        self.process_manager.speaker_data_required_signal.connect(
-            self.request_speaker_data
-        )
+                # Exit button
+                self.exit_button = QPushButton("Exit")
+                self.exit_button.setVisible(True)
+                self.exit_button.clicked.connect(self.close)
+                bottom_layout.addWidget(self.exit_button)
 
-        self.display_initial_informations()
+                main_layout.addLayout(bottom_layout)
+
+                # Process manager setup
+                self.process_manager = ProcessManager(self.settings)
+                self.process_thread = None
+
+                # Connect signals
+                self.process_manager.log_signal.connect(self.log_message)
+                self.process_manager.progress_signal.connect(self.update_progress)
+                self.process_manager.process_complete_signal.connect(
+                    self.processing_complete
+                )
+                self.process_manager.speaker_data_required_signal.connect(
+                    self.request_speaker_data
+                )
+
+                # Display initial information
+                logging.debug("Displaying initial information")
+                try:
+                    self.display_initial_informations()
+                except Exception as e:
+                    logging.error(
+                        "Failed to display initial information", exc_info=True
+                    )
+                    # Non-critical error, just log it
+                    self.log_message(
+                        logging.ERROR,
+                        f"Failed to display initial information: {str(e)}",
+                    )
+
+                logging.info("Main window initialization complete")
+
+            except Exception as e:
+                logging.error("Failed to initialize UI", exc_info=True)
+                raise RuntimeError("Failed to initialize user interface") from e
+
+        except Exception:
+            logging.error("Failed to initialize main window", exc_info=True)
+            raise
+
+    def closeEvent(self, event):
+        """Handle window close event"""
+        try:
+            logging.info("Application shutting down")
+
+            # Stop any running process
+            if self.process_thread and self.process_thread.isRunning():
+                logging.debug("Stopping process thread")
+                self.process_thread.quit()
+                self.process_thread.wait()
+
+            # Disconnect all signals
+            if self.process_manager:
+                logging.debug("Disconnecting process manager signals")
+                self.process_manager.log_signal.disconnect()
+                self.process_manager.progress_signal.disconnect()
+                self.process_manager.process_complete_signal.disconnect()
+                self.process_manager.speaker_data_required_signal.disconnect()
+
+            if self.speaker_db:
+                logging.debug("Disconnecting database signals")
+                self.speaker_db.log_signal.disconnect()
+
+            # Clear references
+            self.process_thread = None
+            self.process_manager = None
+            self.speaker_db = None
+
+            logging.info("Cleanup complete")
+            event.accept()
+        except Exception:
+            logging.error("Error during cleanup", exc_info=True)
+            event.accept()  # Still close even if cleanup fails
 
     def display_initial_informations(self):
-        oks, errors = validate_settings(self.settings)
-        for msg in oks:
-            self.log_message(logging.INFO, msg)
+        is_valid, errors = validate_settings(self.settings)
+        if is_valid:
+            self.log_message(logging.INFO, "Settings validation successful")
         for msg in errors:
             self.log_message(logging.ERROR, msg)
 
@@ -101,26 +186,42 @@ class MainWindow(QMainWindow):
         file_menu = menu_bar.addMenu("&File")
 
         # Settings Action
-        settings_action = file_menu.addAction("Settings")
+        settings_action = file_menu.addAction("&Settings")
+        settings_action.setShortcut("Ctrl+,")
         settings_action.triggered.connect(self.open_settings)
 
         # Manage Speakers Action
-        manage_speakers_action = file_menu.addAction("Edit speakers data")
+        manage_speakers_action = file_menu.addAction("&Edit speakers data")
+        manage_speakers_action.setShortcut("Ctrl+E")
         manage_speakers_action.triggered.connect(self.open_speaker_management)
 
+        # Open Files Action
+        open_files_action = file_menu.addAction("&Open GLL Files...")
+        open_files_action.setShortcut("Ctrl+O")
+        open_files_action.triggered.connect(self.open_files)
+
+        # Process Files Action
+        process_files_action = file_menu.addAction("&Process Files")
+        process_files_action.setShortcut("Ctrl+P")
+        process_files_action.triggered.connect(self.start_processing)
+
+        file_menu.addSeparator()
+
         # Exit Action
-        exit_action = file_menu.addAction("Exit")
+        exit_action = file_menu.addAction("E&xit")
+        exit_action.setShortcut("Ctrl+Q")
         exit_action.triggered.connect(self.close)
 
         # Help Menu
         help_menu = menu_bar.addMenu("&Help")
 
         # GitHub Link
-        github_action = help_menu.addAction("GitHub Repository")
+        github_action = help_menu.addAction("&GitHub Repository")
+        github_action.setShortcut("F1")
         github_action.triggered.connect(self.open_github)
 
         # About Action
-        about_action = help_menu.addAction("About")
+        about_action = help_menu.addAction("&About")
         about_action.triggered.connect(self.show_about_dialog)
 
     def open_speaker_management(self):
@@ -136,10 +237,32 @@ class MainWindow(QMainWindow):
             )
             return
 
-        # Ensure Windows-style paths
-        gll_directory = gll_directory.replace("/", "\\")
-        pattern = f"{gll_directory}\\**\\*.GLL"
-        gll_files = list(glob.iglob(pattern, recursive=True))
+        # Convert to Path object for cross-platform compatibility
+        gll_path = Path(gll_directory)
+        if not gll_path.exists():
+            QMessageBox.warning(
+                self,
+                "Invalid Directory",
+                f"Directory does not exist: {gll_directory}",
+            )
+            return
+
+        # Search for both .GLL and .gll files using pathlib
+        gll_files = []
+        for ext in [".GLL", ".gll"]:
+            gll_files.extend(gll_path.rglob(f"*{ext}"))
+
+        # Convert Path objects to strings and remove duplicates
+        gll_files = [str(f) for f in gll_files]
+        gll_files = list(set(gll_files))
+
+        if not gll_files:
+            QMessageBox.warning(
+                self,
+                "No GLL Files",
+                f"No GLL files found in directory: {gll_directory}",
+            )
+            return
 
         # Open MissingSpeakerDialog with all GLL files
         speaker_dialog = MissingSpeakerDialog(gll_files, self.settings, self)
@@ -183,21 +306,13 @@ class MainWindow(QMainWindow):
 
         self.process_thread.start()
 
-    def processing_complete(self, success):
-        # Re-enable process button
+    def processing_complete(self, success: bool):
+        """Handle process completion"""
         self.process_button.setEnabled(True)
-
-        # Hide progress bar, show process button
-        self.progress_bar.setVisible(False)
-        self.process_button.setVisible(True)
-
-        # Optional: Show completion message
         if success:
-            self.log_message(logging.INFO, "Processing completed successfully.")
+            self.progress_bar.setValue(100)
         else:
-            self.log_message(
-                logging.WARNING, "Processing failed. Check settings and logs!"
-            )
+            self.progress_bar.setValue(0)
 
     def log_message(self, level, message):
         """Add a colored log message to the log area"""
@@ -245,28 +360,64 @@ class MainWindow(QMainWindow):
 
     def open_files(self):
         """Open file dialog to select GLL files"""
-        file_paths, _ = QFileDialog.getOpenFileNames(
-            self, "Select GLL Files", "", "GLL Files (*.GLL);;All Files (*)"
+        files, _ = QFileDialog.getOpenFileNames(
+            self, "Select GLL Files", "", "GLL Files (*.GLL *.gll);;All Files (*)"
         )
-
-        if file_paths:
-            # You can implement logic to handle selected files
-            # For now, just log the selected files
-            for path in file_paths:
-                self.log_message(logging.INFO, f"Selected file: {path}")
-
-    def open_settings_dialog(self):
-        """Open settings dialog"""
-        settings_dialog = SettingsDialog(self)
-        settings_dialog.exec()
+        if files:
+            self.gll_files = files
+            self.process_button.setEnabled(True)
+            self.log_message(logging.INFO, f"Selected {len(files)} files")
+        else:
+            self.process_button.setEnabled(False)
 
 
 def main():
-    app = QApplication(sys.argv)
-    main_window = MainWindow()
-    main_window.show()
-    sys.exit(app.exec())
+    try:
+        # Configure logging
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format="%(asctime)s - %(levelname)s - %(message)s",
+            handlers=[logging.FileHandler("gll2txt.log"), logging.StreamHandler()],
+        )
+        logging.info("Starting GLL2TXT application")
+
+        app = QApplication(sys.argv)
+
+        # Set up global exception handler for Qt
+        def handle_exception(exc_type, exc_value, exc_traceback):
+            logging.error(
+                "Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback)
+            )
+            # Show error dialog to user
+            error_msg = QMessageBox()
+            error_msg.setIcon(QMessageBox.Critical)
+            error_msg.setText("An unexpected error occurred")
+            error_msg.setInformativeText(str(exc_value))
+            error_msg.setDetailedText(
+                "".join(traceback.format_exception(exc_type, exc_value, exc_traceback))
+            )
+            error_msg.setWindowTitle("Error")
+            error_msg.exec()
+
+        sys.excepthook = handle_exception
+
+        try:
+            main_window = MainWindow()
+            main_window.show()
+            logging.info("Main window initialized and shown")
+        except Exception:
+            logging.error("Failed to initialize main window", exc_info=True)
+            raise
+
+        return app.exec()
+    except Exception:
+        logging.error("Fatal error in main", exc_info=True)
+        raise
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        sys.exit(main())
+    except Exception:
+        logging.error("Application crashed", exc_info=True)
+        sys.exit(1)

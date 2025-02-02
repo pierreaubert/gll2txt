@@ -1,80 +1,50 @@
 import os
 import sqlite3
 import logging
-import threading
+
 from PySide6.QtCore import QObject, Signal
 
-from app_misc import get_windows_documents_path
 
 
 class SpeakerDatabase(QObject):
     """Database for storing speaker information"""
 
-    CURRENT_SCHEMA_VERSION = "0.2"
     log_signal = Signal(int, str)  # level and message
 
     def __init__(self, db_path=None):
         """
-        Initialize the database connection.
+        Initialize database connection and schema
 
         Args:
             db_path (str, optional): Path to the database file.
             If None, uses default path in Documents.
         """
         super().__init__()
+
+        # Set database path
         if db_path is None:
-            db_path = os.path.join(get_windows_documents_path(), "GLL2TXT_Speakers.db")
+            home = os.path.expanduser("~")
+            db_path = os.path.join(home, ".gll2txt.db")
 
         self.db_path = db_path
         self.log_message(logging.INFO, f"Opening database at {self.db_path}")
 
-        # Thread-local storage for connections
-        self._local = threading.local()
+        # Create database directory if needed
+        db_dir = os.path.dirname(self.db_path)
+        if db_dir:
+            os.makedirs(db_dir, exist_ok=True)
 
-        # Initialize schema in main thread
-        self._get_connection()
+        # Initialize schema
         self._initialize_schema()
 
     def _get_connection(self):
-        """Get thread-local connection"""
-        if not hasattr(self._local, "connection") or self._local.connection is None:
-            self._local.connection = sqlite3.connect(self.db_path, isolation_level=None)
-            self._local.cursor = self._local.connection.cursor()
-            self.log_message(
-                logging.DEBUG,
-                f"Created new database connection for thread {threading.current_thread().name}",
-            )
-        return self._local.connection, self._local.cursor
+        """Get a new database connection"""
+        connection = sqlite3.connect(self.db_path)
+        cursor = connection.cursor()
+        return connection, cursor
 
     def _initialize_schema(self):
         """Initialize database schema"""
-        connection, cursor = self._get_connection()
-
-        # Create schema version table if it doesn't exist
-        cursor.execute(
-            """
-            CREATE TABLE IF NOT EXISTS schema_version (
-                version TEXT NOT NULL,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-            """
-        )
-
-        # Get current schema version
-        cursor.execute(
-            "SELECT version FROM schema_version ORDER BY updated_at DESC LIMIT 1"
-        )
-        result = cursor.fetchone()
-        current_version = result[0] if result else "0.1"
-
-        # Perform migrations if needed
-        if current_version != self.CURRENT_SCHEMA_VERSION:
-            self.log_message(
-                logging.INFO,
-                f"Database needs migration from {current_version} to {self.CURRENT_SCHEMA_VERSION}",
-            )
-            self._migrate_database(current_version)
-
         self._create_tables()
 
     def log_message(self, level, message):
@@ -108,51 +78,6 @@ class SpeakerDatabase(QObject):
             """
         )
         connection.commit()
-
-    def _migrate_database(self, current_version):
-        """
-        Migrate database from current version to latest version.
-
-        Args:
-            current_version (str): Current schema version
-        """
-        connection, cursor = self._get_connection()
-        try:
-            # Start transaction
-            cursor.execute("BEGIN TRANSACTION")
-
-            if current_version == "0.1":
-                self.log_message(logging.INFO, "Migrating database from 0.1 to 0.2...")
-                # Add skip column to speakers table
-                cursor.execute(
-                    """
-                    ALTER TABLE speakers 
-                    ADD COLUMN skip BOOLEAN DEFAULT 0
-                    """
-                )
-                current_version = "0.2"
-
-            # Update schema version
-            cursor.execute(
-                """
-                INSERT INTO schema_version (version) 
-                VALUES (?)
-                """,
-                (self.CURRENT_SCHEMA_VERSION,),
-            )
-
-            # Commit transaction
-            cursor.execute("COMMIT")
-            self.log_message(
-                logging.INFO,
-                f"Database successfully migrated to version {self.CURRENT_SCHEMA_VERSION}",
-            )
-
-        except Exception as e:
-            self.log_message(logging.ERROR, f"Error during database migration: {e}")
-            # Rollback on error
-            cursor.execute("ROLLBACK")
-            raise
 
     def save_speaker_data(self, gll_file, speaker_name, config_files, skip=False):
         """
@@ -285,10 +210,4 @@ class SpeakerDatabase(QObject):
 
     def __del__(self):
         """Cleanup connections on object destruction"""
-        if hasattr(self, "_local"):
-            if hasattr(self._local, "connection") and self._local.connection:
-                self.log_message(
-                    logging.DEBUG,
-                    f"Closing database connection for thread {threading.current_thread().name}",
-                )
-                self._local.connection.close()
+        pass

@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
+"""Extract speaker from GLL files"""
 
 import logging
 import os
 import time
 import zipfile
-from pprint import pp
 
 import pywinauto as win
 
@@ -31,7 +30,7 @@ def dump(widget) -> None:
             logging.DEBUG,
             "- properties ---------------------------------------------------------",
         )
-        pp(properties)
+        print(properties)
     except AttributeError:
         pass
     try:

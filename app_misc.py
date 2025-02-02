@@ -1,4 +1,5 @@
 import os
+from typing import Tuple, List
 
 from PySide6.QtCore import QSettings
 
@@ -7,7 +8,6 @@ try:
     import winreg
 except ModuleNotFoundError:
     WINDOWS = False
-
 
 
 def get_windows_documents_path() -> str:
@@ -40,44 +40,47 @@ DEFAULT_GLL_PATH = r"Z:\GLL"
 def create_default_settings() -> QSettings:
     settings = QSettings("spinorama.org", "GLL2TXT")
 
-    settings.value("ease_binary_path", DEFAULT_EASE_PATH)
-    settings.value("gll_files_directory", DEFAULT_GLL_PATH)
-    settings.value(
-        "output_directory",
-        os.path.join(
-            get_windows_documents_path(),
-            "GLL2TXT_Output",
-        ),
-    )
+    # Set default values if they don't exist
+    if not settings.value("ease_binary_path"):
+        settings.setValue("ease_binary_path", DEFAULT_EASE_PATH)
+    if not settings.value("gll_files_directory"):
+        settings.setValue("gll_files_directory", DEFAULT_GLL_PATH)
+    if not settings.value("output_directory"):
+        settings.setValue(
+            "output_directory",
+            os.path.join(get_windows_documents_path(), "GLL2TXT_Output"),
+        )
     return settings
 
 
-def validate_settings(settings: QSettings) -> tuple[list[str], list[str]]:
-    """Validate that all required settings are present and valid."""
-    oks = []
+def validate_settings(settings: QSettings) -> Tuple[bool, List[str]]:
+    """
+    Validate settings
+
+    Args:
+        settings (QSettings): Settings to validate
+
+    Returns:
+        Tuple[bool, List[str]]: Tuple containing validation result and list of error messages
+    """
     errors = []
+    ease_binary = settings.value("ease_binary_path")
+    gll_dir = settings.value("gll_files_directory")
+    output_dir = settings.value("output_directory")
 
-    ease_binary_path = settings.value("ease_binary_path")
-    if not ease_binary_path:
+    if not ease_binary:
         errors.append("Ease binary path is not set! Go to Settings!")
-    elif not os.path.exists(ease_binary_path):
-        errors.append(f"Ease binary not found: {ease_binary_path}")
-    else:
-        oks.append(f"Ease Binary Found! ({ease_binary_path})")
+    elif not os.path.exists(ease_binary):
+        errors.append(f"Invalid Ease binary path: {ease_binary}")
 
-    gll_files_directory = settings.value("gll_files_directory")
-    if not gll_files_directory:
+    if not gll_dir:
         errors.append("GLL files directory is not set! Go to Settings!")
-    elif not os.path.isdir(gll_files_directory):
-        errors.append(f"Invalid GLL files directory: {gll_files_directory}")
-    else:
-        oks.append(f"Will look for GLL files in ({gll_files_directory})")
+    elif not os.path.exists(gll_dir):
+        errors.append(f"Invalid GLL files directory: {gll_dir}")
 
-    output_directory = settings.value("output_directory")
-    if not output_directory:
+    if not output_dir:
         errors.append("Output directory is not set! Got to Settings!")
-    else:
-        oks.append(f"Will generate output in ({settings.value('output_directory')})")
-        os.makedirs(settings.value("output_directory"), exist_ok=True)
+    elif not os.path.exists(output_dir):
+        errors.append(f"Invalid output directory: {output_dir}")
 
-    return oks, errors
+    return len(errors) == 0, errors

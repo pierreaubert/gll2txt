@@ -37,158 +37,89 @@ class SettingsDialog(QDialog):
         layout = QVBoxLayout()
 
         # Ease Binary Path
-        self.ease_path_layout = self.create_file_input_row(
-            layout,
-            "Path to Ease Binary:",
-            self.select_ease_binary,
-            DEFAULT_EASE_PATH,
-        )
+        ease_binary_label = QLabel("Path to Ease Binary:")
+        ease_binary_label.setObjectName("ease_binary_label")
+        ease_binary_input = QLineEdit()
+        ease_binary_input.setObjectName("ease_binary")
+        ease_binary_input.setText(self.settings.value("ease_binary_path", DEFAULT_EASE_PATH))
+        ease_binary_browse = QPushButton("Browse...")
+        ease_binary_browse.setObjectName("browse_ease")
+        ease_binary_browse.clicked.connect(lambda: self.browse_file("ease_binary_path", ease_binary_input))
 
-        # GLL Files Path
-        self.gll_path_layout = self.create_dir_input_row(
-            layout,
-            "GLL Files Directory:",
-            self.select_gll_directory,
-            DEFAULT_GLL_PATH,
-        )
+        ease_binary_layout = QHBoxLayout()
+        ease_binary_layout.addWidget(ease_binary_label)
+        ease_binary_layout.addWidget(ease_binary_input)
+        ease_binary_layout.addWidget(ease_binary_browse)
+        layout.addLayout(ease_binary_layout)
+
+        # GLL Files Directory
+        gll_dir_label = QLabel("GLL Files Directory:")
+        gll_dir_label.setObjectName("gll_directory_label")
+        gll_dir_input = QLineEdit()
+        gll_dir_input.setObjectName("gll_directory")
+        gll_dir_input.setText(self.settings.value("gll_files_directory", DEFAULT_GLL_PATH))
+        gll_dir_browse = QPushButton("Browse...")
+        gll_dir_browse.setObjectName("browse_gll")
+        gll_dir_browse.clicked.connect(lambda: self.browse_directory("gll_files_directory", gll_dir_input))
+
+        gll_dir_layout = QHBoxLayout()
+        gll_dir_layout.addWidget(gll_dir_label)
+        gll_dir_layout.addWidget(gll_dir_input)
+        gll_dir_layout.addWidget(gll_dir_browse)
+        layout.addLayout(gll_dir_layout)
 
         # Output Path
+        output_dir_label = QLabel("Output Directory:")
+        output_dir_label.setObjectName("output_directory_label")
+        output_dir_input = QLineEdit()
+        output_dir_input.setObjectName("output_directory")
         default_output_path = os.path.join(
             get_windows_documents_path(),
             "GLL2TXT_Output",
         )
-        self.output_path_layout = self.create_dir_input_row(
-            layout,
-            "Output Directory:",
-            self.select_output_directory,
-            default_output_path,
+        output_dir_input.setText(
+            self.settings.value(
+                "output_directory",
+                default_output_path,
+            )
         )
+        output_dir_browse = QPushButton("Browse...")
+        output_dir_browse.setObjectName("browse_output")
+        output_dir_browse.clicked.connect(lambda: self.browse_directory("output_directory", output_dir_input))
+
+        output_dir_layout = QHBoxLayout()
+        output_dir_layout.addWidget(output_dir_label)
+        output_dir_layout.addWidget(output_dir_input)
+        output_dir_layout.addWidget(output_dir_browse)
+        layout.addLayout(output_dir_layout)
 
         # Buttons
         button_layout = QHBoxLayout()
         save_button = QPushButton("Save")
+        save_button.setObjectName("save_button")
         save_button.clicked.connect(self.save_settings)
         cancel_button = QPushButton("Cancel")
+        cancel_button.setObjectName("cancel_button")
         cancel_button.clicked.connect(self.reject)
 
         button_layout.addWidget(save_button)
         button_layout.addWidget(cancel_button)
         layout.addLayout(button_layout)
 
-        # Load existing settings
-        self.ease_path_layout["input"].setText(
-            self.settings.value("ease_binary_path", DEFAULT_EASE_PATH)
-        )
-        self.gll_path_layout["input"].setText(
-            self.settings.value("gll_files_directory", DEFAULT_GLL_PATH)
-        )
-        self.output_path_layout["input"].setText(
-            self.settings.value(
-                "output_directory",
-                os.path.join(
-                    get_windows_documents_path(),
-                    "GLL2TXT_Output",
-                ),
-            )
-        )
-
         self.setLayout(layout)
 
-    def create_file_input_row(self, layout, label_text, select_method, default_path=""):
+    def browse_file(self, setting_name, input_field):
         """
-        Create a row with a label, input field, and browse button for file selection.
-
-        Args:
-            layout (QVBoxLayout): The layout to which this row is added.
-            label_text (str): The text for the label.
-            select_method (function): Method to call on browse button click.
-            default_path (str, optional): Default path for the input field. Defaults to "".
-
-        Returns:
-            dict: Containing the label, input field, and button widgets.
-        """
-        row_layout = QHBoxLayout()
-        label = QLabel(label_text)
-        input_field = QLineEdit()
-        input_field.setText(default_path)
-
-        # Add color highlighting based on file existence
-        self.update_path_highlight(input_field, default_path)
-
-        # Connect textChanged signal to update highlighting
-        input_field.textChanged.connect(
-            lambda: self.update_path_highlight(input_field, input_field.text())
-        )
-
-        browse_button = QPushButton("Browse")
-        browse_button.clicked.connect(select_method)
-
-        row_layout.addWidget(label)
-        row_layout.addWidget(input_field)
-        row_layout.addWidget(browse_button)
-        layout.addLayout(row_layout)
-
-        return {"label": label, "input": input_field, "button": browse_button}
-
-    def update_path_highlight(self, input_field, path):
-        """
-        Update input field color based on file/directory existence
-        Green if path exists, red if it doesn't
-        """
-        if not path:
-            # No path entered
-            input_field.setStyleSheet("QLineEdit { background-color: white; }")
-            return
-
-        # Check if path exists
-        exists = os.path.exists(path)
-
-        if exists:
-            # Path exists - green highlight
-            input_field.setStyleSheet(
-                "QLineEdit { "
-                "background-color: #90EE90; "  # Light green
-                "border: 1px solid green; "
-                "}"
-            )
-        else:
-            # Path does not exist - red highlight
-            input_field.setStyleSheet(
-                "QLineEdit { "
-                "background-color: #FFB6C1; "  # Light red
-                "border: 1px solid red; "
-                "}"
-            )
-
-    def create_dir_input_row(self, layout, label_text, select_method, default_path=""):
-        """
-        Create a row for directory input, reusing file input creation logic.
-
-        Args:
-            layout (QVBoxLayout): The layout to which this row is added.
-            label_text (str): The text for the label.
-            select_method (function): Method to call on browse button click.
-            default_path (str, optional): Default path for the input field. Defaults to "".
-
-        Returns:
-            dict: Containing the label, input field, and button widgets.
-        """
-        return self.create_file_input_row(
-            layout, label_text, select_method, default_path
-        )
-
-    def select_ease_binary(self):
-        """
-        Open file dialog to select Ease binary file and update the input field.
+        Open file dialog to select file and update the input field.
         """
         file_dialog = QFileDialog(self)
-        file_dialog.setWindowTitle("Select Ease Binary")
-        file_dialog.setNameFilter("Executable Files (*.exe);;All Files (*)")
+        file_dialog.setWindowTitle("Select File")
+        file_dialog.setNameFilter("All Files (*)")
         file_dialog.setFileMode(QFileDialog.ExistingFile)
         file_dialog.setViewMode(QFileDialog.Detail)
         file_dialog.setOption(QFileDialog.DontUseNativeDialog, True)  # Force Qt dialog
 
-        current_path = self.ease_path_layout["input"].text()
+        current_path = input_field.text()
         if current_path:
             file_dialog.setDirectory(os.path.dirname(current_path))
 
@@ -197,22 +128,22 @@ class SettingsDialog(QDialog):
                 selected_files = file_dialog.selectedFiles()
                 if selected_files:
                     file_path = selected_files[0]
-                    self.ease_path_layout["input"].setText(file_path)
+                    input_field.setText(file_path)
 
         file_dialog.finished.connect(handle_selection)
         file_dialog.open()
 
-    def select_gll_directory(self):
+    def browse_directory(self, setting_name, input_field):
         """
-        Open directory dialog to select GLL files directory and update the input field.
+        Open directory dialog to select directory and update the input field.
         """
         dir_dialog = QFileDialog(self)
-        dir_dialog.setWindowTitle("Select GLL Files Directory")
+        dir_dialog.setWindowTitle("Select Directory")
         dir_dialog.setFileMode(QFileDialog.Directory)
         dir_dialog.setOption(QFileDialog.ShowDirsOnly, True)
         dir_dialog.setOption(QFileDialog.DontUseNativeDialog, True)  # Force Qt dialog
 
-        current_path = self.gll_path_layout["input"].text()
+        current_path = input_field.text()
         if current_path:
             dir_dialog.setDirectory(current_path)
 
@@ -221,31 +152,7 @@ class SettingsDialog(QDialog):
                 selected_dirs = dir_dialog.selectedFiles()
                 if selected_dirs:
                     dir_path = selected_dirs[0]
-                    self.gll_path_layout["input"].setText(dir_path)
-
-        dir_dialog.finished.connect(handle_selection)
-        dir_dialog.open()
-
-    def select_output_directory(self):
-        """
-        Open directory dialog to select output directory and update the input field.
-        """
-        dir_dialog = QFileDialog(self)
-        dir_dialog.setWindowTitle("Select Output Directory")
-        dir_dialog.setFileMode(QFileDialog.Directory)
-        dir_dialog.setOption(QFileDialog.ShowDirsOnly, True)
-        dir_dialog.setOption(QFileDialog.DontUseNativeDialog, True)  # Force Qt dialog
-
-        current_path = self.output_path_layout["input"].text()
-        if current_path:
-            dir_dialog.setDirectory(current_path)
-
-        def handle_selection():
-            if dir_dialog.result() == QDialog.Accepted:
-                selected_dirs = dir_dialog.selectedFiles()
-                if selected_dirs:
-                    dir_path = selected_dirs[0]
-                    self.output_path_layout["input"].setText(dir_path)
+                    input_field.setText(dir_path)
 
         dir_dialog.finished.connect(handle_selection)
         dir_dialog.open()
@@ -256,13 +163,13 @@ class SettingsDialog(QDialog):
         """
         # Save paths
         self.settings.setValue(
-            "ease_binary_path", self.ease_path_layout["input"].text()
+            "ease_binary_path", self.findChild(QLineEdit, "ease_binary").text()
         )
         self.settings.setValue(
-            "gll_files_directory", self.gll_path_layout["input"].text()
+            "gll_files_directory", self.findChild(QLineEdit, "gll_directory").text()
         )
         self.settings.setValue(
-            "output_directory", self.output_path_layout["input"].text()
+            "output_directory", self.findChild(QLineEdit, "output_directory").text()
         )
 
         self.accept()

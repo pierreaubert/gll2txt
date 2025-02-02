@@ -1,0 +1,277 @@
+2025-02-02 08:31:20,077 - INFO - Starting GLL2TXT application
+2025-02-02 08:31:20,164 - INFO - Initializing main window
+2025-02-02 08:31:20,164 - DEBUG - Loading settings
+2025-02-02 08:31:20,165 - DEBUG - Initializing database
+2025-02-02 08:31:20,203 - DEBUG - Setting up UI layout
+2025-02-02 08:31:43,792 - DEBUG - Displaying initial information
+2025-02-02 08:31:43,794 - INFO - Main window initialization complete
+2025-02-02 08:31:43,798 - INFO - Main window initialized and shown
+2025-02-02 08:37:13,245 - INFO - Starting GLL2TXT application
+2025-02-02 08:37:13,309 - INFO - Initializing main window
+2025-02-02 08:37:13,309 - DEBUG - Loading settings
+2025-02-02 08:37:13,309 - DEBUG - Initializing database
+2025-02-02 08:37:13,310 - DEBUG - Setting up UI layout
+2025-02-02 08:37:13,409 - DEBUG - Displaying initial information
+2025-02-02 08:37:13,410 - INFO - Main window initialization complete
+2025-02-02 08:37:13,412 - INFO - Main window initialized and shown
+2025-02-02 08:37:28,206 - INFO - Application shutting down
+2025-02-02 08:37:28,206 - DEBUG - Disconnecting process manager signals
+2025-02-02 08:37:28,206 - DEBUG - Disconnecting database signals
+2025-02-02 08:37:28,207 - INFO - Cleanup complete
+2025-02-02 08:39:04,534 - INFO - Starting GLL2TXT application
+2025-02-02 08:39:04,584 - INFO - Initializing main window
+2025-02-02 08:39:04,584 - DEBUG - Loading settings
+2025-02-02 08:39:04,584 - DEBUG - Initializing database
+2025-02-02 08:39:04,586 - DEBUG - Setting up UI layout
+2025-02-02 08:39:04,683 - DEBUG - Displaying initial information
+2025-02-02 08:39:04,683 - INFO - Main window initialization complete
+2025-02-02 08:39:04,686 - INFO - Main window initialized and shown
+2025-02-02 08:39:13,401 - INFO - Application shutting down
+2025-02-02 08:39:13,401 - DEBUG - Disconnecting process manager signals
+2025-02-02 08:39:13,401 - DEBUG - Disconnecting database signals
+2025-02-02 08:39:13,402 - INFO - Cleanup complete
+2025-02-02 08:46:21,092 - INFO - Starting GLL2TXT application
+2025-02-02 08:46:21,142 - INFO - Initializing main window
+2025-02-02 08:46:21,142 - DEBUG - Loading settings
+2025-02-02 08:46:21,142 - DEBUG - Initializing database
+2025-02-02 08:46:21,144 - DEBUG - Setting up UI layout
+2025-02-02 08:46:21,241 - DEBUG - Displaying initial information
+2025-02-02 08:46:21,242 - ERROR - Failed to display initial information
+Traceback (most recent call last):
+  File "/Users/pierrre/src/gll2txt/./app.py", line 119, in __init__
+    self.display_initial_informations()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 177, in display_initial_informations
+    self.log_message(logging.INFO, msg)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 339, in log_message
+    level_txt = log_level_pretty(level)
+                ^^^^^^^^^^^^^^^^
+NameError: name 'log_level_pretty' is not defined
+2025-02-02 08:46:21,243 - ERROR - Failed to initialize UI
+Traceback (most recent call last):
+  File "/Users/pierrre/src/gll2txt/./app.py", line 119, in __init__
+    self.display_initial_informations()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 177, in display_initial_informations
+    self.log_message(logging.INFO, msg)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 339, in log_message
+    level_txt = log_level_pretty(level)
+                ^^^^^^^^^^^^^^^^
+NameError: name 'log_level_pretty' is not defined
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/pierrre/src/gll2txt/./app.py", line 125, in __init__
+    self.log_message(
+    ~~~~~~~~~~~~~~~~^
+        logging.ERROR,
+        ^^^^^^^^^^^^^^
+        f"Failed to display initial information: {str(e)}",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 339, in log_message
+    level_txt = log_level_pretty(level)
+                ^^^^^^^^^^^^^^^^
+NameError: name 'log_level_pretty' is not defined
+2025-02-02 08:46:21,244 - ERROR - Failed to initialize main window
+Traceback (most recent call last):
+  File "/Users/pierrre/src/gll2txt/./app.py", line 119, in __init__
+    self.display_initial_informations()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 177, in display_initial_informations
+    self.log_message(logging.INFO, msg)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 339, in log_message
+    level_txt = log_level_pretty(level)
+                ^^^^^^^^^^^^^^^^
+NameError: name 'log_level_pretty' is not defined
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/pierrre/src/gll2txt/./app.py", line 125, in __init__
+    self.log_message(
+    ~~~~~~~~~~~~~~~~^
+        logging.ERROR,
+        ^^^^^^^^^^^^^^
+        f"Failed to display initial information: {str(e)}",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 339, in log_message
+    level_txt = log_level_pretty(level)
+                ^^^^^^^^^^^^^^^^
+NameError: name 'log_level_pretty' is not defined
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/pierrre/src/gll2txt/./app.py", line 134, in __init__
+    raise RuntimeError("Failed to initialize user interface") from e
+RuntimeError: Failed to initialize user interface
+2025-02-02 08:46:21,244 - ERROR - Failed to initialize main window
+Traceback (most recent call last):
+  File "/Users/pierrre/src/gll2txt/./app.py", line 119, in __init__
+    self.display_initial_informations()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 177, in display_initial_informations
+    self.log_message(logging.INFO, msg)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 339, in log_message
+    level_txt = log_level_pretty(level)
+                ^^^^^^^^^^^^^^^^
+NameError: name 'log_level_pretty' is not defined
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/pierrre/src/gll2txt/./app.py", line 125, in __init__
+    self.log_message(
+    ~~~~~~~~~~~~~~~~^
+        logging.ERROR,
+        ^^^^^^^^^^^^^^
+        f"Failed to display initial information: {str(e)}",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 339, in log_message
+    level_txt = log_level_pretty(level)
+                ^^^^^^^^^^^^^^^^
+NameError: name 'log_level_pretty' is not defined
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/pierrre/src/gll2txt/./app.py", line 412, in main
+    main_window = MainWindow()
+  File "/Users/pierrre/src/gll2txt/./app.py", line 134, in __init__
+    raise RuntimeError("Failed to initialize user interface") from e
+RuntimeError: Failed to initialize user interface
+2025-02-02 08:46:21,245 - ERROR - Fatal error in main
+Traceback (most recent call last):
+  File "/Users/pierrre/src/gll2txt/./app.py", line 119, in __init__
+    self.display_initial_informations()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 177, in display_initial_informations
+    self.log_message(logging.INFO, msg)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 339, in log_message
+    level_txt = log_level_pretty(level)
+                ^^^^^^^^^^^^^^^^
+NameError: name 'log_level_pretty' is not defined
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/pierrre/src/gll2txt/./app.py", line 125, in __init__
+    self.log_message(
+    ~~~~~~~~~~~~~~~~^
+        logging.ERROR,
+        ^^^^^^^^^^^^^^
+        f"Failed to display initial information: {str(e)}",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 339, in log_message
+    level_txt = log_level_pretty(level)
+                ^^^^^^^^^^^^^^^^
+NameError: name 'log_level_pretty' is not defined
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/pierrre/src/gll2txt/./app.py", line 412, in main
+    main_window = MainWindow()
+  File "/Users/pierrre/src/gll2txt/./app.py", line 134, in __init__
+    raise RuntimeError("Failed to initialize user interface") from e
+RuntimeError: Failed to initialize user interface
+2025-02-02 08:46:21,245 - ERROR - Application crashed
+Traceback (most recent call last):
+  File "/Users/pierrre/src/gll2txt/./app.py", line 119, in __init__
+    self.display_initial_informations()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 177, in display_initial_informations
+    self.log_message(logging.INFO, msg)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 339, in log_message
+    level_txt = log_level_pretty(level)
+                ^^^^^^^^^^^^^^^^
+NameError: name 'log_level_pretty' is not defined
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/pierrre/src/gll2txt/./app.py", line 125, in __init__
+    self.log_message(
+    ~~~~~~~~~~~~~~~~^
+        logging.ERROR,
+        ^^^^^^^^^^^^^^
+        f"Failed to display initial information: {str(e)}",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 339, in log_message
+    level_txt = log_level_pretty(level)
+                ^^^^^^^^^^^^^^^^
+NameError: name 'log_level_pretty' is not defined
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/pierrre/src/gll2txt/./app.py", line 427, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 412, in main
+    main_window = MainWindow()
+  File "/Users/pierrre/src/gll2txt/./app.py", line 134, in __init__
+    raise RuntimeError("Failed to initialize user interface") from e
+RuntimeError: Failed to initialize user interface
+2025-02-02 08:47:52,995 - INFO - Starting GLL2TXT application
+2025-02-02 08:47:53,057 - INFO - Initializing main window
+2025-02-02 08:47:53,057 - DEBUG - Loading settings
+2025-02-02 08:47:53,057 - DEBUG - Initializing database
+2025-02-02 08:47:53,057 - DEBUG - Setting up UI layout
+2025-02-02 08:47:53,154 - DEBUG - Displaying initial information
+2025-02-02 08:47:53,155 - INFO - Main window initialization complete
+2025-02-02 08:47:53,158 - INFO - Main window initialized and shown
+2025-02-02 08:48:42,883 - INFO - Application shutting down
+2025-02-02 08:48:42,883 - DEBUG - Disconnecting process manager signals
+2025-02-02 08:48:42,883 - DEBUG - Disconnecting database signals
+2025-02-02 08:48:42,884 - INFO - Cleanup complete
+2025-02-02 09:07:24,763 - INFO - Starting GLL2TXT application
+2025-02-02 09:07:24,824 - INFO - Initializing main window
+2025-02-02 09:07:24,824 - DEBUG - Loading settings
+2025-02-02 09:07:24,824 - DEBUG - Initializing database
+2025-02-02 09:07:24,825 - DEBUG - Setting up UI layout
+2025-02-02 09:07:24,921 - DEBUG - Displaying initial information
+2025-02-02 09:07:24,921 - ERROR - Failed to display initial information
+Traceback (most recent call last):
+  File "/Users/pierrre/src/gll2txt/./app.py", line 120, in __init__
+    self.display_initial_informations()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/pierrre/src/gll2txt/./app.py", line 177, in display_initial_informations
+    for msg in oks:
+               ^^^
+TypeError: 'bool' object is not iterable
+2025-02-02 09:07:24,922 - INFO - Main window initialization complete
+2025-02-02 09:07:24,926 - INFO - Main window initialized and shown
+2025-02-02 09:08:58,458 - INFO - Application shutting down
+2025-02-02 09:08:58,458 - DEBUG - Disconnecting process manager signals
+2025-02-02 09:08:58,459 - DEBUG - Disconnecting database signals
+2025-02-02 09:08:58,459 - INFO - Cleanup complete
+2025-02-02 09:09:02,482 - INFO - Starting GLL2TXT application
+2025-02-02 09:09:02,544 - INFO - Initializing main window
+2025-02-02 09:09:02,544 - DEBUG - Loading settings
+2025-02-02 09:09:02,545 - DEBUG - Initializing database
+2025-02-02 09:09:02,545 - DEBUG - Setting up UI layout
+2025-02-02 09:09:02,641 - DEBUG - Displaying initial information
+2025-02-02 09:09:02,642 - INFO - Main window initialization complete
+2025-02-02 09:09:02,644 - INFO - Main window initialized and shown
+2025-02-02 09:09:44,926 - INFO - Application shutting down
+2025-02-02 09:09:44,927 - DEBUG - Disconnecting process manager signals
+2025-02-02 09:09:44,927 - DEBUG - Disconnecting database signals
+2025-02-02 09:09:44,927 - INFO - Cleanup complete
