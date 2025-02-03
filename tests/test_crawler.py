@@ -1,7 +1,6 @@
 """Tests for the crawler module."""
 
 import os
-import json
 import pytest
 from crawler import SpecificationCrawler, SpecData
 
@@ -64,8 +63,7 @@ def test_extract_specifications(crawler, mock_spec_pages):
     """Test specification extraction from content."""
     # Test Genelec 8341A
     specs = crawler.extract_specifications(
-        mock_spec_pages["Genelec 8341A"],
-        "https://www.genelec.com/8341a"
+        mock_spec_pages["Genelec 8341A"], "https://www.genelec.com/8341a"
     )
     assert isinstance(specs, SpecData)
     assert specs.sensitivity is not None
@@ -76,8 +74,7 @@ def test_extract_specifications(crawler, mock_spec_pages):
 
     # Test Neumann KH 80A
     specs = crawler.extract_specifications(
-        mock_spec_pages["Neumann KH 80A"],
-        "https://www.neumann.com/kh-80-dsp-a"
+        mock_spec_pages["Neumann KH 80A"], "https://www.neumann.com/kh-80-dsp-a"
     )
     assert isinstance(specs, SpecData)
     assert specs.sensitivity is not None
@@ -87,8 +84,7 @@ def test_extract_specifications(crawler, mock_spec_pages):
 
     # Test JBL 130A
     specs = crawler.extract_specifications(
-        mock_spec_pages["JBL 130A"],
-        "https://www.jblpro.com/130a"
+        mock_spec_pages["JBL 130A"], "https://www.jblpro.com/130a"
     )
     assert isinstance(specs, SpecData)
     assert specs.sensitivity is not None

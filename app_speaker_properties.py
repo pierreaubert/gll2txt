@@ -10,7 +10,6 @@ from PySide6.QtWidgets import (
     QLabel,
     QTextEdit,
 )
-import re
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 import asyncio
@@ -165,7 +164,7 @@ class SpeakerPropertiesDialog(QDialog):
 
         try:
             crawler = SpecificationCrawler()
-            
+
             # Search for specifications
             search_query = f"{self.speaker_name} speaker specifications technical data"
             self.log_message(f"Searching for: {search_query}")
@@ -186,7 +185,14 @@ class SpeakerPropertiesDialog(QDialog):
                     self.log_message("Content retrieved successfully")
                     spec_data = crawler.extract_specifications(content, result)
                     self.log_message("Extracted specifications:")
-                    for field in ["sensitivity", "impedance", "weight", "height", "width", "depth"]:
+                    for field in [
+                        "sensitivity",
+                        "impedance",
+                        "weight",
+                        "height",
+                        "width",
+                        "depth",
+                    ]:
                         value = getattr(spec_data, field)
                         if value is not None:
                             self.log_message(f"  - {field}: {value}")
@@ -210,7 +216,7 @@ class SpeakerPropertiesDialog(QDialog):
                     self.log_message(f"\nMultiple values found for {field}:")
                     for val, url in values:
                         self.log_message(f"  - {val} (from {url})")
-                    
+
                     dialog = SpecificationConflictDialog(
                         field, [v[0] for v in values], [v[1] for v in values], self
                     )

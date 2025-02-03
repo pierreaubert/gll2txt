@@ -210,16 +210,50 @@ class SpeakerDatabase(QObject):
                 session.delete(speaker)
                 session.commit()
 
+    def skip_speaker(self, gll_file: str, skip: bool) -> bool:
+        """
+        Update the skip flag for a speaker.
+
+        Args:
+            gll_file (str): Path to the GLL file
+            skip (bool): New skip flag value
+
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        try:
+            session = self.Session()
+            speaker = session.query(Speaker).filter_by(gll_file=gll_file).first()
+            if not speaker:
+                self.log_message(logging.ERROR, f"Speaker not found: {gll_file}")
+                return False
+
+            speaker.skip = skip
+            session.commit()
+
+            self.log_message(
+                logging.INFO, f"Updated skip flag for {gll_file} to {skip}"
+            )
+            return True
+
+        except Exception as e:
+            self.log_message(logging.ERROR, f"Error updating skip flag: {str(e)}")
+            session.rollback()
+            return False
+        finally:
+            session.close()
+
     def cleanup(self):
         """Clean up database resources"""
         try:
-            if hasattr(self, "Session"):
-                # Close all connections
-                self.Session.close_all()
-                if hasattr(self, "engine"):
-                    self.engine.dispose()
-                delattr(self, "Session")
-                delattr(self, "engine")
+            # Close all sessions
+            from sqlalchemy.orm import close_all_sessions
+
+            close_all_sessions()
+
+            # Dispose engine
+            if hasattr(self, "engine"):
+                self.engine.dispose()
         except Exception as e:
             self.log_message(logging.ERROR, f"Error during database cleanup: {str(e)}")
 

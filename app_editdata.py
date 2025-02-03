@@ -50,7 +50,9 @@ class MissingSpeakerDialog(QDialog):
                 logging.debug(f"No speaker data found for {gll_file}")
                 self.missing_gll_files.append(gll_file)
             else:
-                logging.debug(f"Found existing speaker data for {gll_file}: {speaker_data}")
+                logging.debug(
+                    f"Found existing speaker data for {gll_file}: {speaker_data}"
+                )
                 self.existing_speaker_data.append(
                     {
                         "gll_file": gll_file,
@@ -171,24 +173,24 @@ class MissingSpeakerDialog(QDialog):
         """Suggest a speaker name based on the GLL file path.
         The last directory in the path is the brand name and the file name (without extension) is the model name."""
         logging.debug(f"Suggesting speaker name for GLL file: {gll_file}")
-        
+
         # Get the directory path and file name
         path = os.path.dirname(gll_file)
         file_name = os.path.basename(gll_file)
         logging.debug(f"Path: {path}, File name: {file_name}")
-        
+
         # Get the brand name (last directory in path)
         brand = os.path.basename(path)
         logging.debug(f"Brand name (from last directory): {brand}")
-        
+
         # Get the model name (file name without .GLL extension)
         model = os.path.splitext(file_name)[0]
         logging.debug(f"Model name (without extension): {model}")
-        
+
         # Combine brand and model
         suggested_name = f"{brand} {model}"
         logging.debug(f"Suggested speaker name: {suggested_name}")
-        
+
         return suggested_name
 
     def update_existing_table(self):
@@ -446,39 +448,37 @@ class MissingSpeakerDialog(QDialog):
     def edit_missing_properties(self, row):
         """Open dialog to edit properties for a missing speaker"""
         logging.debug(f"Opening properties dialog for missing speaker at row {row}")
-        
+
         gll_file = self.missing_gll_files[row]
         speaker_name = self.missing_table.cellWidget(row, 1).text()
         logging.debug(f"GLL file: {gll_file}, Current speaker name: {speaker_name}")
         logging.debug(f"Current properties: {self.missing_properties[row]}")
-        
+
         try:
             # Create a dialog with current properties
             dialog = SpeakerPropertiesDialog(
                 self.missing_properties[row],  # Pass current properties
                 speaker_name,
-                self
+                self,
             )
             logging.debug("Created SpeakerPropertiesDialog")
-            
+
             result = dialog.exec()
             logging.debug(f"Dialog result: {result}")
-            
+
             if result == QDialog.Accepted:
                 # Store the properties
                 new_properties = dialog.get_properties()
                 self.missing_properties[row] = new_properties
-                logging.debug(f"Updated properties for missing speaker {speaker_name}: {new_properties}")
+                logging.debug(
+                    f"Updated properties for missing speaker {speaker_name}: {new_properties}"
+                )
             else:
                 logging.debug("Properties dialog was cancelled")
-                
+
         except Exception as e:
             logging.error(f"Error in edit_missing_properties: {str(e)}", exc_info=True)
-            QMessageBox.warning(
-                self,
-                "Error",
-                f"Failed to edit properties: {str(e)}"
-            )
+            QMessageBox.warning(self, "Error", f"Failed to edit properties: {str(e)}")
 
     def save_all_changes(self):
         """Save changes for both missing and existing speaker data"""
