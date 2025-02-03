@@ -9,7 +9,7 @@ from app_settings import SettingsDialog
 @pytest.fixture
 def settings():
     """Create test settings"""
-    settings = QSettings()
+    settings = QSettings("GLL2TXT", "Test")
     settings.clear()
     return settings
 
@@ -32,7 +32,7 @@ def test_save_settings(dialog, temp_dir):
     assert gll_dir is not None
     gll_dir.setText(str(temp_dir))
 
-    dialog.accept()
+    dialog.save_settings()
 
     # Verify settings are saved
     assert dialog.settings.value("gll_files_directory") == str(temp_dir)

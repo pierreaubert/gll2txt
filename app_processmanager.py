@@ -62,7 +62,10 @@ class ProcessManager(QObject):
         for ext in [".GLL", ".gll"]:
             gll_paths = list(gll_path.rglob(f"*{ext}"))
             print(gll_paths)
-            self.log_message("found %d gll files", len(gll_paths))
+            self.log_message(
+                logging.INFO,
+                f"Found {len(gll_paths)} GLL files with extension {ext}",
+            )
             gll_files.extend(gll_paths)
 
         # Convert paths to strings using os.fspath() for cross-platform compatibility
@@ -74,17 +77,21 @@ class ProcessManager(QObject):
 
         if total_files == 0:
             self.log_message(
-                logging.WARNING, "No GLL files found in the specified directory."
+                logging.WARNING,
+                "No GLL files found in the specified directory.",
             )
             self.process_complete_signal.emit(False)
             return
 
-        self.log_message(logging.INFO, f"Found {total_files} GLL files.")
+        self.log_message(
+            logging.INFO,
+            f"Found {total_files} GLL files.",
+        )
 
         # Process each GLL file
         self.log_message(
             logging.INFO,
-            f" Processing {total_files} GLL files, output will be saved to {self.settings.value('output_directory')}.",
+            f"Processing {total_files} GLL files, output will be saved to {self.settings.value('output_directory')}.",
         )
         missing_speaker_files = []
         for index, gll_file in enumerate(gll_files, 1):
@@ -99,34 +106,39 @@ class ProcessManager(QObject):
                 continue
 
             speaker_name = speaker_data["speaker_name"]
-            config_files = speaker_data["config_files"]
-
-            try:
-                # Call the imported extract_speaker function
+            if speaker_data.get("skip", False):
                 self.log_message(
-                    logging.INFO, f" Processing: {speaker_name} / {gll_file}"
+                    logging.INFO,
+                    f"Skipping {speaker_name} ({input_path})",
                 )
-                gll_extract_speaker(
-                    output_dir=self.settings.value("output_directory"),
-                    speaker_name=speaker_name,
-                    gll_file=input_path,
-                    config_file=config_files[0] if config_files else None,
-                )
+                continue
 
-                self.log_message(logging.INFO, f" Processed: {gll_file}")
-
-                # Update progress
-                progress = int((index / total_files) * 100)
-                self.progress_signal.emit(progress)
-
+            # Extract speaker data
+            try:
+                result = gll_extract_speaker(input_path)
+                if result:
+                    self.log_message(
+                        logging.INFO,
+                        f"Successfully processed {speaker_name} ({input_path})",
+                    )
+                else:
+                    self.log_message(
+                        logging.ERROR,
+                        f"Failed to process {speaker_name} ({input_path})",
+                    )
             except Exception as e:
                 self.log_message(
-                    logging.INFO, f" Unexpected error processing {gll_file}: {str(e)}"
+                    logging.ERROR,
+                    f"Error processing {speaker_name} ({input_path}): {str(e)}",
                 )
 
+            # Update progress
+            progress = int((index / total_files) * 100)
+            self.progress_signal.emit(progress)
+
+        # If there are missing speaker files, emit signal
         if missing_speaker_files:
             self.speaker_data_required_signal.emit(missing_speaker_files)
+            self.process_complete_signal.emit(False)
         else:
-            self.log_message(logging.INFO, "Batch processing complete.")
-            self.progress_signal.emit(100)
             self.process_complete_signal.emit(True)

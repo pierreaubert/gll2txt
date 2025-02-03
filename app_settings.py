@@ -145,39 +145,31 @@ class SettingsDialog(QDialog):
         """
         Open directory dialog to select directory and update the input field.
         """
-        dir_dialog = QFileDialog(self)
-        dir_dialog.setWindowTitle("Select Directory")
-        dir_dialog.setFileMode(QFileDialog.Directory)
-        dir_dialog.setOption(QFileDialog.ShowDirsOnly, True)
-        dir_dialog.setOption(QFileDialog.DontUseNativeDialog, True)  # Force Qt dialog
-
-        current_path = input_field.text()
-        if current_path:
-            dir_dialog.setDirectory(current_path)
-
-        def handle_selection():
-            if dir_dialog.result() == QDialog.Accepted:
-                selected_dirs = dir_dialog.selectedFiles()
-                if selected_dirs:
-                    dir_path = selected_dirs[0]
-                    input_field.setText(dir_path)
-
-        dir_dialog.finished.connect(handle_selection)
-        dir_dialog.open()
+        selected_dir = QFileDialog.getExistingDirectory(
+            self,
+            "Select Directory",
+            input_field.text() or "",
+            QFileDialog.ShowDirsOnly | QFileDialog.DontUseNativeDialog,
+        )
+        if selected_dir:
+            input_field.setText(selected_dir)
 
     def save_settings(self):
         """
         Save current settings using QSettings for persistent storage.
         """
         # Save paths
-        self.settings.setValue(
-            "ease_binary_path", self.findChild(QLineEdit, "ease_binary").text()
-        )
-        self.settings.setValue(
-            "gll_files_directory", self.findChild(QLineEdit, "gll_directory").text()
-        )
-        self.settings.setValue(
-            "output_directory", self.findChild(QLineEdit, "output_directory").text()
-        )
+        ease_binary = self.findChild(QLineEdit, "ease_binary")
+        if ease_binary:
+            self.settings.setValue("ease_binary_path", ease_binary.text())
 
+        gll_directory = self.findChild(QLineEdit, "gll_directory")
+        if gll_directory:
+            self.settings.setValue("gll_files_directory", gll_directory.text())
+
+        output_directory = self.findChild(QLineEdit, "output_directory")
+        if output_directory:
+            self.settings.setValue("output_directory", output_directory.text())
+
+        self.settings.sync()  # Force sync to ensure settings are saved
         self.accept()

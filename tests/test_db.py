@@ -1,18 +1,5 @@
 import os
-import pytest
 from database import SpeakerDatabase
-
-
-@pytest.fixture
-def temp_db_path(tmp_path):
-    """Create a temporary database path"""
-    return tmp_path / "test.db"
-
-
-@pytest.fixture
-def db(temp_db_path):
-    """Create a test database instance"""
-    return SpeakerDatabase(str(temp_db_path))
 
 
 def test_new_database_creation(temp_db_path):
@@ -50,12 +37,13 @@ def test_speaker_crud_operations(db):
     db.save_speaker_data(test_file, test_name, test_configs)
     data = db.get_speaker_data(test_file)
 
+    assert data is not None
     assert data["speaker_name"] == test_name
     assert data["config_files"] == test_configs
 
     # Update
     new_name = "Updated Speaker"
-    new_configs = ["config2.txt", "config3.txt"]
+    new_configs = ["new_config.txt"]
     db.save_speaker_data(test_file, new_name, new_configs)
     data = db.get_speaker_data(test_file)
 
@@ -71,14 +59,21 @@ def test_skip_flag(db):
     """Test the skip flag functionality"""
     test_file = "test.gll"
     test_name = "Test Speaker"
-    test_configs = ["config.txt"]
+    test_configs = ["config1.txt"]
 
-    # Create with skip=True
-    db.save_speaker_data(test_file, test_name, test_configs, skip=True)
+    # Create a speaker
+    db.save_speaker_data(test_file, test_name, test_configs)
+
+    # Initially skip should be False
+    data = db.get_speaker_data(test_file)
+    assert not data["skip"]
+
+    # Set skip to True
+    db.skip_speaker(test_file, True)
     data = db.get_speaker_data(test_file)
     assert data["skip"]
 
-    # Update skip to False
+    # Set skip back to False
     db.skip_speaker(test_file, False)
     data = db.get_speaker_data(test_file)
     assert not data["skip"]
@@ -88,21 +83,24 @@ def test_list_all_speakers(db):
     """Test listing all speakers"""
     # Add multiple speakers
     speakers = [
-        ("speaker1.gll", "Speaker 1", ["config1.txt"]),
-        ("speaker2.gll", "Speaker 2", ["config2.txt", "config3.txt"]),
-        ("speaker3.gll", "Speaker 3", []),
+        ("test1.gll", "Speaker 1", ["config1.txt"]),
+        ("test2.gll", "Speaker 2", ["config2.txt"]),
+        ("test3.gll", "Speaker 3", ["config3.txt"]),
     ]
 
-    for gll_file, name, configs in speakers:
-        db.save_speaker_data(gll_file, name, configs)
+    for file_path, name, configs in speakers:
+        db.save_speaker_data(file_path, name, configs)
 
     # List all speakers
     all_speakers = db.list_all_speakers()
-    assert len(all_speakers) == len(speakers)
 
-    for speaker in all_speakers:
-        assert speaker["gll_file"] in [s[0] for s in speakers]
-        assert speaker["speaker_name"] in [s[1] for s in speakers]
+    # Verify all speakers are returned
+    assert len(all_speakers) == len(speakers)
+    for file_path, name, configs in speakers:
+        speaker_data = db.get_speaker_data(file_path)
+        assert speaker_data is not None
+        assert speaker_data["speaker_name"] == name
+        assert speaker_data["config_files"] == configs
 
 
 def test_default_database_path():

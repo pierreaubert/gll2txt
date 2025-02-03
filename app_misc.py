@@ -12,7 +12,7 @@ except ModuleNotFoundError:
     WINDOWS = False
 
 
-def get_windows_documents_path() -> Path:
+def get_windows_documents_path() -> str:
     """
     Retrieve the user's Documents folder path on Windows
     """
@@ -28,12 +28,12 @@ def get_windows_documents_path() -> Path:
             documents_path = winreg.QueryValueEx(key, "Personal")[0]
 
             winreg.CloseKey(key)
-            return Path(documents_path)
+            return str(documents_path)
         except Exception:
             # Fallback to a default path if retrieval fails
             sys.exit("Failed to get home directory")
 
-    return Path(os.path.expanduser("~")) / "Documents"
+    return str(Path(os.path.expanduser("~")) / "Documents")
 
 
 # Default paths
@@ -47,9 +47,9 @@ def create_default_settings() -> QSettings:
     if not settings.value("ease_binary_path"):
         settings.setValue("ease_binary_path", DEFAULT_EASE_PATH)
     if not settings.value("gll_files_directory"):
-        settings.setValue("gll_files_directory", get_windows_documents_path() / "GLL")
+        settings.setValue("gll_files_directory", get_windows_documents_path() + "/GLL")
     if not settings.value("output_directory"):
-        settings.setValue("output_directory", get_windows_documents_path() / "GLL")
+        settings.setValue("output_directory", get_windows_documents_path() + "/GLL")
     return settings
 
 

@@ -110,11 +110,12 @@ class SpeakerDatabase(QObject):
         depth=None,
     ):
         """Save speaker data to database"""
+        session = self.Session()
         try:
-            session = self.Session()
             speaker = session.query(Speaker).filter_by(gll_file=gll_file).first()
             if not speaker:
                 speaker = Speaker(gll_file=gll_file)
+                session.add(speaker)
 
             speaker.speaker_name = speaker_name
             speaker.skip = skip
@@ -131,13 +132,11 @@ class SpeakerDatabase(QObject):
                 speaker.config_files = []
                 # Add new config files
                 for file_path in config_files:
-                    config_file = ConfigFile(file_path=file_path, speaker=speaker)
+                    config_file = ConfigFile(file_path=file_path)
                     speaker.config_files.append(config_file)
+                    session.add(config_file)
 
-            if speaker not in session:
-                session.add(speaker)
             session.commit()
-
             self.log_message(logging.INFO, f"Saved speaker data for {gll_file}")
             return True
 
@@ -270,6 +269,6 @@ class SpeakerDatabase(QObject):
         """Cleanup engine on object destruction"""
         try:
             self.cleanup()
-        except:
+        except Exception:
             # Suppress errors during deletion
             pass

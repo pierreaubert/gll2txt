@@ -1,24 +1,31 @@
 import pytest
 
 from PySide6.QtCore import Qt, QSettings
-from PySide6.QtWidgets import QTableWidget, QCheckBox, QTableWidgetItem
+from PySide6.QtWidgets import (
+    QTableWidget,
+    QCheckBox,
+    QTableWidgetItem,
+    QLineEdit,
+    QWidget,
+    QHBoxLayout,
+)
 
 from app_editdata import MissingSpeakerDialog
-from database import SpeakerDatabase
 
 
 @pytest.fixture
-def settings():
+def settings(temp_dir):
     """Create test settings"""
     settings = QSettings()
     settings.clear()
+    settings.setValue("database_path", str(temp_dir / "test.db"))
+    settings.setValue("gll_files_directory", str(temp_dir))
     return settings
 
 
 @pytest.fixture
 def dialog(qapp, gll_files, settings, temp_dir):
     """Create MissingSpeakerDialog instance"""
-    settings.setValue("gll_files_directory", str(temp_dir))
     return MissingSpeakerDialog(gll_files, settings)
 
 
@@ -32,8 +39,10 @@ def test_dialog_init(dialog, gll_files):
 def test_update_existing_table(dialog, temp_dir):
     """Test updating existing speakers table"""
     # Add a test speaker to the database
-    db = SpeakerDatabase(str(temp_dir / "test.db"))
-    db.save_speaker_data("test.GLL", "Test Speaker", ["config.txt"])
+    dialog.speaker_db.save_speaker_data("test.GLL", "Test Speaker", ["config.txt"])
+
+    # Add the GLL file to missing files
+    dialog.missing_gll_files.append("test.GLL")
 
     dialog.update_existing_table()
     table = dialog.findChild(QTableWidget, "existing_table")
@@ -50,50 +59,72 @@ def test_add_config_files(dialog, temp_dir):
         file_path.touch()
         config_files.append(str(file_path))
 
-    table = QTableWidget()
-    table.setRowCount(1)
-    table.setColumnCount(3)
+    # Add a test speaker to the database
+    dialog.speaker_db.save_speaker_data("test.GLL", "Test Speaker", [])
 
-    dialog.add_config_files(0, table)
+    # Add the GLL file to missing files
+    dialog.missing_gll_files.append("test.GLL")
+    dialog.missing_table.setRowCount(1)
+    dialog.missing_table.setItem(0, 0, QTableWidgetItem("test.GLL"))
+
+    # Add config files
+    dialog.add_config_files(0, is_missing=True)
 
     # Verify config files can be added
-    assert table.cellWidget(0, 1) is not None
+    config_btn = dialog.missing_table.cellWidget(0, 2)
+    assert config_btn is not None
+    assert config_btn.text() == "Add Config Files"
 
 
 def test_save_all_changes(dialog, temp_dir):
     """Test saving all changes"""
-    # Add a test speaker to the database
-    db = SpeakerDatabase(str(temp_dir / "test.db"))
-    dialog.speaker_db = db
+    # Add the GLL file to missing files
+    dialog.missing_gll_files.append("test.GLL")
+    dialog.missing_table.setRowCount(1)
+    dialog.missing_table.setItem(0, 0, QTableWidgetItem("test.GLL"))
 
     # Set test data
-    missing_table = dialog.findChild(QTableWidget, "missing_table")
-    assert missing_table is not None
-    missing_table.setRowCount(1)
-    missing_table.setItem(0, 0, QTableWidgetItem("test.GLL"))
-    missing_table.setItem(0, 1, QTableWidgetItem("Test Speaker"))
+    speaker_input = QLineEdit()
+    speaker_input.setText("Test Speaker")
+    dialog.missing_table.setCellWidget(0, 1, speaker_input)
 
     dialog.save_all_changes()
 
     # Verify data was saved
-    data = db.get_speaker_data("test.GLL")
+    data = dialog.speaker_db.get_speaker_data("test.GLL")
     assert data is not None
     assert data["speaker_name"] == "Test Speaker"
 
 
 def test_on_skip_changed(dialog, temp_dir):
     """Test skip checkbox handling"""
-    # Add a test speaker to the database
-    db = SpeakerDatabase(str(temp_dir / "test.db"))
-    dialog.speaker_db = db
+    # Add the GLL file to missing files
+    dialog.missing_gll_files.append("test.GLL")
+    dialog.missing_table.setRowCount(1)
+    dialog.missing_table.setItem(0, 0, QTableWidgetItem("test.GLL"))
 
-    # Create a test checkbox
-    checkbox = QCheckBox()
-    checkbox.setChecked(True)
+    # Set up the skip checkbox
+    skip_checkbox = QCheckBox()
+    skip_checkbox.setChecked(True)
+    skip_cell_widget = QWidget()
+    skip_layout = QHBoxLayout(skip_cell_widget)
+    skip_layout.addWidget(skip_checkbox)
+    skip_layout.setAlignment(Qt.AlignCenter)
+    skip_layout.setContentsMargins(0, 0, 0, 0)
+    dialog.missing_table.setCellWidget(0, 4, skip_cell_widget)
 
+    # Set test data
+    speaker_input = QLineEdit()
+    speaker_input.setText("Test Speaker")
+    dialog.missing_table.setCellWidget(0, 1, speaker_input)
+
+    # Trigger skip change
     dialog.on_missing_skip_changed(0, Qt.Checked)
 
+    # Save changes
+    dialog.save_all_changes()
+
     # Verify skip status is updated in the database
-    data = db.get_speaker_data("test.GLL")
+    data = dialog.speaker_db.get_speaker_data("test.GLL")
     assert data is not None
     assert data["skip"]

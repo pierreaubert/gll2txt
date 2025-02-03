@@ -1527,3 +1527,27 @@ NameError: name 'QHBoxLayout' is not defined. Did you mean: 'QVBoxLayout'?
 2025-02-03 09:08:44,367 - DEBUG - Disconnecting database signals
 2025-02-03 09:08:44,368 - DEBUG - Cleaning up database
 2025-02-03 09:08:44,369 - INFO - Cleanup complete
+2025-02-03 11:28:49,248 - INFO - Starting GLL2TXT application
+2025-02-03 11:28:49,317 - INFO - Initializing main window
+2025-02-03 11:28:49,317 - DEBUG - Loading settings
+2025-02-03 11:28:49,318 - DEBUG - Initializing database
+2025-02-03 11:28:49,318 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 11:28:49,318 - DEBUG - Creating database engine
+2025-02-03 11:28:49,324 - DEBUG - Creating database tables
+2025-02-03 11:28:49,324 - INFO - Created tables: speakers, config_files
+2025-02-03 11:28:49,324 - DEBUG - Verified table exists: speakers
+2025-02-03 11:28:49,324 - DEBUG - Verified table exists: config_files
+2025-02-03 11:28:49,325 - DEBUG - Setting up UI layout
+2025-02-03 11:28:49,426 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 11:28:49,426 - DEBUG - Creating database engine
+2025-02-03 11:28:49,426 - DEBUG - Creating database tables
+2025-02-03 11:28:49,427 - INFO - Created tables: speakers, config_files
+2025-02-03 11:28:49,427 - DEBUG - Verified table exists: speakers
+2025-02-03 11:28:49,427 - DEBUG - Verified table exists: config_files
+2025-02-03 11:28:49,427 - DEBUG - Displaying initial information
+2025-02-03 11:28:49,427 - INFO - Main window initialization complete
+2025-02-03 11:28:49,429 - INFO - Main window initialized and shown
+2025-02-03 11:28:53,488 - INFO - Application shutting down
+2025-02-03 11:28:53,488 - DEBUG - Disconnecting database signals
+2025-02-03 11:28:53,489 - DEBUG - Cleaning up database
+2025-02-03 11:28:53,490 - INFO - Cleanup complete
