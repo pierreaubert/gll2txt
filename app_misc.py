@@ -1,4 +1,6 @@
+from pathlib import Path
 import os
+import sys
 from typing import Tuple, List
 
 from PySide6.QtCore import QSettings
@@ -10,31 +12,32 @@ except ModuleNotFoundError:
     WINDOWS = False
 
 
-def get_windows_documents_path() -> str:
+def get_windows_documents_path() -> Path:
     """
     Retrieve the user's Documents folder path on Windows
     """
-    try:
-        # Open the key for the current user's shell folders
-        key = winreg.OpenKey(
-            winreg.HKEY_CURRENT_USER,
-            r"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders",
-        )
+    if WINDOWS:
+        try:
+            # Open the key for the current user's shell folders
+            key = winreg.OpenKey(
+                winreg.HKEY_CURRENT_USER,
+                r"Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders",
+            )
 
-        # Retrieve the path to the personal (Documents) folder
-        documents_path = winreg.QueryValueEx(key, "Personal")[0]
+            # Retrieve the path to the personal (Documents) folder
+            documents_path = winreg.QueryValueEx(key, "Personal")[0]
 
-        winreg.CloseKey(key)
-        return documents_path
-    except Exception:
-        # Fallback to a default path if retrieval fails
-        pass
-    return os.path.join(os.path.expanduser("~"), "Documents")
+            winreg.CloseKey(key)
+            return Path(documents_path)
+        except Exception:
+            # Fallback to a default path if retrieval fails
+            sys.exit("Failed to get home directory")
+
+    return Path(os.path.expanduser("~")) / "Documents"
 
 
 # Default paths
 DEFAULT_EASE_PATH = r"C:\Program Files (x86)\AFMG\EASE GLLViewer\EASE GLLViewer.exe"
-DEFAULT_GLL_PATH = r"Z:\GLL"
 
 
 def create_default_settings() -> QSettings:
@@ -44,12 +47,9 @@ def create_default_settings() -> QSettings:
     if not settings.value("ease_binary_path"):
         settings.setValue("ease_binary_path", DEFAULT_EASE_PATH)
     if not settings.value("gll_files_directory"):
-        settings.setValue("gll_files_directory", DEFAULT_GLL_PATH)
+        settings.setValue("gll_files_directory", get_windows_documents_path() / "GLL")
     if not settings.value("output_directory"):
-        settings.setValue(
-            "output_directory",
-            os.path.join(get_windows_documents_path(), "GLL2TXT_Output"),
-        )
+        settings.setValue("output_directory", get_windows_documents_path() / "GLL")
     return settings
 
 
@@ -71,7 +71,12 @@ def validate_settings(settings: QSettings) -> Tuple[bool, List[str]]:
     if not ease_binary:
         errors.append("Ease binary path is not set! Go to Settings!")
     elif not os.path.exists(ease_binary):
-        errors.append(f"Invalid Ease binary path: {ease_binary}")
+        if WINDOWS:
+            errors.append(f"Invalid Ease binary path: {ease_binary}")
+        else:
+            errors.append(
+                "Cannot run Ease since you are not on Windows! Other parts of the application are working."
+            )
 
     if not gll_dir:
         errors.append("GLL files directory is not set! Go to Settings!")

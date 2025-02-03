@@ -688,3 +688,818 @@ RuntimeError: Failed to initialize database
 2025-02-02 10:49:36,966 - DEBUG - Disconnecting database signals
 2025-02-02 10:49:36,966 - DEBUG - Cleaning up database
 2025-02-02 10:49:36,966 - INFO - Cleanup complete
+2025-02-02 11:13:20,987 - INFO - Starting GLL2TXT application
+2025-02-02 11:13:21,003 - INFO - Initializing main window
+2025-02-02 11:13:21,003 - DEBUG - Loading settings
+2025-02-02 11:13:21,003 - DEBUG - Initializing database
+2025-02-02 11:13:21,003 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 11:13:21,003 - DEBUG - Creating database engine
+2025-02-02 11:13:21,018 - DEBUG - Creating database tables
+2025-02-02 11:13:21,034 - INFO - Created tables: speakers, config_files
+2025-02-02 11:13:21,034 - DEBUG - Verified table exists: speakers
+2025-02-02 11:13:21,034 - DEBUG - Verified table exists: config_files
+2025-02-02 11:13:21,034 - DEBUG - Setting up UI layout
+2025-02-02 11:13:21,081 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 11:13:21,081 - DEBUG - Creating database engine
+2025-02-02 11:13:21,081 - DEBUG - Creating database tables
+2025-02-02 11:13:21,081 - INFO - Created tables: speakers, config_files
+2025-02-02 11:13:21,081 - DEBUG - Verified table exists: speakers
+2025-02-02 11:13:21,096 - DEBUG - Verified table exists: config_files
+2025-02-02 11:13:21,096 - DEBUG - Displaying initial information
+2025-02-02 11:13:21,096 - INFO - Main window initialization complete
+2025-02-02 11:13:21,096 - INFO - Main window initialized and shown
+2025-02-02 11:14:27,984 - DEBUG - Using database path: C:\Users\pierre\Documents\GLL2TXT_Speakers.db
+2025-02-02 11:14:27,984 - DEBUG - Creating database engine
+2025-02-02 11:14:27,984 - DEBUG - Creating database tables
+2025-02-02 11:14:27,984 - INFO - Created tables: speakers, config_files
+2025-02-02 11:14:27,984 - DEBUG - Verified table exists: speakers
+2025-02-02 11:14:27,984 - DEBUG - Verified table exists: config_files
+2025-02-02 11:14:28,000 - ERROR - Error getting speaker data: (sqlite3.OperationalError) no such column: speakers.sensitivity
+[SQL: SELECT speakers.gll_file AS speakers_gll_file, speakers.speaker_name AS speakers_speaker_name, speakers.skip AS speakers_skip, speakers.sensitivity AS speakers_sensitivity, speakers.impedance AS speakers_impedance, speakers.weight AS speakers_weight, speakers.height AS speakers_height, speakers.width AS speakers_width, speakers.depth AS speakers_depth 
+FROM speakers 
+WHERE speakers.gll_file = ?
+ LIMIT ? OFFSET ?]
+[parameters: ('C:\\Users\\pierre\\gll\\X12I.gll', 1, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-02-02 11:14:28,000 - ERROR - Error getting speaker data: (sqlite3.OperationalError) no such column: speakers.sensitivity
+[SQL: SELECT speakers.gll_file AS speakers_gll_file, speakers.speaker_name AS speakers_speaker_name, speakers.skip AS speakers_skip, speakers.sensitivity AS speakers_sensitivity, speakers.impedance AS speakers_impedance, speakers.weight AS speakers_weight, speakers.height AS speakers_height, speakers.width AS speakers_width, speakers.depth AS speakers_depth 
+FROM speakers 
+WHERE speakers.gll_file = ?
+ LIMIT ? OFFSET ?]
+[parameters: ('C:\\Users\\pierre\\gll\\X15T_PSOURCE_00.gll', 1, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-02-02 11:14:40,296 - ERROR - Error saving speaker data: (sqlite3.OperationalError) no such column: speakers.sensitivity
+[SQL: SELECT speakers.gll_file AS speakers_gll_file, speakers.speaker_name AS speakers_speaker_name, speakers.skip AS speakers_skip, speakers.sensitivity AS speakers_sensitivity, speakers.impedance AS speakers_impedance, speakers.weight AS speakers_weight, speakers.height AS speakers_height, speakers.width AS speakers_width, speakers.depth AS speakers_depth 
+FROM speakers 
+WHERE speakers.gll_file = ?
+ LIMIT ? OFFSET ?]
+[parameters: ('C:\\Users\\pierre\\gll\\X12I.gll', 1, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-02-02 11:14:40,296 - ERROR - Error saving speaker data: (sqlite3.OperationalError) no such column: speakers.sensitivity
+[SQL: SELECT speakers.gll_file AS speakers_gll_file, speakers.speaker_name AS speakers_speaker_name, speakers.skip AS speakers_skip, speakers.sensitivity AS speakers_sensitivity, speakers.impedance AS speakers_impedance, speakers.weight AS speakers_weight, speakers.height AS speakers_height, speakers.width AS speakers_width, speakers.depth AS speakers_depth 
+FROM speakers 
+WHERE speakers.gll_file = ?
+ LIMIT ? OFFSET ?]
+[parameters: ('C:\\Users\\pierre\\gll\\X15T_PSOURCE_00.gll', 1, 0)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2025-02-02 11:14:57,124 - INFO - Application shutting down
+2025-02-02 11:14:57,124 - DEBUG - Disconnecting database signals
+2025-02-02 11:14:57,124 - DEBUG - Cleaning up database
+2025-02-02 11:14:57,124 - INFO - Cleanup complete
+2025-02-03 06:04:38,943 - INFO - Starting GLL2TXT application
+2025-02-03 06:04:39,060 - INFO - Initializing main window
+2025-02-03 06:04:39,061 - DEBUG - Loading settings
+2025-02-03 06:04:39,062 - DEBUG - Initializing database
+2025-02-03 06:04:39,062 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:04:39,062 - DEBUG - Creating database engine
+2025-02-03 06:04:39,083 - DEBUG - Creating database tables
+2025-02-03 06:04:39,085 - INFO - Created tables: speakers, config_files
+2025-02-03 06:04:39,085 - DEBUG - Verified table exists: speakers
+2025-02-03 06:04:39,086 - DEBUG - Verified table exists: config_files
+2025-02-03 06:04:39,086 - DEBUG - Setting up UI layout
+2025-02-03 06:04:39,255 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:04:39,256 - DEBUG - Creating database engine
+2025-02-03 06:04:39,256 - DEBUG - Creating database tables
+2025-02-03 06:04:39,256 - INFO - Created tables: speakers, config_files
+2025-02-03 06:04:39,256 - DEBUG - Verified table exists: speakers
+2025-02-03 06:04:39,257 - DEBUG - Verified table exists: config_files
+2025-02-03 06:04:39,257 - DEBUG - Displaying initial information
+2025-02-03 06:04:39,260 - INFO - Main window initialization complete
+2025-02-03 06:04:39,263 - INFO - Main window initialized and shown
+2025-02-03 06:07:12,173 - ERROR - Uncaught exception
+Traceback (most recent call last):
+  File "/Users/pierrre/Downloads/GLL/gll2txt/./app.py", line 222, in open_speaker_management
+    def open_speaker_management(self):
+    
+KeyboardInterrupt
+2025-02-03 06:07:20,922 - INFO - Application shutting down
+2025-02-03 06:07:20,922 - DEBUG - Disconnecting database signals
+2025-02-03 06:07:20,922 - DEBUG - Cleaning up database
+2025-02-03 06:07:20,923 - INFO - Cleanup complete
+2025-02-03 06:07:24,330 - INFO - Starting GLL2TXT application
+2025-02-03 06:07:24,403 - INFO - Initializing main window
+2025-02-03 06:07:24,404 - DEBUG - Loading settings
+2025-02-03 06:07:24,404 - DEBUG - Initializing database
+2025-02-03 06:07:24,404 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:07:24,404 - DEBUG - Creating database engine
+2025-02-03 06:07:24,414 - DEBUG - Creating database tables
+2025-02-03 06:07:24,415 - INFO - Created tables: speakers, config_files
+2025-02-03 06:07:24,415 - DEBUG - Verified table exists: speakers
+2025-02-03 06:07:24,415 - DEBUG - Verified table exists: config_files
+2025-02-03 06:07:24,415 - DEBUG - Setting up UI layout
+2025-02-03 06:07:24,518 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:07:24,518 - DEBUG - Creating database engine
+2025-02-03 06:07:24,518 - DEBUG - Creating database tables
+2025-02-03 06:07:24,519 - INFO - Created tables: speakers, config_files
+2025-02-03 06:07:24,519 - DEBUG - Verified table exists: speakers
+2025-02-03 06:07:24,519 - DEBUG - Verified table exists: config_files
+2025-02-03 06:07:24,519 - DEBUG - Displaying initial information
+2025-02-03 06:07:24,519 - INFO - Main window initialization complete
+2025-02-03 06:07:24,522 - INFO - Main window initialized and shown
+2025-02-03 06:07:39,824 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:07:39,824 - DEBUG - Creating database engine
+2025-02-03 06:07:39,825 - DEBUG - Creating database tables
+2025-02-03 06:07:39,825 - INFO - Created tables: speakers, config_files
+2025-02-03 06:07:39,825 - DEBUG - Verified table exists: speakers
+2025-02-03 06:07:39,825 - DEBUG - Verified table exists: config_files
+2025-02-03 06:07:50,448 - ERROR - Uncaught exception
+Traceback (most recent call last):
+  File "/Users/pierrre/Downloads/GLL/gll2txt/app_editdata.py", line 182, in <lambda>
+    lambda checked, d=data: self.edit_speaker_properties(d)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pierrre/Downloads/GLL/gll2txt/app_editdata.py", line 398, in edit_speaker_properties
+    dialog = SpeakerPropertiesDialog(data, self)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pierrre/Downloads/GLL/gll2txt/app_speaker_properties.py", line 61, in __init__
+    button_layout = QHBoxLayout()
+                    ^^^^^^^^^^^
+NameError: name 'QHBoxLayout' is not defined. Did you mean: 'QVBoxLayout'?
+2025-02-03 06:08:36,028 - ERROR - Uncaught exception
+Traceback (most recent call last):
+  File "/Users/pierrre/Downloads/GLL/gll2txt/app_editdata.py", line 182, in <lambda>
+    lambda checked, d=data: self.edit_speaker_properties(d)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pierrre/Downloads/GLL/gll2txt/app_editdata.py", line 398, in edit_speaker_properties
+    dialog = SpeakerPropertiesDialog(data, self)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pierrre/Downloads/GLL/gll2txt/app_speaker_properties.py", line 61, in __init__
+    button_layout = QHBoxLayout()
+                    ^^^^^^^^^^^
+NameError: name 'QHBoxLayout' is not defined. Did you mean: 'QVBoxLayout'?
+2025-02-03 06:08:59,959 - INFO - Application shutting down
+2025-02-03 06:08:59,960 - DEBUG - Disconnecting database signals
+2025-02-03 06:08:59,961 - DEBUG - Cleaning up database
+2025-02-03 06:08:59,961 - INFO - Cleanup complete
+2025-02-03 06:09:37,479 - INFO - Starting GLL2TXT application
+2025-02-03 06:09:37,572 - INFO - Initializing main window
+2025-02-03 06:09:37,573 - DEBUG - Loading settings
+2025-02-03 06:09:37,574 - DEBUG - Initializing database
+2025-02-03 06:09:37,574 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:09:37,574 - DEBUG - Creating database engine
+2025-02-03 06:09:37,587 - DEBUG - Creating database tables
+2025-02-03 06:09:37,589 - INFO - Created tables: speakers, config_files
+2025-02-03 06:09:37,589 - DEBUG - Verified table exists: speakers
+2025-02-03 06:09:37,589 - DEBUG - Verified table exists: config_files
+2025-02-03 06:09:37,589 - DEBUG - Setting up UI layout
+2025-02-03 06:09:37,735 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:09:37,735 - DEBUG - Creating database engine
+2025-02-03 06:09:37,735 - DEBUG - Creating database tables
+2025-02-03 06:09:37,736 - INFO - Created tables: speakers, config_files
+2025-02-03 06:09:37,736 - DEBUG - Verified table exists: speakers
+2025-02-03 06:09:37,736 - DEBUG - Verified table exists: config_files
+2025-02-03 06:09:37,736 - DEBUG - Displaying initial information
+2025-02-03 06:09:37,739 - INFO - Main window initialization complete
+2025-02-03 06:09:37,743 - INFO - Main window initialized and shown
+2025-02-03 06:09:40,502 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:09:40,502 - DEBUG - Creating database engine
+2025-02-03 06:09:40,503 - DEBUG - Creating database tables
+2025-02-03 06:09:40,503 - INFO - Created tables: speakers, config_files
+2025-02-03 06:09:40,503 - DEBUG - Verified table exists: speakers
+2025-02-03 06:09:40,503 - DEBUG - Verified table exists: config_files
+2025-02-03 06:09:44,471 - ERROR - Uncaught exception
+Traceback (most recent call last):
+  File "/Users/pierrre/Downloads/GLL/gll2txt/app_editdata.py", line 182, in <lambda>
+    lambda checked, d=data: self.edit_speaker_properties(d)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pierrre/Downloads/GLL/gll2txt/app_editdata.py", line 398, in edit_speaker_properties
+    dialog = SpeakerPropertiesDialog(data, self)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pierrre/Downloads/GLL/gll2txt/app_speaker_properties.py", line 61, in __init__
+    button_layout = QHBoxLayout()
+                    ^^^^^^^^^^^
+NameError: name 'QHBoxLayout' is not defined. Did you mean: 'QVBoxLayout'?
+2025-02-03 06:10:42,857 - INFO - Application shutting down
+2025-02-03 06:10:42,858 - DEBUG - Disconnecting database signals
+2025-02-03 06:10:42,858 - DEBUG - Cleaning up database
+2025-02-03 06:10:42,859 - INFO - Cleanup complete
+2025-02-03 06:12:06,022 - INFO - Starting GLL2TXT application
+2025-02-03 06:12:06,126 - INFO - Initializing main window
+2025-02-03 06:12:06,127 - DEBUG - Loading settings
+2025-02-03 06:12:06,128 - DEBUG - Initializing database
+2025-02-03 06:12:06,128 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:12:06,128 - DEBUG - Creating database engine
+2025-02-03 06:12:06,141 - DEBUG - Creating database tables
+2025-02-03 06:12:06,144 - INFO - Created tables: speakers, config_files
+2025-02-03 06:12:06,144 - DEBUG - Verified table exists: speakers
+2025-02-03 06:12:06,144 - DEBUG - Verified table exists: config_files
+2025-02-03 06:12:06,144 - DEBUG - Setting up UI layout
+2025-02-03 06:12:06,298 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:12:06,298 - DEBUG - Creating database engine
+2025-02-03 06:12:06,298 - DEBUG - Creating database tables
+2025-02-03 06:12:06,299 - INFO - Created tables: speakers, config_files
+2025-02-03 06:12:06,299 - DEBUG - Verified table exists: speakers
+2025-02-03 06:12:06,299 - DEBUG - Verified table exists: config_files
+2025-02-03 06:12:06,299 - DEBUG - Displaying initial information
+2025-02-03 06:12:06,301 - INFO - Main window initialization complete
+2025-02-03 06:12:06,306 - INFO - Main window initialized and shown
+2025-02-03 06:12:09,990 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:12:09,990 - DEBUG - Creating database engine
+2025-02-03 06:12:09,990 - DEBUG - Creating database tables
+2025-02-03 06:12:09,991 - INFO - Created tables: speakers, config_files
+2025-02-03 06:12:09,991 - DEBUG - Verified table exists: speakers
+2025-02-03 06:12:09,991 - DEBUG - Verified table exists: config_files
+2025-02-03 06:12:34,045 - INFO - Application shutting down
+2025-02-03 06:12:34,045 - DEBUG - Disconnecting database signals
+2025-02-03 06:12:34,045 - DEBUG - Cleaning up database
+2025-02-03 06:12:34,046 - INFO - Cleanup complete
+2025-02-03 06:14:34,293 - INFO - Starting GLL2TXT application
+2025-02-03 06:14:34,384 - INFO - Initializing main window
+2025-02-03 06:14:34,385 - DEBUG - Loading settings
+2025-02-03 06:14:34,385 - DEBUG - Initializing database
+2025-02-03 06:14:34,385 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:14:34,385 - DEBUG - Creating database engine
+2025-02-03 06:14:34,397 - DEBUG - Creating database tables
+2025-02-03 06:14:34,399 - INFO - Created tables: speakers, config_files
+2025-02-03 06:14:34,400 - DEBUG - Verified table exists: speakers
+2025-02-03 06:14:34,400 - DEBUG - Verified table exists: config_files
+2025-02-03 06:14:34,400 - DEBUG - Setting up UI layout
+2025-02-03 06:14:34,525 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:14:34,525 - DEBUG - Creating database engine
+2025-02-03 06:14:34,526 - DEBUG - Creating database tables
+2025-02-03 06:14:34,526 - INFO - Created tables: speakers, config_files
+2025-02-03 06:14:34,526 - DEBUG - Verified table exists: speakers
+2025-02-03 06:14:34,526 - DEBUG - Verified table exists: config_files
+2025-02-03 06:14:34,527 - DEBUG - Displaying initial information
+2025-02-03 06:14:34,528 - INFO - Main window initialization complete
+2025-02-03 06:14:34,532 - INFO - Main window initialized and shown
+2025-02-03 06:14:36,672 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:14:36,673 - DEBUG - Creating database engine
+2025-02-03 06:14:36,673 - DEBUG - Creating database tables
+2025-02-03 06:14:36,673 - INFO - Created tables: speakers, config_files
+2025-02-03 06:14:36,673 - DEBUG - Verified table exists: speakers
+2025-02-03 06:14:36,673 - DEBUG - Verified table exists: config_files
+2025-02-03 06:15:05,285 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:15:05,286 - DEBUG - Creating database engine
+2025-02-03 06:15:05,286 - DEBUG - Creating database tables
+2025-02-03 06:15:05,287 - INFO - Created tables: speakers, config_files
+2025-02-03 06:15:05,287 - DEBUG - Verified table exists: speakers
+2025-02-03 06:15:05,287 - DEBUG - Verified table exists: config_files
+2025-02-03 06:15:21,293 - INFO - Saved speaker data for /Users/pierrre/Downloads/GLL/Amate Audio/X15T_PSOURCE_00.gll
+2025-02-03 06:15:21,297 - INFO - Saved speaker data for /Users/pierrre/Downloads/GLL/Beta Three/X12I.gll
+2025-02-03 06:15:31,725 - INFO - Application shutting down
+2025-02-03 06:15:31,725 - DEBUG - Disconnecting database signals
+2025-02-03 06:15:31,726 - DEBUG - Cleaning up database
+2025-02-03 06:15:31,726 - INFO - Cleanup complete
+2025-02-03 06:24:35,966 - INFO - Starting GLL2TXT application
+2025-02-03 06:24:36,068 - INFO - Initializing main window
+2025-02-03 06:24:36,069 - DEBUG - Loading settings
+2025-02-03 06:24:36,069 - DEBUG - Initializing database
+2025-02-03 06:24:36,069 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:24:36,069 - DEBUG - Creating database engine
+2025-02-03 06:24:36,080 - DEBUG - Creating database tables
+2025-02-03 06:24:36,082 - INFO - Created tables: speakers, config_files
+2025-02-03 06:24:36,083 - DEBUG - Verified table exists: speakers
+2025-02-03 06:24:36,083 - DEBUG - Verified table exists: config_files
+2025-02-03 06:24:36,083 - DEBUG - Setting up UI layout
+2025-02-03 06:24:36,206 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:24:36,206 - DEBUG - Creating database engine
+2025-02-03 06:24:36,206 - DEBUG - Creating database tables
+2025-02-03 06:24:36,207 - INFO - Created tables: speakers, config_files
+2025-02-03 06:24:36,207 - DEBUG - Verified table exists: speakers
+2025-02-03 06:24:36,207 - DEBUG - Verified table exists: config_files
+2025-02-03 06:24:36,207 - DEBUG - Displaying initial information
+2025-02-03 06:24:36,208 - INFO - Main window initialization complete
+2025-02-03 06:24:36,211 - INFO - Main window initialized and shown
+2025-02-03 06:24:43,388 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:24:43,388 - DEBUG - Creating database engine
+2025-02-03 06:24:43,388 - DEBUG - Creating database tables
+2025-02-03 06:24:43,388 - INFO - Created tables: speakers, config_files
+2025-02-03 06:24:43,388 - DEBUG - Verified table exists: speakers
+2025-02-03 06:24:43,389 - DEBUG - Verified table exists: config_files
+2025-02-03 06:25:32,011 - INFO - Application shutting down
+2025-02-03 06:25:32,011 - DEBUG - Disconnecting database signals
+2025-02-03 06:25:32,012 - DEBUG - Cleaning up database
+2025-02-03 06:25:32,013 - INFO - Cleanup complete
+2025-02-03 06:26:24,961 - INFO - Starting GLL2TXT application
+2025-02-03 06:26:25,024 - INFO - Initializing main window
+2025-02-03 06:26:25,024 - DEBUG - Loading settings
+2025-02-03 06:26:25,025 - DEBUG - Initializing database
+2025-02-03 06:26:25,025 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:26:25,025 - DEBUG - Creating database engine
+2025-02-03 06:26:25,031 - DEBUG - Creating database tables
+2025-02-03 06:26:25,031 - INFO - Created tables: speakers, config_files
+2025-02-03 06:26:25,031 - DEBUG - Verified table exists: speakers
+2025-02-03 06:26:25,032 - DEBUG - Verified table exists: config_files
+2025-02-03 06:26:25,032 - DEBUG - Setting up UI layout
+2025-02-03 06:26:25,128 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:26:25,129 - DEBUG - Creating database engine
+2025-02-03 06:26:25,129 - DEBUG - Creating database tables
+2025-02-03 06:26:25,129 - INFO - Created tables: speakers, config_files
+2025-02-03 06:26:25,129 - DEBUG - Verified table exists: speakers
+2025-02-03 06:26:25,129 - DEBUG - Verified table exists: config_files
+2025-02-03 06:26:25,130 - DEBUG - Displaying initial information
+2025-02-03 06:26:25,130 - INFO - Main window initialization complete
+2025-02-03 06:26:25,131 - INFO - Main window initialized and shown
+2025-02-03 06:26:26,712 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:26:26,712 - DEBUG - Creating database engine
+2025-02-03 06:26:26,712 - DEBUG - Creating database tables
+2025-02-03 06:26:26,712 - INFO - Created tables: speakers, config_files
+2025-02-03 06:26:26,712 - DEBUG - Verified table exists: speakers
+2025-02-03 06:26:26,713 - DEBUG - Verified table exists: config_files
+2025-02-03 06:26:30,752 - DEBUG - Using selector: KqueueSelector
+2025-02-03 06:26:41,001 - INFO - Application shutting down
+2025-02-03 06:26:41,001 - DEBUG - Disconnecting database signals
+2025-02-03 06:26:41,002 - DEBUG - Cleaning up database
+2025-02-03 06:26:41,003 - INFO - Cleanup complete
+2025-02-03 06:30:47,431 - INFO - Starting GLL2TXT application
+2025-02-03 06:30:47,495 - INFO - Initializing main window
+2025-02-03 06:30:47,495 - DEBUG - Loading settings
+2025-02-03 06:30:47,495 - DEBUG - Initializing database
+2025-02-03 06:30:47,495 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:30:47,495 - DEBUG - Creating database engine
+2025-02-03 06:30:47,501 - DEBUG - Creating database tables
+2025-02-03 06:30:47,502 - INFO - Created tables: speakers, config_files
+2025-02-03 06:30:47,502 - DEBUG - Verified table exists: speakers
+2025-02-03 06:30:47,502 - DEBUG - Verified table exists: config_files
+2025-02-03 06:30:47,502 - DEBUG - Setting up UI layout
+2025-02-03 06:30:47,600 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:30:47,600 - DEBUG - Creating database engine
+2025-02-03 06:30:47,600 - DEBUG - Creating database tables
+2025-02-03 06:30:47,601 - INFO - Created tables: speakers, config_files
+2025-02-03 06:30:47,601 - DEBUG - Verified table exists: speakers
+2025-02-03 06:30:47,601 - DEBUG - Verified table exists: config_files
+2025-02-03 06:30:47,601 - DEBUG - Displaying initial information
+2025-02-03 06:30:47,602 - INFO - Main window initialization complete
+2025-02-03 06:30:47,605 - INFO - Main window initialized and shown
+2025-02-03 06:30:58,034 - INFO - Application shutting down
+2025-02-03 06:30:58,035 - DEBUG - Disconnecting database signals
+2025-02-03 06:30:58,035 - DEBUG - Cleaning up database
+2025-02-03 06:30:58,036 - INFO - Cleanup complete
+2025-02-03 06:36:55,962 - INFO - Starting GLL2TXT application
+2025-02-03 06:36:56,055 - INFO - Initializing main window
+2025-02-03 06:36:56,057 - DEBUG - Loading settings
+2025-02-03 06:36:56,057 - DEBUG - Initializing database
+2025-02-03 06:36:56,058 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:36:56,058 - DEBUG - Creating database engine
+2025-02-03 06:36:56,071 - DEBUG - Creating database tables
+2025-02-03 06:36:56,073 - INFO - Created tables: speakers, config_files
+2025-02-03 06:36:56,073 - DEBUG - Verified table exists: speakers
+2025-02-03 06:36:56,073 - DEBUG - Verified table exists: config_files
+2025-02-03 06:36:56,073 - DEBUG - Setting up UI layout
+2025-02-03 06:36:56,219 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:36:56,219 - DEBUG - Creating database engine
+2025-02-03 06:36:56,220 - DEBUG - Creating database tables
+2025-02-03 06:36:56,220 - INFO - Created tables: speakers, config_files
+2025-02-03 06:36:56,220 - DEBUG - Verified table exists: speakers
+2025-02-03 06:36:56,220 - DEBUG - Verified table exists: config_files
+2025-02-03 06:36:56,220 - DEBUG - Displaying initial information
+2025-02-03 06:36:56,224 - INFO - Main window initialization complete
+2025-02-03 06:36:56,227 - INFO - Main window initialized and shown
+2025-02-03 06:36:59,138 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:36:59,138 - DEBUG - Creating database engine
+2025-02-03 06:36:59,138 - DEBUG - Creating database tables
+2025-02-03 06:36:59,139 - INFO - Created tables: speakers, config_files
+2025-02-03 06:36:59,139 - DEBUG - Verified table exists: speakers
+2025-02-03 06:36:59,139 - DEBUG - Verified table exists: config_files
+2025-02-03 06:37:07,839 - DEBUG - Using selector: KqueueSelector
+2025-02-03 06:37:51,506 - INFO - Application shutting down
+2025-02-03 06:37:51,507 - DEBUG - Disconnecting database signals
+2025-02-03 06:37:51,507 - DEBUG - Cleaning up database
+2025-02-03 06:37:51,508 - INFO - Cleanup complete
+2025-02-03 06:39:59,743 - INFO - Starting GLL2TXT application
+2025-02-03 06:39:59,840 - INFO - Initializing main window
+2025-02-03 06:39:59,841 - DEBUG - Loading settings
+2025-02-03 06:39:59,842 - DEBUG - Initializing database
+2025-02-03 06:39:59,842 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:39:59,842 - DEBUG - Creating database engine
+2025-02-03 06:39:59,855 - DEBUG - Creating database tables
+2025-02-03 06:39:59,858 - INFO - Created tables: speakers, config_files
+2025-02-03 06:39:59,858 - DEBUG - Verified table exists: speakers
+2025-02-03 06:39:59,858 - DEBUG - Verified table exists: config_files
+2025-02-03 06:39:59,858 - DEBUG - Setting up UI layout
+2025-02-03 06:40:00,010 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:40:00,010 - DEBUG - Creating database engine
+2025-02-03 06:40:00,011 - DEBUG - Creating database tables
+2025-02-03 06:40:00,011 - INFO - Created tables: speakers, config_files
+2025-02-03 06:40:00,011 - DEBUG - Verified table exists: speakers
+2025-02-03 06:40:00,011 - DEBUG - Verified table exists: config_files
+2025-02-03 06:40:00,011 - DEBUG - Displaying initial information
+2025-02-03 06:40:00,013 - INFO - Main window initialization complete
+2025-02-03 06:40:00,017 - INFO - Main window initialized and shown
+2025-02-03 06:40:01,422 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:40:01,423 - DEBUG - Creating database engine
+2025-02-03 06:40:01,423 - DEBUG - Creating database tables
+2025-02-03 06:40:01,423 - INFO - Created tables: speakers, config_files
+2025-02-03 06:40:01,423 - DEBUG - Verified table exists: speakers
+2025-02-03 06:40:01,423 - DEBUG - Verified table exists: config_files
+2025-02-03 06:40:42,883 - INFO - Saved speaker data for /Users/pierrre/Downloads/GLL/Beta Three/X12I.gll
+2025-02-03 06:40:42,886 - INFO - Saved speaker data for /Users/pierrre/Downloads/GLL/Amate Audio/X15T_PSOURCE_00.gll
+2025-02-03 06:40:51,265 - INFO - Application shutting down
+2025-02-03 06:40:51,265 - DEBUG - Disconnecting database signals
+2025-02-03 06:40:51,265 - DEBUG - Cleaning up database
+2025-02-03 06:40:51,265 - INFO - Cleanup complete
+2025-02-03 06:40:53,403 - INFO - Starting GLL2TXT application
+2025-02-03 06:40:53,479 - INFO - Initializing main window
+2025-02-03 06:40:53,480 - DEBUG - Loading settings
+2025-02-03 06:40:53,480 - DEBUG - Initializing database
+2025-02-03 06:40:53,480 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:40:53,480 - DEBUG - Creating database engine
+2025-02-03 06:40:53,489 - DEBUG - Creating database tables
+2025-02-03 06:40:53,490 - INFO - Created tables: speakers, config_files
+2025-02-03 06:40:53,490 - DEBUG - Verified table exists: speakers
+2025-02-03 06:40:53,490 - DEBUG - Verified table exists: config_files
+2025-02-03 06:40:53,490 - DEBUG - Setting up UI layout
+2025-02-03 06:40:53,598 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:40:53,598 - DEBUG - Creating database engine
+2025-02-03 06:40:53,598 - DEBUG - Creating database tables
+2025-02-03 06:40:53,599 - INFO - Created tables: speakers, config_files
+2025-02-03 06:40:53,599 - DEBUG - Verified table exists: speakers
+2025-02-03 06:40:53,599 - DEBUG - Verified table exists: config_files
+2025-02-03 06:40:53,599 - DEBUG - Displaying initial information
+2025-02-03 06:40:53,600 - INFO - Main window initialization complete
+2025-02-03 06:40:53,602 - INFO - Main window initialized and shown
+2025-02-03 06:40:55,245 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:40:55,245 - DEBUG - Creating database engine
+2025-02-03 06:40:55,245 - DEBUG - Creating database tables
+2025-02-03 06:40:55,246 - INFO - Created tables: speakers, config_files
+2025-02-03 06:40:55,246 - DEBUG - Verified table exists: speakers
+2025-02-03 06:40:55,246 - DEBUG - Verified table exists: config_files
+2025-02-03 06:41:03,914 - INFO - Application shutting down
+2025-02-03 06:41:03,914 - DEBUG - Disconnecting database signals
+2025-02-03 06:41:03,915 - DEBUG - Cleaning up database
+2025-02-03 06:41:03,916 - INFO - Cleanup complete
+2025-02-03 06:41:23,286 - INFO - Starting GLL2TXT application
+2025-02-03 06:41:23,361 - INFO - Initializing main window
+2025-02-03 06:41:23,361 - DEBUG - Loading settings
+2025-02-03 06:41:23,361 - DEBUG - Initializing database
+2025-02-03 06:41:23,361 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:41:23,361 - DEBUG - Creating database engine
+2025-02-03 06:41:23,371 - DEBUG - Creating database tables
+2025-02-03 06:41:23,372 - INFO - Created tables: speakers, config_files
+2025-02-03 06:41:23,372 - DEBUG - Verified table exists: speakers
+2025-02-03 06:41:23,372 - DEBUG - Verified table exists: config_files
+2025-02-03 06:41:23,372 - DEBUG - Setting up UI layout
+2025-02-03 06:41:23,474 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:41:23,474 - DEBUG - Creating database engine
+2025-02-03 06:41:23,475 - DEBUG - Creating database tables
+2025-02-03 06:41:23,475 - INFO - Created tables: speakers, config_files
+2025-02-03 06:41:23,475 - DEBUG - Verified table exists: speakers
+2025-02-03 06:41:23,475 - DEBUG - Verified table exists: config_files
+2025-02-03 06:41:23,475 - DEBUG - Displaying initial information
+2025-02-03 06:41:23,476 - INFO - Main window initialization complete
+2025-02-03 06:41:23,478 - INFO - Main window initialized and shown
+2025-02-03 06:41:26,016 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:41:26,016 - DEBUG - Creating database engine
+2025-02-03 06:41:26,016 - DEBUG - Creating database tables
+2025-02-03 06:41:26,016 - INFO - Created tables: speakers, config_files
+2025-02-03 06:41:26,017 - DEBUG - Verified table exists: speakers
+2025-02-03 06:41:26,017 - DEBUG - Verified table exists: config_files
+2025-02-03 06:41:26,022 - DEBUG - Suggesting speaker name for GLL file: /Users/pierrre/Downloads/GLL/Genelec/test1.gll
+2025-02-03 06:41:26,022 - DEBUG - Path: /Users/pierrre/Downloads/GLL/Genelec, File name: test1.gll
+2025-02-03 06:41:26,022 - DEBUG - Brand name (from last directory): Genelec
+2025-02-03 06:41:26,022 - DEBUG - Model name (without extension): test1
+2025-02-03 06:41:26,022 - DEBUG - Suggested speaker name: Genelec test1
+2025-02-03 06:43:13,168 - INFO - Application shutting down
+2025-02-03 06:43:13,170 - DEBUG - Disconnecting database signals
+2025-02-03 06:43:13,170 - DEBUG - Cleaning up database
+2025-02-03 06:43:13,170 - INFO - Cleanup complete
+2025-02-03 06:43:15,143 - INFO - Starting GLL2TXT application
+2025-02-03 06:43:15,225 - INFO - Initializing main window
+2025-02-03 06:43:15,226 - DEBUG - Loading settings
+2025-02-03 06:43:15,226 - DEBUG - Initializing database
+2025-02-03 06:43:15,226 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:43:15,226 - DEBUG - Creating database engine
+2025-02-03 06:43:15,237 - DEBUG - Creating database tables
+2025-02-03 06:43:15,237 - INFO - Created tables: speakers, config_files
+2025-02-03 06:43:15,238 - DEBUG - Verified table exists: speakers
+2025-02-03 06:43:15,238 - DEBUG - Verified table exists: config_files
+2025-02-03 06:43:15,238 - DEBUG - Setting up UI layout
+2025-02-03 06:43:15,345 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:43:15,345 - DEBUG - Creating database engine
+2025-02-03 06:43:15,345 - DEBUG - Creating database tables
+2025-02-03 06:43:15,346 - INFO - Created tables: speakers, config_files
+2025-02-03 06:43:15,346 - DEBUG - Verified table exists: speakers
+2025-02-03 06:43:15,346 - DEBUG - Verified table exists: config_files
+2025-02-03 06:43:15,346 - DEBUG - Displaying initial information
+2025-02-03 06:43:15,347 - INFO - Main window initialization complete
+2025-02-03 06:43:15,349 - INFO - Main window initialized and shown
+2025-02-03 06:43:16,866 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:43:16,866 - DEBUG - Creating database engine
+2025-02-03 06:43:16,867 - DEBUG - Creating database tables
+2025-02-03 06:43:16,867 - INFO - Created tables: speakers, config_files
+2025-02-03 06:43:16,867 - DEBUG - Verified table exists: speakers
+2025-02-03 06:43:16,867 - DEBUG - Verified table exists: config_files
+2025-02-03 06:43:16,873 - DEBUG - Suggesting speaker name for GLL file: /Users/pierrre/Downloads/GLL/Genelec/test1.gll
+2025-02-03 06:43:16,873 - DEBUG - Path: /Users/pierrre/Downloads/GLL/Genelec, File name: test1.gll
+2025-02-03 06:43:16,873 - DEBUG - Brand name (from last directory): Genelec
+2025-02-03 06:43:16,873 - DEBUG - Model name (without extension): test1
+2025-02-03 06:43:16,873 - DEBUG - Suggested speaker name: Genelec test1
+2025-02-03 06:43:35,861 - DEBUG - Using selector: KqueueSelector
+2025-02-03 06:44:01,212 - INFO - Application shutting down
+2025-02-03 06:44:01,213 - DEBUG - Disconnecting database signals
+2025-02-03 06:44:01,214 - DEBUG - Cleaning up database
+2025-02-03 06:44:01,214 - INFO - Cleanup complete
+2025-02-03 06:44:38,785 - INFO - Starting GLL2TXT application
+2025-02-03 06:44:38,856 - INFO - Initializing main window
+2025-02-03 06:44:38,856 - DEBUG - Loading settings
+2025-02-03 06:44:38,856 - DEBUG - Initializing database
+2025-02-03 06:44:38,857 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:44:38,857 - DEBUG - Creating database engine
+2025-02-03 06:44:38,866 - DEBUG - Creating database tables
+2025-02-03 06:44:38,866 - INFO - Created tables: speakers, config_files
+2025-02-03 06:44:38,867 - DEBUG - Verified table exists: speakers
+2025-02-03 06:44:38,867 - DEBUG - Verified table exists: config_files
+2025-02-03 06:44:38,867 - DEBUG - Setting up UI layout
+2025-02-03 06:44:38,969 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:44:38,969 - DEBUG - Creating database engine
+2025-02-03 06:44:38,969 - DEBUG - Creating database tables
+2025-02-03 06:44:38,970 - INFO - Created tables: speakers, config_files
+2025-02-03 06:44:38,970 - DEBUG - Verified table exists: speakers
+2025-02-03 06:44:38,970 - DEBUG - Verified table exists: config_files
+2025-02-03 06:44:38,970 - DEBUG - Displaying initial information
+2025-02-03 06:44:38,970 - INFO - Main window initialization complete
+2025-02-03 06:44:38,973 - INFO - Main window initialized and shown
+2025-02-03 06:44:40,948 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:44:40,948 - DEBUG - Creating database engine
+2025-02-03 06:44:40,948 - DEBUG - Creating database tables
+2025-02-03 06:44:40,949 - INFO - Created tables: speakers, config_files
+2025-02-03 06:44:40,949 - DEBUG - Verified table exists: speakers
+2025-02-03 06:44:40,949 - DEBUG - Verified table exists: config_files
+2025-02-03 06:44:40,954 - DEBUG - Suggesting speaker name for GLL file: /Users/pierrre/Downloads/GLL/Genelec/test1.gll
+2025-02-03 06:44:40,954 - DEBUG - Path: /Users/pierrre/Downloads/GLL/Genelec, File name: test1.gll
+2025-02-03 06:44:40,954 - DEBUG - Brand name (from last directory): Genelec
+2025-02-03 06:44:40,954 - DEBUG - Model name (without extension): test1
+2025-02-03 06:44:40,954 - DEBUG - Suggested speaker name: Genelec test1
+2025-02-03 06:44:40,954 - DEBUG - Created properties button for row 0
+2025-02-03 06:44:42,824 - DEBUG - Opening properties dialog for missing speaker at row 0
+2025-02-03 06:44:42,824 - DEBUG - GLL file: /Users/pierrre/Downloads/GLL/Genelec/test1.gll, Current speaker name: Genelec test1
+2025-02-03 06:44:42,825 - DEBUG - Current properties: {}
+2025-02-03 06:44:42,828 - DEBUG - Created SpeakerPropertiesDialog
+2025-02-03 06:44:45,473 - DEBUG - Using selector: KqueueSelector
+2025-02-03 06:46:11,580 - DEBUG - Dialog result: 0
+2025-02-03 06:46:11,581 - DEBUG - Properties dialog was cancelled
+2025-02-03 06:46:14,354 - INFO - Application shutting down
+2025-02-03 06:46:14,354 - DEBUG - Disconnecting database signals
+2025-02-03 06:46:14,354 - DEBUG - Cleaning up database
+2025-02-03 06:46:14,355 - INFO - Cleanup complete
+2025-02-03 06:51:20,295 - INFO - Starting GLL2TXT application
+2025-02-03 06:51:20,374 - INFO - Initializing main window
+2025-02-03 06:51:20,375 - DEBUG - Loading settings
+2025-02-03 06:51:20,375 - DEBUG - Initializing database
+2025-02-03 06:51:20,375 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:51:20,376 - DEBUG - Creating database engine
+2025-02-03 06:51:20,387 - DEBUG - Creating database tables
+2025-02-03 06:51:20,390 - INFO - Created tables: speakers, config_files
+2025-02-03 06:51:20,390 - DEBUG - Verified table exists: speakers
+2025-02-03 06:51:20,390 - DEBUG - Verified table exists: config_files
+2025-02-03 06:51:20,390 - DEBUG - Setting up UI layout
+2025-02-03 06:51:20,518 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:51:20,518 - DEBUG - Creating database engine
+2025-02-03 06:51:20,518 - DEBUG - Creating database tables
+2025-02-03 06:51:20,518 - INFO - Created tables: speakers, config_files
+2025-02-03 06:51:20,518 - DEBUG - Verified table exists: speakers
+2025-02-03 06:51:20,519 - DEBUG - Verified table exists: config_files
+2025-02-03 06:51:20,519 - DEBUG - Displaying initial information
+2025-02-03 06:51:20,520 - INFO - Main window initialization complete
+2025-02-03 06:51:20,523 - INFO - Main window initialized and shown
+2025-02-03 06:51:22,136 - DEBUG - Initializing MissingSpeakerDialog
+2025-02-03 06:51:22,136 - DEBUG - Settings: <PySide6.QtCore.QSettings(0x600002c18d40) at 0x10a779b00>
+2025-02-03 06:51:22,137 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:51:22,137 - DEBUG - Creating database engine
+2025-02-03 06:51:22,137 - DEBUG - Creating database tables
+2025-02-03 06:51:22,137 - INFO - Created tables: speakers, config_files
+2025-02-03 06:51:22,137 - DEBUG - Verified table exists: speakers
+2025-02-03 06:51:22,138 - DEBUG - Verified table exists: config_files
+2025-02-03 06:51:22,138 - DEBUG - Created SpeakerDatabase
+2025-02-03 06:51:22,138 - DEBUG - Processing 5 GLL files
+2025-02-03 06:51:22,141 - DEBUG - No speaker data found for /Users/pierrre/Downloads/GLL/Genelec/8351B.gll
+2025-02-03 06:51:22,141 - DEBUG - No speaker data found for /Users/pierrre/Downloads/GLL/Genelec/8341A.gll
+2025-02-03 06:51:22,141 - DEBUG - No speaker data found for /Users/pierrre/Downloads/GLL/Genelec/test1.gll
+2025-02-03 06:51:22,142 - DEBUG - Found existing speaker data for /Users/pierrre/Downloads/GLL/Amate Audio/X15T_PSOURCE_00.gll: {'speaker_name': 'b', 'config_files': [], 'skip': True, 'sensitivity': None, 'impedance': None, 'weight': None, 'height': None, 'width': None, 'depth': None}
+2025-02-03 06:51:22,143 - DEBUG - Found existing speaker data for /Users/pierrre/Downloads/GLL/Beta Three/X12I.gll: {'speaker_name': 'a', 'config_files': [], 'skip': False, 'sensitivity': None, 'impedance': None, 'weight': None, 'height': None, 'width': None, 'depth': None}
+2025-02-03 06:51:22,148 - DEBUG - Suggesting speaker name for GLL file: /Users/pierrre/Downloads/GLL/Genelec/8351B.gll
+2025-02-03 06:51:22,148 - DEBUG - Path: /Users/pierrre/Downloads/GLL/Genelec, File name: 8351B.gll
+2025-02-03 06:51:22,148 - DEBUG - Brand name (from last directory): Genelec
+2025-02-03 06:51:22,148 - DEBUG - Model name (without extension): 8351B
+2025-02-03 06:51:22,148 - DEBUG - Suggested speaker name: Genelec 8351B
+2025-02-03 06:51:22,148 - DEBUG - Created properties button for row 0
+2025-02-03 06:51:22,149 - DEBUG - Suggesting speaker name for GLL file: /Users/pierrre/Downloads/GLL/Genelec/8341A.gll
+2025-02-03 06:51:22,149 - DEBUG - Path: /Users/pierrre/Downloads/GLL/Genelec, File name: 8341A.gll
+2025-02-03 06:51:22,149 - DEBUG - Brand name (from last directory): Genelec
+2025-02-03 06:51:22,149 - DEBUG - Model name (without extension): 8341A
+2025-02-03 06:51:22,149 - DEBUG - Suggested speaker name: Genelec 8341A
+2025-02-03 06:51:22,149 - DEBUG - Created properties button for row 1
+2025-02-03 06:51:22,149 - DEBUG - Suggesting speaker name for GLL file: /Users/pierrre/Downloads/GLL/Genelec/test1.gll
+2025-02-03 06:51:22,149 - DEBUG - Path: /Users/pierrre/Downloads/GLL/Genelec, File name: test1.gll
+2025-02-03 06:51:22,149 - DEBUG - Brand name (from last directory): Genelec
+2025-02-03 06:51:22,149 - DEBUG - Model name (without extension): test1
+2025-02-03 06:51:22,149 - DEBUG - Suggested speaker name: Genelec test1
+2025-02-03 06:51:22,149 - DEBUG - Created properties button for row 2
+2025-02-03 06:51:28,008 - DEBUG - Opening properties dialog for missing speaker at row 1
+2025-02-03 06:51:28,008 - DEBUG - GLL file: /Users/pierrre/Downloads/GLL/Genelec/8341A.gll, Current speaker name: Genelec 8341A
+2025-02-03 06:51:28,008 - DEBUG - Current properties: {}
+2025-02-03 06:51:28,014 - DEBUG - Created SpeakerPropertiesDialog
+2025-02-03 06:51:30,325 - DEBUG - Using selector: KqueueSelector
+2025-02-03 06:51:42,114 - DEBUG - Dialog result: 0
+2025-02-03 06:51:42,114 - DEBUG - Properties dialog was cancelled
+2025-02-03 06:52:28,533 - DEBUG - Opening properties dialog for missing speaker at row 2
+2025-02-03 06:52:28,534 - DEBUG - GLL file: /Users/pierrre/Downloads/GLL/Genelec/test1.gll, Current speaker name: Genelec test1
+2025-02-03 06:52:28,534 - DEBUG - Current properties: {}
+2025-02-03 06:52:28,536 - DEBUG - Created SpeakerPropertiesDialog
+2025-02-03 06:54:32,361 - DEBUG - Dialog result: 0
+2025-02-03 06:54:32,362 - DEBUG - Properties dialog was cancelled
+2025-02-03 06:54:34,884 - INFO - Application shutting down
+2025-02-03 06:54:34,884 - DEBUG - Disconnecting database signals
+2025-02-03 06:54:34,884 - DEBUG - Cleaning up database
+2025-02-03 06:54:34,885 - INFO - Cleanup complete
+2025-02-03 06:54:37,288 - INFO - Starting GLL2TXT application
+2025-02-03 06:54:37,368 - INFO - Initializing main window
+2025-02-03 06:54:37,368 - DEBUG - Loading settings
+2025-02-03 06:54:37,368 - DEBUG - Initializing database
+2025-02-03 06:54:37,368 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:54:37,368 - DEBUG - Creating database engine
+2025-02-03 06:54:37,378 - DEBUG - Creating database tables
+2025-02-03 06:54:37,379 - INFO - Created tables: speakers, config_files
+2025-02-03 06:54:37,379 - DEBUG - Verified table exists: speakers
+2025-02-03 06:54:37,379 - DEBUG - Verified table exists: config_files
+2025-02-03 06:54:37,380 - DEBUG - Setting up UI layout
+2025-02-03 06:54:37,486 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:54:37,486 - DEBUG - Creating database engine
+2025-02-03 06:54:37,486 - DEBUG - Creating database tables
+2025-02-03 06:54:37,486 - INFO - Created tables: speakers, config_files
+2025-02-03 06:54:37,487 - DEBUG - Verified table exists: speakers
+2025-02-03 06:54:37,487 - DEBUG - Verified table exists: config_files
+2025-02-03 06:54:37,487 - DEBUG - Displaying initial information
+2025-02-03 06:54:37,487 - INFO - Main window initialization complete
+2025-02-03 06:54:37,490 - INFO - Main window initialized and shown
+2025-02-03 06:54:40,304 - DEBUG - Initializing MissingSpeakerDialog
+2025-02-03 06:54:40,304 - DEBUG - Settings: <PySide6.QtCore.QSettings(0x60000152a580) at 0x10b4e1c00>
+2025-02-03 06:54:40,304 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:54:40,304 - DEBUG - Creating database engine
+2025-02-03 06:54:40,304 - DEBUG - Creating database tables
+2025-02-03 06:54:40,305 - INFO - Created tables: speakers, config_files
+2025-02-03 06:54:40,305 - DEBUG - Verified table exists: speakers
+2025-02-03 06:54:40,305 - DEBUG - Verified table exists: config_files
+2025-02-03 06:54:40,305 - DEBUG - Created SpeakerDatabase
+2025-02-03 06:54:40,305 - DEBUG - Processing 5 GLL files
+2025-02-03 06:54:40,308 - DEBUG - No speaker data found for /Users/pierrre/Downloads/GLL/Genelec/8341A.gll
+2025-02-03 06:54:40,309 - DEBUG - Found existing speaker data for /Users/pierrre/Downloads/GLL/Beta Three/X12I.gll: {'speaker_name': 'a', 'config_files': [], 'skip': False, 'sensitivity': None, 'impedance': None, 'weight': None, 'height': None, 'width': None, 'depth': None}
+2025-02-03 06:54:40,309 - DEBUG - No speaker data found for /Users/pierrre/Downloads/GLL/Genelec/8351B.gll
+2025-02-03 06:54:40,310 - DEBUG - No speaker data found for /Users/pierrre/Downloads/GLL/Genelec/test1.gll
+2025-02-03 06:54:40,310 - DEBUG - Found existing speaker data for /Users/pierrre/Downloads/GLL/Amate Audio/X15T_PSOURCE_00.gll: {'speaker_name': 'b', 'config_files': [], 'skip': True, 'sensitivity': None, 'impedance': None, 'weight': None, 'height': None, 'width': None, 'depth': None}
+2025-02-03 06:54:40,311 - DEBUG - Suggesting speaker name for GLL file: /Users/pierrre/Downloads/GLL/Genelec/8341A.gll
+2025-02-03 06:54:40,311 - DEBUG - Path: /Users/pierrre/Downloads/GLL/Genelec, File name: 8341A.gll
+2025-02-03 06:54:40,311 - DEBUG - Brand name (from last directory): Genelec
+2025-02-03 06:54:40,311 - DEBUG - Model name (without extension): 8341A
+2025-02-03 06:54:40,311 - DEBUG - Suggested speaker name: Genelec 8341A
+2025-02-03 06:54:40,311 - DEBUG - Created properties button for row 0
+2025-02-03 06:54:40,311 - DEBUG - Suggesting speaker name for GLL file: /Users/pierrre/Downloads/GLL/Genelec/8351B.gll
+2025-02-03 06:54:40,311 - DEBUG - Path: /Users/pierrre/Downloads/GLL/Genelec, File name: 8351B.gll
+2025-02-03 06:54:40,311 - DEBUG - Brand name (from last directory): Genelec
+2025-02-03 06:54:40,311 - DEBUG - Model name (without extension): 8351B
+2025-02-03 06:54:40,311 - DEBUG - Suggested speaker name: Genelec 8351B
+2025-02-03 06:54:40,311 - DEBUG - Created properties button for row 1
+2025-02-03 06:54:40,311 - DEBUG - Suggesting speaker name for GLL file: /Users/pierrre/Downloads/GLL/Genelec/test1.gll
+2025-02-03 06:54:40,312 - DEBUG - Path: /Users/pierrre/Downloads/GLL/Genelec, File name: test1.gll
+2025-02-03 06:54:40,312 - DEBUG - Brand name (from last directory): Genelec
+2025-02-03 06:54:40,312 - DEBUG - Model name (without extension): test1
+2025-02-03 06:54:40,312 - DEBUG - Suggested speaker name: Genelec test1
+2025-02-03 06:54:40,312 - DEBUG - Created properties button for row 2
+2025-02-03 06:54:43,144 - DEBUG - Opening properties dialog for missing speaker at row 0
+2025-02-03 06:54:43,145 - DEBUG - GLL file: /Users/pierrre/Downloads/GLL/Genelec/8341A.gll, Current speaker name: Genelec 8341A
+2025-02-03 06:54:43,145 - DEBUG - Current properties: {}
+2025-02-03 06:54:43,148 - DEBUG - Created SpeakerPropertiesDialog
+2025-02-03 06:54:47,093 - DEBUG - Using selector: KqueueSelector
+2025-02-03 06:55:45,610 - DEBUG - Dialog result: 0
+2025-02-03 06:55:45,610 - DEBUG - Properties dialog was cancelled
+2025-02-03 06:55:48,470 - INFO - Application shutting down
+2025-02-03 06:55:48,470 - DEBUG - Disconnecting database signals
+2025-02-03 06:55:48,471 - DEBUG - Cleaning up database
+2025-02-03 06:55:48,471 - INFO - Cleanup complete
+2025-02-03 06:55:50,868 - INFO - Starting GLL2TXT application
+2025-02-03 06:55:50,937 - INFO - Initializing main window
+2025-02-03 06:55:50,938 - DEBUG - Loading settings
+2025-02-03 06:55:50,938 - DEBUG - Initializing database
+2025-02-03 06:55:50,938 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:55:50,938 - DEBUG - Creating database engine
+2025-02-03 06:55:50,944 - DEBUG - Creating database tables
+2025-02-03 06:55:50,945 - INFO - Created tables: speakers, config_files
+2025-02-03 06:55:50,945 - DEBUG - Verified table exists: speakers
+2025-02-03 06:55:50,945 - DEBUG - Verified table exists: config_files
+2025-02-03 06:55:50,945 - DEBUG - Setting up UI layout
+2025-02-03 06:55:51,045 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:55:51,045 - DEBUG - Creating database engine
+2025-02-03 06:55:51,045 - DEBUG - Creating database tables
+2025-02-03 06:55:51,046 - INFO - Created tables: speakers, config_files
+2025-02-03 06:55:51,046 - DEBUG - Verified table exists: speakers
+2025-02-03 06:55:51,046 - DEBUG - Verified table exists: config_files
+2025-02-03 06:55:51,046 - DEBUG - Displaying initial information
+2025-02-03 06:55:51,046 - INFO - Main window initialization complete
+2025-02-03 06:55:51,049 - INFO - Main window initialized and shown
+2025-02-03 06:55:52,289 - DEBUG - Initializing MissingSpeakerDialog
+2025-02-03 06:55:52,289 - DEBUG - Settings: <PySide6.QtCore.QSettings(0x6000031a8720) at 0x10c737100>
+2025-02-03 06:55:52,289 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 06:55:52,289 - DEBUG - Creating database engine
+2025-02-03 06:55:52,289 - DEBUG - Creating database tables
+2025-02-03 06:55:52,290 - INFO - Created tables: speakers, config_files
+2025-02-03 06:55:52,290 - DEBUG - Verified table exists: speakers
+2025-02-03 06:55:52,290 - DEBUG - Verified table exists: config_files
+2025-02-03 06:55:52,290 - DEBUG - Created SpeakerDatabase
+2025-02-03 06:55:52,290 - DEBUG - Processing 5 GLL files
+2025-02-03 06:55:52,293 - DEBUG - No speaker data found for /Users/pierrre/Downloads/GLL/Genelec/8341A.gll
+2025-02-03 06:55:52,293 - DEBUG - No speaker data found for /Users/pierrre/Downloads/GLL/Genelec/test1.gll
+2025-02-03 06:55:52,294 - DEBUG - Found existing speaker data for /Users/pierrre/Downloads/GLL/Beta Three/X12I.gll: {'speaker_name': 'a', 'config_files': [], 'skip': False, 'sensitivity': None, 'impedance': None, 'weight': None, 'height': None, 'width': None, 'depth': None}
+2025-02-03 06:55:52,295 - DEBUG - Found existing speaker data for /Users/pierrre/Downloads/GLL/Amate Audio/X15T_PSOURCE_00.gll: {'speaker_name': 'b', 'config_files': [], 'skip': True, 'sensitivity': None, 'impedance': None, 'weight': None, 'height': None, 'width': None, 'depth': None}
+2025-02-03 06:55:52,295 - DEBUG - No speaker data found for /Users/pierrre/Downloads/GLL/Genelec/8351B.gll
+2025-02-03 06:55:52,296 - DEBUG - Suggesting speaker name for GLL file: /Users/pierrre/Downloads/GLL/Genelec/8341A.gll
+2025-02-03 06:55:52,296 - DEBUG - Path: /Users/pierrre/Downloads/GLL/Genelec, File name: 8341A.gll
+2025-02-03 06:55:52,296 - DEBUG - Brand name (from last directory): Genelec
+2025-02-03 06:55:52,296 - DEBUG - Model name (without extension): 8341A
+2025-02-03 06:55:52,296 - DEBUG - Suggested speaker name: Genelec 8341A
+2025-02-03 06:55:52,296 - DEBUG - Created properties button for row 0
+2025-02-03 06:55:52,296 - DEBUG - Suggesting speaker name for GLL file: /Users/pierrre/Downloads/GLL/Genelec/test1.gll
+2025-02-03 06:55:52,296 - DEBUG - Path: /Users/pierrre/Downloads/GLL/Genelec, File name: test1.gll
+2025-02-03 06:55:52,296 - DEBUG - Brand name (from last directory): Genelec
+2025-02-03 06:55:52,296 - DEBUG - Model name (without extension): test1
+2025-02-03 06:55:52,296 - DEBUG - Suggested speaker name: Genelec test1
+2025-02-03 06:55:52,296 - DEBUG - Created properties button for row 1
+2025-02-03 06:55:52,296 - DEBUG - Suggesting speaker name for GLL file: /Users/pierrre/Downloads/GLL/Genelec/8351B.gll
+2025-02-03 06:55:52,296 - DEBUG - Path: /Users/pierrre/Downloads/GLL/Genelec, File name: 8351B.gll
+2025-02-03 06:55:52,296 - DEBUG - Brand name (from last directory): Genelec
+2025-02-03 06:55:52,296 - DEBUG - Model name (without extension): 8351B
+2025-02-03 06:55:52,296 - DEBUG - Suggested speaker name: Genelec 8351B
+2025-02-03 06:55:52,297 - DEBUG - Created properties button for row 2
+2025-02-03 06:55:55,214 - DEBUG - Opening properties dialog for missing speaker at row 0
+2025-02-03 06:55:55,214 - DEBUG - GLL file: /Users/pierrre/Downloads/GLL/Genelec/8341A.gll, Current speaker name: Genelec 8341A
+2025-02-03 06:55:55,214 - DEBUG - Current properties: {}
+2025-02-03 06:55:55,219 - DEBUG - Created SpeakerPropertiesDialog
+2025-02-03 06:55:57,121 - DEBUG - Using selector: KqueueSelector
+2025-02-03 06:56:16,005 - DEBUG - Dialog result: 0
+2025-02-03 06:56:16,005 - DEBUG - Properties dialog was cancelled
+2025-02-03 06:57:42,047 - INFO - Application shutting down
+2025-02-03 06:57:42,048 - DEBUG - Disconnecting database signals
+2025-02-03 06:57:42,048 - DEBUG - Cleaning up database
+2025-02-03 06:57:42,049 - INFO - Cleanup complete
+2025-02-03 07:28:32,631 - INFO - Starting GLL2TXT application
+2025-02-03 07:28:32,702 - INFO - Initializing main window
+2025-02-03 07:28:32,703 - DEBUG - Loading settings
+2025-02-03 07:28:32,703 - DEBUG - Initializing database
+2025-02-03 07:28:32,703 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 07:28:32,703 - DEBUG - Creating database engine
+2025-02-03 07:28:32,711 - DEBUG - Creating database tables
+2025-02-03 07:28:32,712 - INFO - Created tables: speakers, config_files
+2025-02-03 07:28:32,712 - DEBUG - Verified table exists: speakers
+2025-02-03 07:28:32,713 - DEBUG - Verified table exists: config_files
+2025-02-03 07:28:32,713 - DEBUG - Setting up UI layout
+2025-02-03 07:28:32,811 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 07:28:32,811 - DEBUG - Creating database engine
+2025-02-03 07:28:32,811 - DEBUG - Creating database tables
+2025-02-03 07:28:32,812 - INFO - Created tables: speakers, config_files
+2025-02-03 07:28:32,812 - DEBUG - Verified table exists: speakers
+2025-02-03 07:28:32,812 - DEBUG - Verified table exists: config_files
+2025-02-03 07:28:32,812 - DEBUG - Displaying initial information
+2025-02-03 07:28:32,812 - INFO - Main window initialization complete
+2025-02-03 07:28:32,815 - INFO - Main window initialized and shown
+2025-02-03 07:28:36,075 - DEBUG - Initializing MissingSpeakerDialog
+2025-02-03 07:28:36,075 - DEBUG - Settings: <PySide6.QtCore.QSettings(0x6000037fc2a0) at 0x10ae1b880>
+2025-02-03 07:28:36,076 - DEBUG - Using database path: /Users/pierrre/Documents/GLL2TXT_Speakers.db
+2025-02-03 07:28:36,076 - DEBUG - Creating database engine
+2025-02-03 07:28:36,076 - DEBUG - Creating database tables
+2025-02-03 07:28:36,076 - INFO - Created tables: speakers, config_files
+2025-02-03 07:28:36,076 - DEBUG - Verified table exists: speakers
+2025-02-03 07:28:36,076 - DEBUG - Verified table exists: config_files
+2025-02-03 07:28:36,076 - DEBUG - Created SpeakerDatabase
+2025-02-03 07:28:36,076 - DEBUG - Processing 5 GLL files
+2025-02-03 07:28:36,079 - DEBUG - No speaker data found for /Users/pierrre/Downloads/GLL/Genelec/8351B.gll
+2025-02-03 07:28:36,080 - DEBUG - No speaker data found for /Users/pierrre/Downloads/GLL/Genelec/8341A.gll
+2025-02-03 07:28:36,081 - DEBUG - Found existing speaker data for /Users/pierrre/Downloads/GLL/Amate Audio/X15T_PSOURCE_00.gll: {'speaker_name': 'b', 'config_files': [], 'skip': True, 'sensitivity': None, 'impedance': None, 'weight': None, 'height': None, 'width': None, 'depth': None}
+2025-02-03 07:28:36,081 - DEBUG - Found existing speaker data for /Users/pierrre/Downloads/GLL/Beta Three/X12I.gll: {'speaker_name': 'a', 'config_files': [], 'skip': False, 'sensitivity': None, 'impedance': None, 'weight': None, 'height': None, 'width': None, 'depth': None}
+2025-02-03 07:28:36,081 - DEBUG - No speaker data found for /Users/pierrre/Downloads/GLL/Genelec/test1.gll
+2025-02-03 07:28:36,082 - DEBUG - Suggesting speaker name for GLL file: /Users/pierrre/Downloads/GLL/Genelec/8351B.gll
+2025-02-03 07:28:36,082 - DEBUG - Path: /Users/pierrre/Downloads/GLL/Genelec, File name: 8351B.gll
+2025-02-03 07:28:36,082 - DEBUG - Brand name (from last directory): Genelec
+2025-02-03 07:28:36,082 - DEBUG - Model name (without extension): 8351B
+2025-02-03 07:28:36,082 - DEBUG - Suggested speaker name: Genelec 8351B
+2025-02-03 07:28:36,082 - DEBUG - Created properties button for row 0
+2025-02-03 07:28:36,082 - DEBUG - Suggesting speaker name for GLL file: /Users/pierrre/Downloads/GLL/Genelec/8341A.gll
+2025-02-03 07:28:36,082 - DEBUG - Path: /Users/pierrre/Downloads/GLL/Genelec, File name: 8341A.gll
+2025-02-03 07:28:36,082 - DEBUG - Brand name (from last directory): Genelec
+2025-02-03 07:28:36,082 - DEBUG - Model name (without extension): 8341A
+2025-02-03 07:28:36,082 - DEBUG - Suggested speaker name: Genelec 8341A
+2025-02-03 07:28:36,082 - DEBUG - Created properties button for row 1
+2025-02-03 07:28:36,083 - DEBUG - Suggesting speaker name for GLL file: /Users/pierrre/Downloads/GLL/Genelec/test1.gll
+2025-02-03 07:28:36,083 - DEBUG - Path: /Users/pierrre/Downloads/GLL/Genelec, File name: test1.gll
+2025-02-03 07:28:36,083 - DEBUG - Brand name (from last directory): Genelec
+2025-02-03 07:28:36,083 - DEBUG - Model name (without extension): test1
+2025-02-03 07:28:36,083 - DEBUG - Suggested speaker name: Genelec test1
+2025-02-03 07:28:36,083 - DEBUG - Created properties button for row 2
+2025-02-03 07:28:41,074 - DEBUG - Opening properties dialog for missing speaker at row 0
+2025-02-03 07:28:41,075 - DEBUG - GLL file: /Users/pierrre/Downloads/GLL/Genelec/8351B.gll, Current speaker name: Genelec 8351B
+2025-02-03 07:28:41,075 - DEBUG - Current properties: {}
+2025-02-03 07:28:41,079 - DEBUG - Created SpeakerPropertiesDialog
+2025-02-03 07:28:44,348 - DEBUG - Using selector: KqueueSelector
+2025-02-03 07:28:45,635 - DEBUG - Search response received: 73947 bytes
+2025-02-03 07:29:00,268 - DEBUG - Dialog result: 0
+2025-02-03 07:29:00,268 - DEBUG - Properties dialog was cancelled
+2025-02-03 07:29:02,766 - DEBUG - Opening properties dialog for missing speaker at row 1
+2025-02-03 07:29:02,767 - DEBUG - GLL file: /Users/pierrre/Downloads/GLL/Genelec/8341A.gll, Current speaker name: Genelec 8341A
+2025-02-03 07:29:02,767 - DEBUG - Current properties: {}
+2025-02-03 07:29:02,770 - DEBUG - Created SpeakerPropertiesDialog
+2025-02-03 07:29:06,113 - DEBUG - Search response received: 73951 bytes
+2025-02-03 07:33:55,084 - DEBUG - Search response received: 73859 bytes
+2025-02-03 07:39:31,039 - DEBUG - Dialog result: 0
+2025-02-03 07:39:31,040 - DEBUG - Properties dialog was cancelled
+2025-02-03 07:39:34,667 - INFO - Application shutting down
+2025-02-03 07:39:34,667 - DEBUG - Disconnecting database signals
+2025-02-03 07:39:34,667 - DEBUG - Cleaning up database
+2025-02-03 07:39:34,668 - INFO - Cleanup complete

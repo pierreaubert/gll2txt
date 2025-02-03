@@ -1,7 +1,8 @@
+aiohttp
 pywinauto
 pyside6
 pyside6-stubs
 sqlalchemy
 alembic
-
-
+pytest>=7.4.0
+beautifulsoup4>=4.12.0

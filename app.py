@@ -348,9 +348,9 @@ class MainWindow(QMainWindow):
             self.exit_button.setVisible(False)
 
     def request_speaker_data(self, input_paths):
-        # This is where you would handle the request for speaker data
-        # For example, you could open a dialog to input the speaker data
-        speaker_dialog = MissingSpeakerDialog(input_paths, self)
+        """Handle the request for speaker data by opening a dialog"""
+        logging.debug(f"Opening MissingSpeakerDialog for paths: {input_paths}")
+        speaker_dialog = MissingSpeakerDialog(input_paths, self.settings, self)
         speaker_dialog.exec()
 
     def open_files(self):

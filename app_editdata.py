@@ -1,4 +1,5 @@
 import os
+import logging
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
@@ -18,31 +19,38 @@ from PySide6.QtWidgets import (
 )
 
 from database import SpeakerDatabase
+from app_speaker_properties import SpeakerPropertiesDialog
 
 
 class MissingSpeakerDialog(QDialog):
     def __init__(self, gll_files, settings, parent=None):
         super().__init__(parent)
+        logging.debug("Initializing MissingSpeakerDialog")
         self.setWindowTitle("Speaker Data Management")
         self.resize(1000, 800)
         self.settings = settings
+        logging.debug(f"Settings: {settings}")
 
         # Main layout
         main_layout = QVBoxLayout()
 
         # Speaker Database
         self.speaker_db = SpeakerDatabase()
+        logging.debug("Created SpeakerDatabase")
 
         # Separate lists for missing and existing speaker data
         self.missing_gll_files = []
         self.existing_speaker_data = []
 
         # Categorize GLL files
+        logging.debug(f"Processing {len(gll_files)} GLL files")
         for gll_file in gll_files:
             speaker_data = self.speaker_db.get_speaker_data(gll_file)
             if not speaker_data:
+                logging.debug(f"No speaker data found for {gll_file}")
                 self.missing_gll_files.append(gll_file)
             else:
+                logging.debug(f"Found existing speaker data for {gll_file}: {speaker_data}")
                 self.existing_speaker_data.append(
                     {
                         "gll_file": gll_file,
@@ -61,9 +69,9 @@ class MissingSpeakerDialog(QDialog):
             # Missing Speaker Table
             self.missing_table = QTableWidget()
             self.missing_table.setObjectName("missing_table")
-            self.missing_table.setColumnCount(4)
+            self.missing_table.setColumnCount(5)
             self.missing_table.setHorizontalHeaderLabels(
-                ["GLL File", "Speaker Name", "Config Files", "Skip"]
+                ["GLL File", "Speaker Name", "Config Files", "Properties", "Skip"]
             )
             self.missing_table.horizontalHeader().setSectionResizeMode(
                 QHeaderView.Stretch
@@ -72,6 +80,7 @@ class MissingSpeakerDialog(QDialog):
             self.missing_table.setRowCount(len(self.missing_gll_files))
             self.missing_config_files = [[] for _ in self.missing_gll_files]
             self.missing_skip_states = [False for _ in self.missing_gll_files]
+            self.missing_properties = [{} for _ in self.missing_gll_files]
 
             for row, gll_file in enumerate(self.missing_gll_files):
                 # GLL File column
@@ -82,6 +91,7 @@ class MissingSpeakerDialog(QDialog):
                 # Speaker Name column
                 speaker_input = QLineEdit()
                 speaker_input.setObjectName("speaker_input")
+                speaker_input.setText(self.suggest_speaker_name(gll_file))
                 self.missing_table.setCellWidget(row, 1, speaker_input)
 
                 # Config Files column
@@ -91,6 +101,15 @@ class MissingSpeakerDialog(QDialog):
                     lambda checked, r=row: self.add_config_files(r, is_missing=True)
                 )
                 self.missing_table.setCellWidget(row, 2, config_btn)
+
+                # Properties column
+                properties_btn = QPushButton("Edit Properties")
+                properties_btn.setObjectName("properties_btn")
+                properties_btn.clicked.connect(
+                    lambda checked, row=row: self.edit_missing_properties(row)
+                )
+                logging.debug(f"Created properties button for row {row}")
+                self.missing_table.setCellWidget(row, 3, properties_btn)
 
                 # Skip checkbox column
                 skip_checkbox = QCheckBox()
@@ -104,7 +123,7 @@ class MissingSpeakerDialog(QDialog):
                 skip_layout.addWidget(skip_checkbox)
                 skip_layout.setAlignment(Qt.AlignCenter)
                 skip_layout.setContentsMargins(0, 0, 0, 0)
-                self.missing_table.setCellWidget(row, 3, skip_cell_widget)
+                self.missing_table.setCellWidget(row, 4, skip_cell_widget)
 
             main_layout.addWidget(self.missing_table)
 
@@ -116,9 +135,16 @@ class MissingSpeakerDialog(QDialog):
         # Existing Speaker Table
         self.existing_table = QTableWidget()
         self.existing_table.setObjectName("existing_table")
-        self.existing_table.setColumnCount(5)
+        self.existing_table.setColumnCount(6)
         self.existing_table.setHorizontalHeaderLabels(
-            ["GLL File", "Speaker Name", "Config Files", "Skip", "Actions"]
+            [
+                "GLL File",
+                "Speaker Name",
+                "Config Files",
+                "Properties",
+                "Skip",
+                "Actions",
+            ]
         )
         self.existing_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         main_layout.addWidget(self.existing_table)
@@ -140,6 +166,30 @@ class MissingSpeakerDialog(QDialog):
         main_layout.addLayout(button_layout)
 
         self.setLayout(main_layout)
+
+    def suggest_speaker_name(self, gll_file):
+        """Suggest a speaker name based on the GLL file path.
+        The last directory in the path is the brand name and the file name (without extension) is the model name."""
+        logging.debug(f"Suggesting speaker name for GLL file: {gll_file}")
+        
+        # Get the directory path and file name
+        path = os.path.dirname(gll_file)
+        file_name = os.path.basename(gll_file)
+        logging.debug(f"Path: {path}, File name: {file_name}")
+        
+        # Get the brand name (last directory in path)
+        brand = os.path.basename(path)
+        logging.debug(f"Brand name (from last directory): {brand}")
+        
+        # Get the model name (file name without .GLL extension)
+        model = os.path.splitext(file_name)[0]
+        logging.debug(f"Model name (without extension): {model}")
+        
+        # Combine brand and model
+        suggested_name = f"{brand} {model}"
+        logging.debug(f"Suggested speaker name: {suggested_name}")
+        
+        return suggested_name
 
     def update_existing_table(self):
         """Update existing speaker table"""
@@ -167,6 +217,14 @@ class MissingSpeakerDialog(QDialog):
             )
             self.existing_table.setCellWidget(row, 2, config_btn)
 
+            # Properties Button
+            properties_btn = QPushButton("Properties")
+            properties_btn.setObjectName("properties_btn")
+            properties_btn.clicked.connect(
+                lambda checked, d=data: self.edit_speaker_properties(d)
+            )
+            self.existing_table.setCellWidget(row, 3, properties_btn)
+
             # Skip checkbox
             skip_checkbox = QCheckBox()
             skip_checkbox.setChecked(data.get("skip", False))
@@ -179,13 +237,13 @@ class MissingSpeakerDialog(QDialog):
             skip_layout.addWidget(skip_checkbox)
             skip_layout.setAlignment(Qt.AlignCenter)
             skip_layout.setContentsMargins(0, 0, 0, 0)
-            self.existing_table.setCellWidget(row, 3, skip_cell_widget)
+            self.existing_table.setCellWidget(row, 4, skip_cell_widget)
 
             # Delete Button
             delete_btn = QPushButton("Delete")
             delete_btn.setObjectName("delete_btn")
             delete_btn.clicked.connect(lambda checked, d=data: self.delete_speaker(d))
-            self.existing_table.setCellWidget(row, 4, delete_btn)
+            self.existing_table.setCellWidget(row, 5, delete_btn)
 
     def add_config_files(self, row, is_missing=False):
         """Open file dialog to select config files"""
@@ -377,72 +435,107 @@ class MissingSpeakerDialog(QDialog):
         """Handle skip checkbox state change for existing entries"""
         data["skip"] = bool(state)
 
+    def edit_speaker_properties(self, data):
+        """Open dialog to edit speaker properties"""
+        dialog = SpeakerPropertiesDialog(data, data.get("speaker_name", ""), self)
+        if dialog.exec():
+            properties = dialog.get_properties()
+            # Update the data dictionary with the new properties
+            data.update(properties)
+
+    def edit_missing_properties(self, row):
+        """Open dialog to edit properties for a missing speaker"""
+        logging.debug(f"Opening properties dialog for missing speaker at row {row}")
+        
+        gll_file = self.missing_gll_files[row]
+        speaker_name = self.missing_table.cellWidget(row, 1).text()
+        logging.debug(f"GLL file: {gll_file}, Current speaker name: {speaker_name}")
+        logging.debug(f"Current properties: {self.missing_properties[row]}")
+        
+        try:
+            # Create a dialog with current properties
+            dialog = SpeakerPropertiesDialog(
+                self.missing_properties[row],  # Pass current properties
+                speaker_name,
+                self
+            )
+            logging.debug("Created SpeakerPropertiesDialog")
+            
+            result = dialog.exec()
+            logging.debug(f"Dialog result: {result}")
+            
+            if result == QDialog.Accepted:
+                # Store the properties
+                new_properties = dialog.get_properties()
+                self.missing_properties[row] = new_properties
+                logging.debug(f"Updated properties for missing speaker {speaker_name}: {new_properties}")
+            else:
+                logging.debug("Properties dialog was cancelled")
+                
+        except Exception as e:
+            logging.error(f"Error in edit_missing_properties: {str(e)}", exc_info=True)
+            QMessageBox.warning(
+                self,
+                "Error",
+                f"Failed to edit properties: {str(e)}"
+            )
+
     def save_all_changes(self):
         """Save changes for both missing and existing speaker data"""
         # Validate and save missing speaker data
-        if hasattr(self, "missing_table"):
+        if self.missing_gll_files:
             for row in range(self.missing_table.rowCount()):
-                # Get speaker name
-                speaker_input = self.missing_table.cellWidget(row, 1)
-                speaker_name = speaker_input.text().strip()
-                gll_file = self.missing_table.item(row, 0).text()
+                gll_file = self.missing_gll_files[row]
+                speaker_name = self.missing_table.cellWidget(row, 1).text().strip()
+                config_files = self.missing_config_files[row]
+                skip = self.missing_skip_states[row]
 
-                # Validate speaker name
-                if not speaker_name:
+                if not speaker_name and not skip:
                     QMessageBox.warning(
                         self,
-                        "Invalid Input",
-                        f"Please enter a speaker name for {gll_file}",
+                        "Missing Data",
+                        f"Please enter a speaker name for {gll_file} or mark it as skip.",
                     )
                     return
 
-                # Get config files
-                config_files = self.missing_config_files[row]
+                if speaker_name or skip:
+                    self.speaker_db.save_speaker_data(
+                        gll_file=gll_file,
+                        speaker_name=speaker_name,
+                        config_files=config_files,
+                        skip=skip,
+                        sensitivity=self.missing_properties[row].get("sensitivity"),
+                        impedance=self.missing_properties[row].get("impedance"),
+                        weight=self.missing_properties[row].get("weight"),
+                        height=self.missing_properties[row].get("height"),
+                        width=self.missing_properties[row].get("width"),
+                        depth=self.missing_properties[row].get("depth"),
+                    )
 
-                # Validate config files
-                for config_file in config_files:
-                    if not os.path.exists(config_file):
-                        QMessageBox.warning(
-                            self,
-                            "Invalid Config File",
-                            f"Config file does not exist: {config_file}",
-                        )
-                        return
-
-                # Save to database
-                self.speaker_db.save_speaker_data(
-                    gll_file=gll_file,
-                    speaker_name=speaker_name,
-                    config_files=config_files,
-                    skip=self.missing_skip_states[row],
-                )
-
-        # Save changes for existing speaker data
+        # Save existing speaker data
         for row in range(self.existing_table.rowCount()):
-            gll_file = self.existing_table.item(row, 0).text()
+            data = self.existing_speaker_data[row]
+            speaker_name = self.existing_table.cellWidget(row, 1).text().strip()
 
-            # Get speaker name
-            speaker_input = self.existing_table.cellWidget(row, 1)
-            speaker_name = speaker_input.text().strip()
-
-            # Validate speaker name
-            if not speaker_name:
+            if not speaker_name and not data.get("skip", False):
                 QMessageBox.warning(
-                    self, "Invalid Input", f"Please enter a speaker name for {gll_file}"
+                    self,
+                    "Missing Data",
+                    f"Please enter a speaker name for {data['gll_file']} or mark it as skip.",
                 )
                 return
 
-            # Find corresponding existing data
-            for data in self.existing_speaker_data:
-                if data["gll_file"] == gll_file:
-                    # Save to database
-                    self.speaker_db.save_speaker_data(
-                        gll_file,
-                        speaker_name,
-                        data["config_files"],
-                        skip=data.get("skip", False),
-                    )
-                    break
+            self.speaker_db.save_speaker_data(
+                gll_file=data["gll_file"],
+                speaker_name=speaker_name,
+                config_files=data["config_files"],
+                skip=data.get("skip", False),
+                sensitivity=data.get("sensitivity"),
+                impedance=data.get("impedance"),
+                weight=data.get("weight"),
+                height=data.get("height"),
+                width=data.get("width"),
+                depth=data.get("depth"),
+            )
 
-        # Close dialog
         self.accept()

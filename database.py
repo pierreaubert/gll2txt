@@ -98,61 +98,79 @@ class SpeakerDatabase(QObject):
 
     def save_speaker_data(
         self,
-        gll_file: str,
-        speaker_name: str,
-        config_files: List[str],
-        skip: bool = False,
+        gll_file,
+        speaker_name,
+        config_files=None,
+        skip=False,
+        sensitivity=None,
+        impedance=None,
+        weight=None,
+        height=None,
+        width=None,
+        depth=None,
     ):
-        """
-        Save or update speaker data for a specific GLL file
-
-        Args:
-            gll_file (str): Path to the GLL file
-            speaker_name (str): Name of the speaker
-            config_files (list): List of config file paths
-            skip (bool, optional): Whether to skip this GLL file. Defaults to False.
-        """
-        with self.Session() as session:
-            speaker = session.get(Speaker, gll_file)
+        """Save speaker data to database"""
+        try:
+            session = self.Session()
+            speaker = session.query(Speaker).filter_by(gll_file=gll_file).first()
             if not speaker:
-                speaker = Speaker(
-                    gll_file=gll_file, speaker_name=speaker_name, skip=skip
-                )
+                speaker = Speaker(gll_file=gll_file)
+
+            speaker.speaker_name = speaker_name
+            speaker.skip = skip
+            speaker.sensitivity = sensitivity
+            speaker.impedance = impedance
+            speaker.weight = weight
+            speaker.height = height
+            speaker.width = width
+            speaker.depth = depth
+
+            # Handle config files
+            if config_files is not None:
+                # Clear existing config files
+                speaker.config_files = []
+                # Add new config files
+                for file_path in config_files:
+                    config_file = ConfigFile(file_path=file_path, speaker=speaker)
+                    speaker.config_files.append(config_file)
+
+            if speaker not in session:
                 session.add(speaker)
-            else:
-                speaker.speaker_name = speaker_name
-                speaker.skip = skip
-
-            # Clear existing config files
-            speaker.config_files = []
-
-            # Add config files
-            for config_file in config_files:
-                config = ConfigFile(gll_file=gll_file, file_path=config_file)
-                session.add(config)
-
             session.commit()
 
-    def get_speaker_data(self, gll_file: str) -> Optional[Dict[str, Any]]:
-        """
-        Get speaker data for a given GLL file.
+            self.log_message(logging.INFO, f"Saved speaker data for {gll_file}")
+            return True
 
-        Args:
-            gll_file (str): Path to the GLL file
+        except Exception as e:
+            self.log_message(logging.ERROR, f"Error saving speaker data: {str(e)}")
+            session.rollback()
+            return False
+        finally:
+            session.close()
 
-        Returns:
-            dict: Speaker data including name and config files, or None if not found
-        """
-        with self.Session() as session:
-            speaker = session.get(Speaker, gll_file)
-            if not speaker:
-                return None
-
-            return {
-                "speaker_name": speaker.speaker_name,
-                "config_files": [cf.file_path for cf in speaker.config_files],
-                "skip": speaker.skip,
-            }
+    def get_speaker_data(self, gll_file):
+        """Get speaker data from database"""
+        try:
+            session = self.Session()
+            speaker = session.query(Speaker).filter_by(gll_file=gll_file).first()
+            if speaker:
+                return {
+                    "speaker_name": speaker.speaker_name,
+                    "config_files": [cf.file_path for cf in speaker.config_files],
+                    "skip": speaker.skip,
+                    "sensitivity": speaker.sensitivity,
+                    "impedance": speaker.impedance,
+                    "weight": speaker.weight,
+                    "height": speaker.height,
+                    "width": speaker.width,
+                    "depth": speaker.depth,
+                }
+            return None
+        except Exception as e:
+            self.log_message(logging.ERROR, f"Error getting speaker data: {str(e)}")
+            return None
+        finally:
+            session.close()
 
     def list_all_speakers(self) -> List[Dict[str, Any]]:
         """
@@ -169,6 +187,12 @@ class SpeakerDatabase(QObject):
                     "speaker_name": speaker.speaker_name,
                     "config_files": [cf.file_path for cf in speaker.config_files],
                     "skip": speaker.skip,
+                    "sensitivity": speaker.sensitivity,
+                    "impedance": speaker.impedance,
+                    "weight": speaker.weight,
+                    "height": speaker.height,
+                    "width": speaker.width,
+                    "depth": speaker.depth,
                 }
                 for speaker in speakers
             ]

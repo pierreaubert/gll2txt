@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
-from app_misc import get_windows_documents_path, DEFAULT_EASE_PATH, DEFAULT_GLL_PATH
+from app_misc import get_windows_documents_path, DEFAULT_EASE_PATH
 
 
 class SettingsDialog(QDialog):
@@ -61,9 +61,7 @@ class SettingsDialog(QDialog):
         gll_dir_label.setObjectName("gll_directory_label")
         gll_dir_input = QLineEdit()
         gll_dir_input.setObjectName("gll_directory")
-        gll_dir_input.setText(
-            self.settings.value("gll_files_directory", DEFAULT_GLL_PATH)
-        )
+        gll_dir_input.setText(self.settings.value("gll_files_directory"))
         gll_dir_browse = QPushButton("Browse...")
         gll_dir_browse.setObjectName("browse_gll")
         gll_dir_browse.clicked.connect(
