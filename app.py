@@ -260,7 +260,7 @@ class MainWindow(QMainWindow):
             return
 
         # Open MissingSpeakerDialog with all GLL files
-        speaker_dialog = MissingSpeakerDialog(gll_files, self.settings, self)
+        speaker_dialog = MissingSpeakerDialog(self.settings, gll_files, self)
         speaker_dialog.exec()
 
     def open_github(self):
@@ -350,7 +350,7 @@ class MainWindow(QMainWindow):
     def request_speaker_data(self, input_paths):
         """Handle the request for speaker data by opening a dialog"""
         logging.debug(f"Opening MissingSpeakerDialog for paths: {input_paths}")
-        speaker_dialog = MissingSpeakerDialog(input_paths, self.settings, self)
+        speaker_dialog = MissingSpeakerDialog(self.settings, input_paths, self)
         speaker_dialog.exec()
 
     def open_files(self):

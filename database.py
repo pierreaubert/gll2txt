@@ -196,6 +196,17 @@ class SpeakerDatabase(QObject):
                 for speaker in speakers
             ]
 
+    def get_all_gll_files(self) -> List[str]:
+        """
+        Get a list of all GLL files in the database.
+
+        Returns:
+            list: List of GLL file paths
+        """
+        with self.Session() as session:
+            speakers = session.execute(select(Speaker.gll_file)).scalars().all()
+            return list(speakers)
+
     def delete_speaker(self, gll_file: str):
         """
         Delete a speaker from the database.

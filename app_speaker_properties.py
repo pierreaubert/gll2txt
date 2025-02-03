@@ -10,21 +10,9 @@ from PySide6.QtWidgets import (
     QLabel,
     QTextEdit,
 )
-from dataclasses import dataclass
 from typing import Dict, List, Optional
 import asyncio
 from crawler import SpecificationCrawler, SpecData
-
-
-@dataclass
-class SpecData:
-    sensitivity: Optional[float] = None
-    impedance: Optional[float] = None
-    weight: Optional[float] = None
-    height: Optional[float] = None
-    width: Optional[float] = None
-    depth: Optional[float] = None
-    source_url: str = ""
 
 
 class SpecificationConflictDialog(QDialog):
@@ -73,9 +61,11 @@ class SpeakerPropertiesDialog(QDialog):
         width: Optional[float] = None,
         depth: Optional[float] = None,
         parent=None,
+        test_mode=False,
     ):
         super().__init__(parent)
         self.speaker_name = speaker_name
+        self.test_mode = test_mode
 
         self.setWindowTitle(f"Speaker Properties - {speaker_name}")
         self.setModal(True)
@@ -159,7 +149,8 @@ class SpeakerPropertiesDialog(QDialog):
     async def search_specifications(self):
         """Search for speaker specifications and parse results"""
         if not self.speaker_name:
-            QMessageBox.warning(self, "Warning", "No speaker name provided")
+            if not self.test_mode:
+                QMessageBox.warning(self, "Warning", "No speaker name provided")
             return
 
         try:
@@ -172,7 +163,8 @@ class SpeakerPropertiesDialog(QDialog):
 
             if not results:
                 self.log_message("No search results found")
-                QMessageBox.warning(self, "Warning", "No results found")
+                if not self.test_mode:
+                    QMessageBox.warning(self, "Warning", "No results found")
                 return
 
             # Get content from top 3 results and extract specifications
@@ -229,7 +221,8 @@ class SpeakerPropertiesDialog(QDialog):
         except Exception as e:
             error_msg = f"Failed to fetch specifications: {str(e)}"
             self.log_message(f"\nError: {error_msg}")
-            QMessageBox.warning(self, "Error", error_msg)
+            if not self.test_mode:
+                QMessageBox.warning(self, "Error", error_msg)
 
     def merge_specifications(
         self, specs: List[SpecData]
@@ -268,9 +261,10 @@ class SpeakerPropertiesDialog(QDialog):
         try:
             loop.run_until_complete(self.search_specifications())
         except Exception as e:
-            QMessageBox.warning(
-                self, "Error", f"Failed to fetch specifications: {str(e)}"
-            )
+            if not self.test_mode:
+                QMessageBox.warning(
+                    self, "Error", f"Failed to fetch specifications: {str(e)}"
+                )
 
     def get_properties(self):
         """Get the speaker properties as a dictionary"""
