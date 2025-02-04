@@ -50,3 +50,4 @@ __pypackages__/
 venv
 
 *.log
+.coverage

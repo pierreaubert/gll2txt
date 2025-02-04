@@ -190,11 +190,6 @@ class MainWindow(QMainWindow):
         manage_speakers_action.setShortcut("Ctrl+E")
         manage_speakers_action.triggered.connect(self.open_speaker_management)
 
-        # Open Files Action
-        open_files_action = file_menu.addAction("&Open GLL Files...")
-        open_files_action.setShortcut("Ctrl+O")
-        open_files_action.triggered.connect(self.open_files)
-
         # Process Files Action
         process_files_action = file_menu.addAction("&Process Files")
         process_files_action.setShortcut("Ctrl+P")
