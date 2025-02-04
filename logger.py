@@ -29,7 +29,7 @@ def log_level_pretty(level) -> str:
     return "UNKNOWN"
 
 
-def log_message(level, message):
+def log_message(level, the_message):
     """
     Log a message using the global logger or print if no logger is set
 
@@ -37,9 +37,12 @@ def log_message(level, message):
         level (int): Logging level (e.g., logging.INFO)
         message (str): Message to log
     """
+    message = the_message
+    if message[-1] == "^M":
+        message = message[:-1]
     if _global_logger:
         if isinstance(_global_logger, logging.Logger):
-            _global_logger(level, message)
+            _global_logger.log(level, message)
         else:
             # If using Qt logger (not a standard logger), pass both level and message
             _global_logger(level, message)
