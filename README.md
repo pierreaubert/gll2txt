@@ -45,7 +45,11 @@ The first version of this from 2022 used to be written with Microsoft PowerAutom
 
 I wrote the windows automation manually but the app itself has been written with an AI assistant and Windsurf as an editor. AI did incredible progress in 2024 but we are not yet there:
 - you cannot trust anything written by the tool: it can create a mess very easily.
-- it looks good but at the end of the day: code quality is crap, very verbose with little factorisation, isolation of features and UI is not understood, etc
-- I have 0 confidence it is working.
+- code quality is crap, very verbose with little factorisation
+- isolation of features and UI is not understood
+- need to babysit all the time: new code breaks test, does not pass ruff --check, is inconsistent etc
+- I have 0 confidence it is working properly: it works well enough for a prototype and can get the job done with a few iterations.
+
+Conclusion: ok for prototyping
 
 Hope you enjoy it!
