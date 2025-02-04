@@ -10,9 +10,9 @@ class ConfigFile(Base):
     __tablename__ = "config_files"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    file_path: Mapped[str] = mapped_column(String)
+    config_file: Mapped[str] = mapped_column(String)
     gll_file: Mapped[str] = mapped_column(ForeignKey("speakers.gll_file"))
     speaker: Mapped[str] = relationship("Speaker", back_populates="config_files")
 
     def __repr__(self):
-        return f"<ConfigFile(file_path='{self.file_path}')>"
+        return f"<ConfigFile(file_path='{self.config_file}')>"

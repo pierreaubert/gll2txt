@@ -50,44 +50,30 @@ class SpeakerDatabase(QObject):
                         f"Could not create database directory: {db_dir}"
                     ) from e
 
-            # Create engine and session factory
-            self.log_message(logging.DEBUG, "Creating database engine")
-            try:
-                self.engine = create_engine(f"sqlite:///{self.db_path}", echo=False)
-                self.Session = sessionmaker(bind=self.engine)
+            # Create database engine
+            self.engine = create_engine(f"sqlite:///{db_path}")
 
-                # Create tables
-                self.log_message(logging.DEBUG, "Creating database tables")
-                Base.metadata.create_all(self.engine)
+            # Run migrations
+            from alembic.config import Config
+            from alembic import command
 
-                # Verify tables exist
-                with self.engine.connect() as conn:
-                    # Get list of tables
-                    tables = Base.metadata.tables.keys()
-                    self.log_message(
-                        logging.INFO, f"Created tables: {', '.join(tables)}"
-                    )
+            alembic_cfg = Config("alembic.ini")
+            alembic_cfg.set_main_option("sqlalchemy.url", f"sqlite:///{db_path}")
+            command.upgrade(alembic_cfg, "head")
 
-                    # Verify each table exists
-                    for table in tables:
-                        result = conn.execute(
-                            text(
-                                f"SELECT name FROM sqlite_master WHERE type='table' AND name='{table}'"
-                            )
-                        )
-                        if not result.fetchone():
-                            raise RuntimeError(f"Table {table} was not created")
-                        self.log_message(
-                            logging.DEBUG, f"Verified table exists: {table}"
-                        )
+            # Create session maker
+            self.Session = sessionmaker(bind=self.engine)
 
-            except Exception as e:
-                self.log_message(logging.ERROR, "Failed to initialize database")
-                raise RuntimeError("Could not initialize database") from e
+            # Create tables if they don't exist
+            Base.metadata.create_all(self.engine)
 
-        except Exception:
-            self.log_message(logging.ERROR, "Database initialization failed")
-            raise
+            # Test database connection
+            with self.Session() as session:
+                session.execute(text("SELECT 1"))
+
+        except Exception as e:
+            self.log_message(logging.ERROR, f"Failed to initialize database: {str(e)}")
+            raise RuntimeError("Could not initialize database") from e
 
     def log_message(self, level: int, message: str):
         """Helper method to emit log messages with level and also log to system logger"""
@@ -131,8 +117,8 @@ class SpeakerDatabase(QObject):
                 # Clear existing config files
                 speaker.config_files = []
                 # Add new config files
-                for file_path in config_files:
-                    config_file = ConfigFile(file_path=file_path)
+                for config_file in config_files:
+                    config_file = ConfigFile(config_file=config_file)
                     speaker.config_files.append(config_file)
                     session.add(config_file)
 
@@ -155,7 +141,7 @@ class SpeakerDatabase(QObject):
             if speaker:
                 return {
                     "speaker_name": speaker.speaker_name,
-                    "config_files": [cf.file_path for cf in speaker.config_files],
+                    "config_files": [cf.config_file for cf in speaker.config_files],
                     "skip": speaker.skip,
                     "sensitivity": speaker.sensitivity,
                     "impedance": speaker.impedance,
@@ -184,7 +170,7 @@ class SpeakerDatabase(QObject):
                 {
                     "gll_file": speaker.gll_file,
                     "speaker_name": speaker.speaker_name,
-                    "config_files": [cf.file_path for cf in speaker.config_files],
+                    "config_files": [cf.config_file for cf in speaker.config_files],
                     "skip": speaker.skip,
                     "sensitivity": speaker.sensitivity,
                     "impedance": speaker.impedance,

@@ -88,16 +88,16 @@ def test_list_all_speakers(db):
         ("test3.gll", "Speaker 3", ["config3.txt"]),
     ]
 
-    for file_path, name, configs in speakers:
-        db.save_speaker_data(file_path, name, configs)
+    for config_file, name, configs in speakers:
+        db.save_speaker_data(config_file, name, configs)
 
     # List all speakers
     all_speakers = db.list_all_speakers()
 
     # Verify all speakers are returned
     assert len(all_speakers) == len(speakers)
-    for file_path, name, configs in speakers:
-        speaker_data = db.get_speaker_data(file_path)
+    for config_file, name, configs in speakers:
+        speaker_data = db.get_speaker_data(config_file)
         assert speaker_data is not None
         assert speaker_data["speaker_name"] == name
         assert speaker_data["config_files"] == configs
