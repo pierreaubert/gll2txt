@@ -43,6 +43,7 @@ class MainWindow(QMainWindow):
             self.progress_bar = None
             self.process_button = None
             self.exit_button = None
+            self.manage_speakers_button = None
 
             self.setWindowTitle("GLL2TXT Converter")
             self.resize(1000, 700)
@@ -83,6 +84,13 @@ class MainWindow(QMainWindow):
 
                 # Process button and progress area
                 bottom_layout = QHBoxLayout()
+
+                # Add speaker management button
+                self.manage_speakers_button = QPushButton("Manage Speakers")
+                self.manage_speakers_button.clicked.connect(
+                    self.open_speaker_management
+                )
+                bottom_layout.addWidget(self.manage_speakers_button)
 
                 self.process_button = QPushButton("Process GLL Files")
                 self.process_button.clicked.connect(self.start_processing)
