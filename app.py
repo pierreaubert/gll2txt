@@ -82,6 +82,10 @@ class MainWindow(QMainWindow):
                 self.log_area.setDocumentTitle("Logs")
                 main_layout.addWidget(self.log_area)
 
+                # Process manager setup
+                self.process_manager = ProcessManager(self.settings)
+                self.process_thread = None
+
                 # Process button and progress area
                 bottom_layout = QHBoxLayout()
 
@@ -101,6 +105,12 @@ class MainWindow(QMainWindow):
                 self.progress_bar.setVisible(False)
                 bottom_layout.addWidget(self.progress_bar)
 
+                # Stop button
+                self.stop_button = QPushButton("Stop")
+                self.stop_button.setVisible(True)
+                self.stop_button.clicked.connect(self.process_manager.stop_processing)
+                bottom_layout.addWidget(self.stop_button)
+
                 # Exit button
                 self.exit_button = QPushButton("Exit")
                 self.exit_button.setVisible(True)
@@ -108,10 +118,6 @@ class MainWindow(QMainWindow):
                 bottom_layout.addWidget(self.exit_button)
 
                 main_layout.addLayout(bottom_layout)
-
-                # Process manager setup
-                self.process_manager = ProcessManager(self.settings)
-                self.process_thread = None
 
                 # Connect signals
                 self.process_manager.log_signal.connect(self.log_message)
@@ -143,6 +149,9 @@ class MainWindow(QMainWindow):
         except Exception:
             logging.error("Failed to initialize main window", exc_info=True)
             raise
+
+    def stop_processing(self):
+        self.stop_process = True
 
     def closeEvent(self, event):
         """Handle window close event"""

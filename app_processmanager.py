@@ -18,6 +18,7 @@ class ProcessManager(QObject):
         super().__init__()
         self.settings = settings
         self.speaker_db = SpeakerDatabase()
+        self.stop_process = False
         # connect the global logger
         set_global_logger(self.log_message)
 
@@ -141,9 +142,15 @@ class ProcessManager(QObject):
             progress = int((index / total_files) * 100)
             self.progress_signal.emit(progress)
 
+            if self.stop_process:
+                break
+
         # If there are missing speaker files, emit signal
         if missing_speaker_files:
             self.speaker_data_required_signal.emit(missing_speaker_files)
             self.process_complete_signal.emit(False)
         else:
             self.process_complete_signal.emit(True)
+
+    def stop_processing(self):
+        self.stop_process = True
