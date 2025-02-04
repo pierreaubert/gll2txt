@@ -115,7 +115,12 @@ class ProcessManager(QObject):
 
             # Extract speaker data
             try:
-                result = gll_extract_speaker(input_path)
+                output_dir = self.settings.value("output_directory")
+                config_files = speaker_data.get("config_files", [])
+                config_file = config_files[0] if config_files else None
+                result = gll_extract_speaker(
+                    output_dir, speaker_name, input_path, config_file
+                )
                 if result:
                     self.log_message(
                         logging.INFO,
