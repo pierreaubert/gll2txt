@@ -151,29 +151,33 @@ def get_parallels() -> list[str]:
 
 def build_speakerdir(output_dir: str, speaker_name: str) -> str:
     os.makedirs(output_dir, mode=0o755, exist_ok=True)
-    dir = "{0}\\{1}".format(output_dir, speaker_name)
+    dir = "{}\\{}".format(output_dir, speaker_name)
     os.makedirs(dir, mode=0o755, exist_ok=True)
-    return dir
+    return dir.replace("/", "\\")
 
 
 def build_spl_filename(
     output_dir: str, speaker_name: str, meridian: str, parallel: str
 ) -> str:
     return "{0}\\{1}\\{1} -M{2}-P{3}.txt".format(
-        output_dir.replace("/", "\\"), speaker_name, meridian[:-1], parallel[:-1]
-    )
+        output_dir, speaker_name, meridian[:-1], parallel[:-1]
+    ).replace("/", "\\")
 
 
 def build_sensitivity_filename(output_dir: str, speaker_name: str) -> str:
-    return "{0}\\{1}\\{1} - sensitivity.txt".format(output_dir, speaker_name)
+    return "{0}\\{1}\\{1} - sensitivity.txt".format(output_dir, speaker_name).replace(
+        "/", "\\"
+    )
 
 
 def build_maxspl_filename(output_dir: str, speaker_name: str) -> str:
-    return "{0}\\{1}\\{1} - maxSPL.txt".format(output_dir, speaker_name)
+    return "{0}\\{1}\\{1} - maxSPL.txt".format(output_dir, speaker_name).replace(
+        "/", "\\"
+    )
 
 
 def build_zipfilename(output_dir: str, speaker_name: str) -> str:
-    return "{}\\{}.zip".format(output_dir, speaker_name)
+    return "{}\\{}.zip".format(output_dir, speaker_name).replace("/", "\\")
 
 
 def extract_spl(

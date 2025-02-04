@@ -86,7 +86,7 @@ class MainWindow(QMainWindow):
                 bottom_layout = QHBoxLayout()
 
                 # Add speaker management button
-                self.manage_speakers_button = QPushButton("Manage Speakers")
+                self.manage_speakers_button = QPushButton("Edit speakers data")
                 self.manage_speakers_button.clicked.connect(
                     self.open_speaker_management
                 )

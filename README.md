@@ -41,6 +41,11 @@ A Windows binary will come soon.
 
 The first version of this from 2022 used to be written with Microsoft PowerAutomate. I didnt pay the license for the pro version and I was not able to export a copy of the script to others. In 2025, I took a few hours to port the script to Python and opensource it. It is faster and more reliable. Since it is also much simpler, it is easier to debug and adapt to new version of EASE software.
 
-I wrote the windows automation manually but the app itself has been written with an AI assistant and Windsurf as an editor. AI did incredible progress in 2024 but we are not yet there.
+# On gen AI
+
+I wrote the windows automation manually but the app itself has been written with an AI assistant and Windsurf as an editor. AI did incredible progress in 2024 but we are not yet there:
+- you cannot trust anything written by the tool: it can create a mess very easily.
+- it looks good but at the end of the day: code quality is crap, very verbose with little factorisation, isolation of features and UI is not understood, etc
+- I have 0 confidence it is working.
 
 Hope you enjoy it!
