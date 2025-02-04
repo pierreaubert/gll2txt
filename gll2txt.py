@@ -335,7 +335,7 @@ def generate_zip(
 
 def extract_speaker(
     output_dir: str, speaker_name: str, gll_file: str, config_file: str | None
-):
+) -> bool:
     log_message(logging.INFO, f"Processing speaker: {speaker_name}")
     log_message(logging.INFO, f"GLL File: {gll_file}")
     # Create speaker directory
@@ -357,8 +357,10 @@ def extract_speaker(
 
     if generate_zip(output_dir, speaker_name):
         log_message(logging.INFO, "Success for {}!".format(speaker_name))
-    else:
-        log_message(logging.WARNING, "Failed for {}!".format(speaker_name))
+        return True
+
+    log_message(logging.WARNING, "Failed for {}!".format(speaker_name))
+    return False
 
 
 if __name__ == "__main__":

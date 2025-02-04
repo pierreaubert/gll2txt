@@ -94,6 +94,7 @@ class MainWindow(QMainWindow):
 
                 self.process_button = QPushButton("Process GLL Files")
                 self.process_button.clicked.connect(self.start_processing)
+                self.process_button.setVisible(True)
                 bottom_layout.addWidget(self.process_button)
 
                 self.progress_bar = QProgressBar()
@@ -115,9 +116,6 @@ class MainWindow(QMainWindow):
                 # Connect signals
                 self.process_manager.log_signal.connect(self.log_message)
                 self.process_manager.progress_signal.connect(self.update_progress)
-                self.process_manager.process_complete_signal.connect(
-                    self.processing_complete
-                )
                 self.process_manager.speaker_data_required_signal.connect(
                     self.request_speaker_data
                 )
@@ -283,11 +281,7 @@ class MainWindow(QMainWindow):
         )
 
     def start_processing(self):
-        # Disable process button
-        self.process_button.setEnabled(False)
-
-        # Hide process button, show progress bar
-        self.process_button.setVisible(False)
+        # show progress bar
         self.progress_bar.setVisible(True)
 
         # Reset progress bar
@@ -300,17 +294,8 @@ class MainWindow(QMainWindow):
         self.process_thread = ProcessThread(self.process_manager)
         self.process_thread.log_signal.connect(self.log_message)
         self.process_thread.progress_signal.connect(self.update_progress)
-        self.process_thread.process_complete_signal.connect(self.processing_complete)
 
         self.process_thread.start()
-
-    def processing_complete(self, success: bool):
-        """Handle process completion"""
-        self.process_button.setEnabled(True)
-        if success:
-            self.progress_bar.setValue(100)
-        else:
-            self.progress_bar.setValue(0)
 
     def log_message(self, level, message):
         """Add a colored log message to the log area"""
@@ -342,14 +327,6 @@ class MainWindow(QMainWindow):
     def update_progress(self, value):
         self.progress_bar.setValue(value)
 
-        # Show exit button when progress reaches 100%
-        if value == 100:
-            self.process_button.setVisible(False)
-            self.exit_button.setVisible(True)
-        else:
-            self.process_button.setVisible(True)
-            self.exit_button.setVisible(False)
-
     def request_speaker_data(self, input_paths):
         """Handle the request for speaker data by opening a dialog"""
         logging.debug(f"Opening MissingSpeakerDialog for paths: {input_paths}")
@@ -363,10 +340,7 @@ class MainWindow(QMainWindow):
         )
         if files:
             self.gll_files = files
-            self.process_button.setEnabled(True)
             self.log_message(logging.INFO, f"Selected {len(files)} files")
-        else:
-            self.process_button.setEnabled(False)
 
 
 def main():
