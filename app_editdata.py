@@ -30,6 +30,7 @@ class MissingSpeakerDialog(QDialog):
         self.resize(1000, 800)
         self.settings = settings
         self.test_mode = test_mode
+        self.gll_files = gll_files  # Store all GLL files
         logging.debug(f"Settings: {settings}")
         logging.debug(f"Test mode is {'enabled' if self.test_mode else 'disabled'}")
 
@@ -207,7 +208,7 @@ class MissingSpeakerDialog(QDialog):
         self.existing_table.setRowCount(0)
         self.existing_speaker_data = []
 
-        for gll_file in self.missing_gll_files:
+        for gll_file in self.gll_files:  # Use all GLL files
             data = self.speaker_db.get_speaker_data(gll_file)
             if not data:
                 continue
