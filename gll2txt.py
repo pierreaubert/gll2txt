@@ -152,8 +152,9 @@ def get_parallels() -> list[str]:
 def build_speakerdir(output_dir: str, speaker_name: str) -> str:
     os.makedirs(output_dir, mode=0o755, exist_ok=True)
     dir = "{}\\{}".format(output_dir, speaker_name)
+    dir = dir.replace("/", "\\")
     os.makedirs(dir, mode=0o755, exist_ok=True)
-    return dir.replace("/", "\\")
+    return dir
 
 
 def build_spl_filename(
@@ -346,7 +347,9 @@ def extract_speaker(
     if not check_all_files(output_dir, speaker_name):
         app = win.Application(backend="win32").start(ease_full)
         load_gll(app, gll_file)
-        view = app["ViewGLL: NXW 44-A [{}]".format(gll_file)]
+        # not ideal
+        gll_file = os.path.basename(gll_file)
+        view = app["ViewGLL: {} [{}]".format(speaker_name, gll_file)]
         load_config(app, view, config_file)
         view.type_keys("{F5}")
         set_parameters(app)
