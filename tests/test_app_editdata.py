@@ -64,10 +64,13 @@ def test_dialog_init(dialog, tmp_path):
 def test_update_existing_table(dialog, tmp_path):
     """Test updating existing speakers table"""
     # Add a test speaker to the database
-    dialog.speaker_db.save_speaker_data("test.GLL", "Test Speaker", ["config.txt"])
+    test_gll = "test.GLL"
+    dialog.speaker_db.save_speaker_data(test_gll, "Test Speaker", ["config.txt"])
 
-    # Add the GLL file to missing files
-    dialog.missing_gll_files.append("test.GLL")
+    # Add the GLL file to gll_files and missing_gll_files
+    if test_gll not in dialog.gll_files:
+        dialog.gll_files.append(test_gll)
+    dialog.missing_gll_files.append(test_gll)
 
     dialog.update_existing_table()
     table = dialog.findChild(QTableWidget, "existing_table")
@@ -87,7 +90,9 @@ def test_add_config_files(dialog, tmp_path):
     # Add a test speaker to the database
     dialog.speaker_db.save_speaker_data("test.GLL", "Test Speaker", [])
 
-    # Add the GLL file to missing files
+    # Add the GLL file to gll_files and missing_gll_files
+    if "test.GLL" not in dialog.gll_files:
+        dialog.gll_files.append("test.GLL")
     dialog.missing_gll_files.append("test.GLL")
     dialog.missing_table.setRowCount(1)
     dialog.missing_table.setItem(0, 0, QTableWidgetItem("test.GLL"))
@@ -103,7 +108,9 @@ def test_add_config_files(dialog, tmp_path):
 
 def test_save_all_changes(dialog, tmp_path):
     """Test saving all changes"""
-    # Add the GLL file to missing files
+    # Add the GLL file to gll_files and missing_gll_files
+    if "test.GLL" not in dialog.gll_files:
+        dialog.gll_files.append("test.GLL")
     dialog.missing_gll_files.append("test.GLL")
     dialog.missing_table.setRowCount(1)
     dialog.missing_table.setItem(0, 0, QTableWidgetItem("test.GLL"))
@@ -123,7 +130,9 @@ def test_save_all_changes(dialog, tmp_path):
 
 def test_on_skip_changed(dialog, tmp_path):
     """Test skip checkbox handling"""
-    # Add the GLL file to missing files
+    # Add the GLL file to gll_files and missing_gll_files
+    if "test.GLL" not in dialog.gll_files:
+        dialog.gll_files.append("test.GLL")
     dialog.missing_gll_files.append("test.GLL")
     dialog.missing_table.setRowCount(1)
     dialog.missing_table.setItem(0, 0, QTableWidgetItem("test.GLL"))
@@ -165,10 +174,13 @@ def test_edit_config_files_dialog(dialog, tmp_path):
         config_files.append(str(file_path))
 
     # Add a test speaker to the database
-    dialog.speaker_db.save_speaker_data("test.GLL", "Test Speaker", config_files)
+    test_gll = "test.GLL"
+    dialog.speaker_db.save_speaker_data(test_gll, "Test Speaker", config_files)
 
-    # Add the GLL file to missing files
-    dialog.missing_gll_files.append("test.GLL")
+    # Add the GLL file to gll_files and missing_gll_files
+    if test_gll not in dialog.gll_files:
+        dialog.gll_files.append(test_gll)
+    dialog.missing_gll_files.append(test_gll)
     dialog.update_existing_table()
 
     # Get data for the speaker
@@ -199,23 +211,24 @@ def test_edit_properties_dialog(dialog, tmp_path):
         "depth": 12.5,
     }
 
-    dialog.speaker_db.save_speaker_data(
-        "test.GLL", "Test Speaker", [], **test_properties
-    )
+    test_gll = "test.GLL"
+    dialog.speaker_db.save_speaker_data(test_gll, "Test Speaker", [], **test_properties)
 
-    # Add the GLL file to missing files
-    dialog.missing_gll_files.append("test.GLL")
+    # Add the GLL file to gll_files and missing_gll_files
+    if test_gll not in dialog.gll_files:
+        dialog.gll_files.append(test_gll)
+    dialog.missing_gll_files.append(test_gll)
     dialog.update_existing_table()
 
-    # Get data for the speaker
-    data = dialog.existing_speaker_data[0]
-    data.update(test_properties)
+    # Open properties dialog directly with test data
+    properties_dialog = dialog.edit_speaker_properties(
+        {"gll_file": test_gll, "speaker_name": "Test Speaker", **test_properties}
+    )
 
-    # Open properties dialog
-    properties_dialog = dialog.edit_speaker_properties(data)
+    # Verify dialog was created
     assert properties_dialog is not None
 
-    # Verify properties are displayed correctly
+    # Verify initial values
     assert (
         abs(properties_dialog.sensitivity.value() - test_properties["sensitivity"])
         < 0.1
@@ -227,7 +240,8 @@ def test_edit_properties_dialog(dialog, tmp_path):
     assert abs(properties_dialog.depth.value() - test_properties["depth"]) < 0.1
 
     # Close dialog
-    properties_dialog.reject()
+    if not dialog.test_mode:
+        properties_dialog.accept()
 
 
 def test_save_properties(dialog, tmp_path):
@@ -242,22 +256,23 @@ def test_save_properties(dialog, tmp_path):
         "depth": 12.0,
     }
 
+    test_gll = "test.GLL"
     dialog.speaker_db.save_speaker_data(
-        "test.GLL", "Test Speaker", [], **initial_properties
+        test_gll, "Test Speaker", [], **initial_properties
     )
 
-    # Add the GLL file to missing files
-    dialog.missing_gll_files.append("test.GLL")
+    # Add the GLL file to gll_files and missing_gll_files
+    if test_gll not in dialog.gll_files:
+        dialog.gll_files.append(test_gll)
+    dialog.missing_gll_files.append(test_gll)
     dialog.update_existing_table()
 
     # Get data for the speaker
     data = dialog.existing_speaker_data[0]
-    data.update(initial_properties)
 
     # Open properties dialog
-    properties_dialog = dialog.edit_speaker_properties(
-        {"gll_file": "test.GLL", "speaker_name": "Test Speaker"}
-    )
+    properties_dialog = dialog.edit_speaker_properties(data)
+    assert properties_dialog is not None
 
     # Verify dialog shows correct values
     assert (
@@ -310,10 +325,13 @@ def test_save_config_files(dialog, tmp_path):
         config_files.append(str(file_path))
 
     # Add a test speaker to the database
-    dialog.speaker_db.save_speaker_data("test.GLL", "Test Speaker", [])
+    test_gll = "test.GLL"
+    dialog.speaker_db.save_speaker_data(test_gll, "Test Speaker", [])
 
-    # Add the GLL file to missing files
-    dialog.missing_gll_files.append("test.GLL")
+    # Add the GLL file to gll_files and missing_gll_files
+    if test_gll not in dialog.gll_files:
+        dialog.gll_files.append(test_gll)
+    dialog.missing_gll_files.append(test_gll)
     dialog.update_existing_table()
 
     # Get data for the speaker
@@ -347,10 +365,13 @@ def test_save_config_files(dialog, tmp_path):
 def test_edit_existing_speaker(dialog, tmp_path):
     """Test editing an existing speaker"""
     # Add a test speaker to the database
-    dialog.speaker_db.save_speaker_data("test.GLL", "Test Speaker", ["config.txt"])
+    test_gll = "test.GLL"
+    dialog.speaker_db.save_speaker_data(test_gll, "Test Speaker", ["config.txt"])
 
-    # Add the GLL file to missing files
-    dialog.missing_gll_files.append("test.GLL")
+    # Add the GLL file to gll_files and missing_gll_files
+    if test_gll not in dialog.gll_files:
+        dialog.gll_files.append(test_gll)
+    dialog.missing_gll_files.append(test_gll)
     dialog.update_existing_table()
 
     # Verify speaker is in table
@@ -375,10 +396,13 @@ def test_edit_existing_speaker(dialog, tmp_path):
 def test_skip_existing_speaker(dialog, tmp_path):
     """Test skipping an existing speaker"""
     # Add a test speaker to the database
-    dialog.speaker_db.save_speaker_data("test.GLL", "Test Speaker", ["config.txt"])
+    test_gll = "test.GLL"
+    dialog.speaker_db.save_speaker_data(test_gll, "Test Speaker", ["config.txt"])
 
-    # Add the GLL file to missing files
-    dialog.missing_gll_files.append("test.GLL")
+    # Add the GLL file to gll_files and missing_gll_files
+    if test_gll not in dialog.gll_files:
+        dialog.gll_files.append(test_gll)
+    dialog.missing_gll_files.append(test_gll)
     dialog.update_existing_table()
 
     # Verify speaker is in table
@@ -404,81 +428,18 @@ def test_skip_existing_speaker(dialog, tmp_path):
     assert data["skip"]
 
 
-def test_suggest_speaker_name(dialog):
-    """Test speaker name suggestion functionality"""
-    test_path = "/path/to/Brand/Model.GLL"
-    suggested_name = dialog.suggest_speaker_name(test_path)
-    assert suggested_name == "Brand Model"
-
-
-def test_missing_table_initialization(dialog, tmp_path):
-    """Test initialization of missing speakers table"""
-    missing_table = dialog.findChild(QTableWidget, "missing_table")
-    if dialog.missing_gll_files:
-        assert missing_table is not None
-        assert missing_table.columnCount() == 5
-        assert missing_table.horizontalHeaderItem(0).text() == "GLL File"
-        assert missing_table.horizontalHeaderItem(1).text() == "Speaker Name"
-        assert missing_table.horizontalHeaderItem(2).text() == "Config Files"
-        assert missing_table.horizontalHeaderItem(3).text() == "Properties"
-        assert missing_table.horizontalHeaderItem(4).text() == "Skip"
-
-
-def test_existing_table_initialization(dialog):
-    """Test initialization of existing speakers table"""
-    existing_table = dialog.findChild(QTableWidget, "existing_table")
-    assert existing_table is not None
-    assert existing_table.columnCount() == 6
-    assert existing_table.horizontalHeaderItem(0).text() == "GLL File"
-    assert existing_table.horizontalHeaderItem(1).text() == "Speaker Name"
-    assert existing_table.horizontalHeaderItem(2).text() == "Config Files"
-    assert existing_table.horizontalHeaderItem(3).text() == "Properties"
-    assert existing_table.horizontalHeaderItem(4).text() == "Skip"
-    assert existing_table.horizontalHeaderItem(5).text() == "Actions"
-
-
-def test_missing_speaker_widgets(dialog, tmp_path):
-    """Test widgets in missing speakers table"""
-    if not dialog.missing_gll_files:
-        return
-
-    missing_table = dialog.findChild(QTableWidget, "missing_table")
-    first_row = 0
-
-    # Test speaker name input
-    speaker_input = missing_table.cellWidget(first_row, 1)
-    assert isinstance(speaker_input, QLineEdit)
-    assert speaker_input.text() == dialog.suggest_speaker_name(
-        dialog.missing_gll_files[0]
-    )
-
-    # Test config files button
-    config_btn = missing_table.cellWidget(first_row, 2)
-    assert isinstance(config_btn, QPushButton)
-    assert config_btn.text() == "Add Config Files"
-
-    # Test properties button
-    properties_btn = missing_table.cellWidget(first_row, 3)
-    assert isinstance(properties_btn, QPushButton)
-    assert properties_btn.text() == "Edit Properties"
-
-    # Test skip checkbox
-    skip_widget = missing_table.cellWidget(first_row, 4)
-    assert isinstance(skip_widget, QWidget)
-    skip_checkbox = skip_widget.findChild(QCheckBox)
-    assert isinstance(skip_checkbox, QCheckBox)
-    assert not skip_checkbox.isChecked()
-
-
 def test_existing_speaker_widgets(dialog, tmp_path):
     """Test widgets in existing speakers table"""
     # Add a test speaker first
+    test_gll = "test.GLL"
     dialog.speaker_db.save_speaker_data(
-        "test.GLL", "Test Speaker", ["config.txt"], sensitivity=90.0, impedance=8.0
+        test_gll, "Test Speaker", ["config.txt"], sensitivity=90.0, impedance=8.0
     )
 
-    # Add the GLL file to missing_gll_files to show in table
-    dialog.missing_gll_files.append("test.GLL")
+    # Add the GLL file to gll_files and missing_gll_files
+    if test_gll not in dialog.gll_files:
+        dialog.gll_files.append(test_gll)
+    dialog.missing_gll_files.append(test_gll)
     dialog.update_existing_table()
 
     existing_table = dialog.findChild(QTableWidget, "existing_table")
@@ -625,9 +586,10 @@ def test_edit_existing_speaker_properties(dialog, tmp_path):
         depth=test_data["depth"],
     )
 
-    dialog.missing_gll_files.append(
-        test_data["gll_file"]
-    )  # Add to missing files to show in table
+    # Add the GLL file to gll_files and missing_gll_files
+    if test_data["gll_file"] not in dialog.gll_files:
+        dialog.gll_files.append(test_data["gll_file"])
+    dialog.missing_gll_files.append(test_data["gll_file"])
     dialog.update_existing_table()
 
     # Find the speaker in the table
@@ -687,10 +649,13 @@ def test_edit_existing_speaker_properties(dialog, tmp_path):
 def test_delete_speaker(dialog, tmp_path):
     """Test deleting a speaker"""
     # Add a test speaker to the database
-    dialog.speaker_db.save_speaker_data("test.GLL", "Test Speaker", ["config.txt"])
+    test_gll = "test.GLL"
+    dialog.speaker_db.save_speaker_data(test_gll, "Test Speaker", ["config.txt"])
 
-    # Add the GLL file to missing files
-    dialog.missing_gll_files.append("test.GLL")
+    # Add the GLL file to gll_files and missing_gll_files
+    if test_gll not in dialog.gll_files:
+        dialog.gll_files.append(test_gll)
+    dialog.missing_gll_files.append(test_gll)
     dialog.update_existing_table()
 
     # Get data for the speaker
@@ -744,3 +709,69 @@ def test_delete_speaker_cancel(qapp, tmp_path, monkeypatch):
     # Verify speaker was not deleted
     assert dialog.existing_table.rowCount() == initial_count
     assert speaker_db.get_speaker_data(gll_file) is not None
+
+
+def test_suggest_speaker_name(dialog):
+    """Test speaker name suggestion functionality"""
+    test_path = "/path/to/Brand/Model.GLL"
+    suggested_name = dialog.suggest_speaker_name(test_path)
+    assert suggested_name == "Brand Model"
+
+
+def test_missing_table_initialization(dialog, tmp_path):
+    """Test initialization of missing speakers table"""
+    missing_table = dialog.findChild(QTableWidget, "missing_table")
+    if dialog.missing_gll_files:
+        assert missing_table is not None
+        assert missing_table.columnCount() == 5
+        assert missing_table.horizontalHeaderItem(0).text() == "GLL File"
+        assert missing_table.horizontalHeaderItem(1).text() == "Speaker Name"
+        assert missing_table.horizontalHeaderItem(2).text() == "Config Files"
+        assert missing_table.horizontalHeaderItem(3).text() == "Properties"
+        assert missing_table.horizontalHeaderItem(4).text() == "Skip"
+
+
+def test_existing_table_initialization(dialog):
+    """Test initialization of existing speakers table"""
+    existing_table = dialog.findChild(QTableWidget, "existing_table")
+    assert existing_table is not None
+    assert existing_table.columnCount() == 6
+    assert existing_table.horizontalHeaderItem(0).text() == "GLL File"
+    assert existing_table.horizontalHeaderItem(1).text() == "Speaker Name"
+    assert existing_table.horizontalHeaderItem(2).text() == "Config Files"
+    assert existing_table.horizontalHeaderItem(3).text() == "Properties"
+    assert existing_table.horizontalHeaderItem(4).text() == "Skip"
+    assert existing_table.horizontalHeaderItem(5).text() == "Actions"
+
+
+def test_missing_speaker_widgets(dialog, tmp_path):
+    """Test widgets in missing speakers table"""
+    if not dialog.missing_gll_files:
+        return
+
+    missing_table = dialog.findChild(QTableWidget, "missing_table")
+    first_row = 0
+
+    # Test speaker name input
+    speaker_input = missing_table.cellWidget(first_row, 1)
+    assert isinstance(speaker_input, QLineEdit)
+    assert speaker_input.text() == dialog.suggest_speaker_name(
+        dialog.missing_gll_files[0]
+    )
+
+    # Test config files button
+    config_btn = missing_table.cellWidget(first_row, 2)
+    assert isinstance(config_btn, QPushButton)
+    assert config_btn.text() == "Add Config Files"
+
+    # Test properties button
+    properties_btn = missing_table.cellWidget(first_row, 3)
+    assert isinstance(properties_btn, QPushButton)
+    assert properties_btn.text() == "Edit Properties"
+
+    # Test skip checkbox
+    skip_widget = missing_table.cellWidget(first_row, 4)
+    assert isinstance(skip_widget, QWidget)
+    skip_checkbox = skip_widget.findChild(QCheckBox)
+    assert isinstance(skip_checkbox, QCheckBox)
+    assert not skip_checkbox.isChecked()

@@ -521,43 +521,35 @@ class MissingSpeakerDialog(QDialog):
     def save_all_changes(self):
         """Save all changes to the database"""
         # Save missing speakers
-        for row in range(self.missing_table.rowCount()):
-            gll_file = self.missing_table.item(row, 0).text()
-            speaker_input = self.missing_table.cellWidget(row, 1)
-            if not speaker_input:
-                continue
+        if hasattr(self, "missing_table"):  # Only process if missing_table exists
+            for row in range(self.missing_table.rowCount()):
+                gll_file = self.missing_table.item(row, 0).text()
+                speaker_input = self.missing_table.cellWidget(row, 1)
+                if not speaker_input:
+                    continue
 
-            speaker_name = speaker_input.text()
-            if not speaker_name:
-                continue
+                speaker_name = speaker_input.text()
+                if not speaker_name:
+                    continue
 
-            # Get config files
-            config_files = []
+                # Get config files
+                config_files = []
 
-            # Get skip status
-            skip_cell_widget = self.missing_table.cellWidget(row, 4)
-            if skip_cell_widget:
-                skip_checkbox = skip_cell_widget.findChild(QCheckBox)
-                skip = skip_checkbox.isChecked() if skip_checkbox else False
-            else:
-                skip = False
+                # Get skip status
+                skip_cell_widget = self.missing_table.cellWidget(row, 4)
+                if skip_cell_widget:
+                    skip_checkbox = skip_cell_widget.findChild(QCheckBox)
+                    skip = skip_checkbox.isChecked() if skip_checkbox else False
+                else:
+                    skip = False
 
-            # Get properties
-            properties = self.missing_properties.get(gll_file, {})
+                # Get properties
+                properties = self.missing_properties.get(gll_file, {})
 
-            # Save to database
-            self.speaker_db.save_speaker_data(
-                gll_file,
-                speaker_name,
-                config_files,
-                skip=skip,
-                sensitivity=properties.get("sensitivity"),
-                impedance=properties.get("impedance"),
-                weight=properties.get("weight"),
-                height=properties.get("height"),
-                width=properties.get("width"),
-                depth=properties.get("depth"),
-            )
+                # Save to database
+                self.speaker_db.save_speaker_data(
+                    gll_file, speaker_name, config_files, skip=skip, **properties
+                )
 
         # Save existing speakers
         for row in range(self.existing_table.rowCount()):
