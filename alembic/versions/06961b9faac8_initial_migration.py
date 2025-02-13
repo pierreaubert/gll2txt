@@ -27,6 +27,7 @@ def upgrade() -> None:
         sa.Column("speaker_name", sa.String(), nullable=False),
         sa.Column("skip", sa.Boolean(), nullable=False),
         sa.PrimaryKeyConstraint("gll_file"),
+        if_not_exists=True,
     )
     op.create_table(
         "config_files",
@@ -38,6 +39,7 @@ def upgrade() -> None:
             ["speakers.gll_file"],
         ),
         sa.PrimaryKeyConstraint("id"),
+        if_not_exists=True,
     )
     # ### end Alembic commands ###
 
