@@ -61,9 +61,7 @@ class MainWindow(QMainWindow):
                 speaker_db_dir = Path.home() / "Documents"
                 speaker_db_dir.mkdir(parents=True, exist_ok=True)
                 speaker_db_file = speaker_db_dir / "GLL2TXT_Speakers.db"
-                self.speaker_db = SpeakerDatabase(
-                    db_path=Path.home() / "Documents" / "GLL2TXT_Speakers.db"
-                )
+                self.speaker_db = SpeakerDatabase(speaker_db_file)
                 self.speaker_db.log_signal.connect(self.log_message)
             except Exception as e:
                 logging.error(

@@ -18,7 +18,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from database import SpeakerDatabase
 from app_speaker_properties import SpeakerPropertiesDialog
 
 

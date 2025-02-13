@@ -2,8 +2,7 @@
 
 import os
 import logging
-from typing import Optional, Dict, List, Any
-from pathlib import Path
+from typing import Dict, List, Any
 from sqlalchemy import create_engine, text, select
 from sqlalchemy.orm import sessionmaker
 from PySide6.QtCore import QObject, Signal

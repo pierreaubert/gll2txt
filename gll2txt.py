@@ -355,7 +355,7 @@ def extract_speaker(
     log_message(logging.INFO, f"Output directory: {speakerdir}")
 
     # Rest of the function remains the same, but use log_message instead of print
-    if not check_all_files(output_dir, speaker_name):
+    if not check_all_files(output_dir, speaker_name, config_file):
         app = win.Application(backend="win32").start(ease_full)
         load_gll(app, gll_file)
         # not ideal

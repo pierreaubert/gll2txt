@@ -5,7 +5,6 @@ from PySide6.QtCore import QObject, Signal
 
 from gll2txt import extract_speaker as gll_extract_speaker
 from logger import set_global_logger
-from database import SpeakerDatabase
 
 
 class ProcessManager(QObject):
