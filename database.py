@@ -17,7 +17,7 @@ class SpeakerDatabase(QObject):
 
     log_signal = Signal(int, str)  # level and message
 
-    def __init__(self, db_path: Optional[str] = None):
+    def __init__(self, db_path: str):
         """
         Initialize the database connection and schema
 
@@ -28,8 +28,6 @@ class SpeakerDatabase(QObject):
         super().__init__()
         try:
             # Set database path
-            if db_path is None:
-                db_path = str(Path.home() / "Documents" / "GLL2TXT_Speakers.db")
             self.log_message(logging.DEBUG, f"Using database path: {db_path}")
 
             self.db_path = db_path
