@@ -49,7 +49,7 @@ def create_default_settings() -> QSettings:
     if not settings.value("gll_files_directory"):
         settings.setValue("gll_files_directory", get_windows_documents_path() + "/GLL")
     if not settings.value("output_directory"):
-        settings.setValue("output_directory", get_windows_documents_path() + "/GLL")
+        settings.setValue("output_directory", get_windows_documents_path() + "/GLL2TXT")
     return settings
 
 

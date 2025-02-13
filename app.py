@@ -58,10 +58,17 @@ class MainWindow(QMainWindow):
             # Initialize database
             logging.debug("Initializing database")
             try:
-                self.speaker_db = SpeakerDatabase()
+                speaker_db_dir = Path.home() / "Documents"
+                speaker_db_dir.mkdir(parents=True, exist_ok=True)
+                speaker_db_file = speaker_db_dir / "GLL2TXT_Speakers.db"
+                self.speaker_db = SpeakerDatabase(
+                    db_path=Path.home() / "Documents" / "GLL2TXT_Speakers.db"
+                )
                 self.speaker_db.log_signal.connect(self.log_message)
             except Exception as e:
-                logging.error("Failed to initialize database", exc_info=True)
+                logging.error(
+                    "Failed to initialize database: %s", str(e), exc_info=True
+                )
                 raise RuntimeError("Failed to initialize database") from e
 
             # Central widget and main layout
@@ -83,7 +90,7 @@ class MainWindow(QMainWindow):
                 main_layout.addWidget(self.log_area)
 
                 # Process manager setup
-                self.process_manager = ProcessManager(self.settings)
+                self.process_manager = ProcessManager(self.settings, self.speaker_db)
                 self.process_thread = None
 
                 # Process button and progress area
@@ -270,7 +277,13 @@ class MainWindow(QMainWindow):
             return
 
         # Open MissingSpeakerDialog with all GLL files
-        speaker_dialog = MissingSpeakerDialog(self.settings, gll_files, self)
+        speaker_dialog = MissingSpeakerDialog(
+            settings=self.settings,
+            gll_files=gll_files,
+            parent=self,
+            test_mode=False,
+            speaker_db=self.speaker_db,
+        )
         speaker_dialog.exec()
 
     def open_github(self):

@@ -14,10 +14,10 @@ class ProcessManager(QObject):
     process_complete_signal = Signal(bool)
     speaker_data_required_signal = Signal(list)  # Signal to request speaker data
 
-    def __init__(self, settings):
+    def __init__(self, settings, speaker_db):
         super().__init__()
         self.settings = settings
-        self.speaker_db = SpeakerDatabase()
+        self.speaker_db = speaker_db
         self.stop_process = False
         # connect the global logger
         set_global_logger(self.log_message)
