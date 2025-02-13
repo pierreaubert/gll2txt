@@ -87,7 +87,9 @@ def load_config(app, view, config_file: str | None):
     openConfigFile = app.OpenGLLConfigurationFile
     openConfigFile.wait("visible")
     openConfigFile.set_focus()
-    openConfigFile.type_keys(config_file, with_spaces=True)
+    openConfigFile.type_keys(
+        config_file.replace("+", "{+}").replace("/", "\\"), with_spaces=True
+    )
     openConfigFile.type_keys("{ENTER}")
 
 
@@ -149,36 +151,56 @@ def get_parallels() -> list[str]:
     return ["{}°".format(k) for k in range(0, 190, 10)]
 
 
-def build_speakerdir(output_dir: str, speaker_name: str) -> str:
-    os.makedirs(output_dir, mode=0o755, exist_ok=True)
+def build_speaker_dir(
+    output_dir: str, speaker_name: str, config_file: str | None
+) -> str:
     dir = "{}\\{}".format(output_dir, speaker_name)
+    if config_file is not None:
+        dir = "{}-{}".format(dir, os.path.basename(config_file)[:-5])
     dir = dir.replace("/", "\\")
     os.makedirs(dir, mode=0o755, exist_ok=True)
     return dir
 
 
 def build_spl_filename(
-    output_dir: str, speaker_name: str, meridian: str, parallel: str
+    output_dir: str,
+    speaker_name: str,
+    config_file: str | None,
+    meridian: str,
+    parallel: str,
 ) -> str:
-    return "{0}\\{1}\\{1} -M{2}-P{3}.txt".format(
-        output_dir, speaker_name, meridian[:-1], parallel[:-1]
+    speaker_dir = build_speaker_dir(output_dir, speaker_name, config_file)
+    return "{0}\\{1} -M{2}-P{3}.txt".format(
+        speaker_dir, os.basename(speaker_dir), meridian[:-1], parallel[:-1]
     ).replace("/", "\\")
 
 
-def build_sensitivity_filename(output_dir: str, speaker_name: str) -> str:
-    return "{0}\\{1}\\{1} - sensitivity.txt".format(output_dir, speaker_name).replace(
-        "/", "\\"
-    )
+def build_sensitivity_filename(
+    output_dir: str, speaker_name: str, config_file: str | None
+) -> str:
+    return "{0}\\{1} -sensitivity.txt".format(
+        build_speaker_dir(output_dir, speaker_name, config_file),
+        speaker_name,
+    ).replace("/", "\\")
 
 
-def build_maxspl_filename(output_dir: str, speaker_name: str) -> str:
-    return "{0}\\{1}\\{1} - maxSPL.txt".format(output_dir, speaker_name).replace(
-        "/", "\\"
-    )
+def build_maxspl_filename(
+    output_dir: str, speaker_name: str, config_file: str | None
+) -> str:
+    return "{0}\\{1} -maxSPL.txt".format(
+        build_speaker_dir(output_dir, speaker_name, config_file), speaker_name
+    ).replace("/", "\\")
 
 
-def build_zipfilename(output_dir: str, speaker_name: str) -> str:
-    return "{}\\{}.zip".format(output_dir, speaker_name).replace("/", "\\")
+def build_zipfilename(
+    output_dir: str, speaker_name: str, config_file: str | None
+) -> str:
+    speaker_dir = build_speaker_dir(output_dir, speaker_name, config_file)
+    zipname = "{}\\{}".format(speaker_dir, speaker_name)
+    if config_file is not None:
+        zipname += "-" + config_file[:-5]
+    zipname += ".zip"
+    return zipname.replace("/", "\\")
 
 
 def extract_spl(
@@ -186,6 +208,7 @@ def extract_spl(
     view,
     output_dir,
     speaker_name,
+    config_file,
 ):
     # go to graphs -> frequency spectrum
     app.wait_cpu_usage_lower(threshold=5)
@@ -238,12 +261,7 @@ def extract_spl(
             app.wait_cpu_usage_lower(threshold=5)
 
 
-def extract_sensitivity(
-    app,
-    view,
-    output_dir,
-    speaker_name,
-):
+def extract_sensitivity(app, view, output_dir, speaker_name, config_file):
     # go to graphs -> frequency spectrum
     app.wait_cpu_usage_lower(threshold=5)
     view.wait("visible")
@@ -257,19 +275,14 @@ def extract_sensitivity(
     export.wait("visible")
     # copy filename
     export.type_keys("%n{BACKSPACE}")
-    sensitivity_file = build_sensitivity_filename(output_dir, speaker_name)
+    sensitivity_file = build_sensitivity_filename(output_dir, speaker_name, config_file)
     export.type_keys(sensitivity_file, with_spaces=True)
     export.type_keys("{ENTER}")
     export.wait_not("visible")
     app.wait_cpu_usage_lower(threshold=5)
 
 
-def extract_maxspl(
-    app,
-    view,
-    output_dir,
-    speaker_name,
-):
+def extract_maxspl(app, view, output_dir, speaker_name, config_file):
     # go to graphs -> frequency spectrum
     app.wait_cpu_usage_lower(threshold=5)
     view.wait("visible")
@@ -283,7 +296,7 @@ def extract_maxspl(
     export.wait("visible")
     # copy filename
     export.type_keys("%n{BACKSPACE}")
-    maxspl_file = build_maxspl_filename(output_dir, speaker_name)
+    maxspl_file = build_maxspl_filename(output_dir, speaker_name, config_file)
     export.type_keys(maxspl_file, with_spaces=True)
     export.type_keys("{ENTER}")
     export.wait_not("visible")
@@ -291,32 +304,30 @@ def extract_maxspl(
 
 
 def check_all_files(
-    output_dir: str,
-    speaker_name: str,
+    output_dir: str, speaker_name: str, config_file: str | None
 ) -> bool:
     meridians = get_meridians()
     parallels = get_parallels()
 
     for m in meridians:
         for p in parallels:
-            f = build_spl_filename(output_dir, speaker_name, m, p)
+            f = build_spl_filename(output_dir, speaker_name, config_file, m, p)
             if not os.path.exists(f):
                 return False
 
-    if not os.path.exists(build_sensitivity_filename(output_dir, speaker_name)):
+    if not os.path.exists(
+        build_sensitivity_filename(output_dir, speaker_name, config_file)
+    ):
         return False
 
     return True
 
 
-def generate_zip(
-    output_dir: str,
-    speaker_name: str,
-) -> bool:
-    if not check_all_files(output_dir, speaker_name):
+def generate_zip(output_dir: str, speaker_name: str, config_file: str | None) -> bool:
+    if not check_all_files(output_dir, speaker_name, config_file):
         log_message(logging.ERROR, "Not all files have been generated")
         return False
-    zfname = build_zipfilename(output_dir, speaker_name)
+    zfname = build_zipfilename(output_dir, speaker_name, config_file)
     if os.path.exists(zfname):
         log_message(logging.INFO, "Nothing to do {} already exist!".format(zfname))
         return True
@@ -325,11 +336,11 @@ def generate_zip(
         parallels = get_parallels()
         for m in meridians:
             for p in parallels:
-                f = build_spl_filename(output_dir, speaker_name, m, p)
+                f = build_spl_filename(output_dir, speaker_name, config_file, m, p)
                 zf.write(f)
-        s = build_sensitivity_filename(output_dir, speaker_name)
+        s = build_sensitivity_filename(output_dir, speaker_name, config_file)
         zf.write(s)
-        m = build_maxspl_filename(output_dir, speaker_name)
+        m = build_maxspl_filename(output_dir, speaker_name, config_file)
         zf.write(m)
     return True
 
@@ -340,7 +351,7 @@ def extract_speaker(
     log_message(logging.INFO, f"Processing speaker: {speaker_name}")
     log_message(logging.INFO, f"GLL File: {gll_file}")
     # Create speaker directory
-    speakerdir = build_speakerdir(output_dir, speaker_name)
+    speakerdir = build_speaker_dir(output_dir, speaker_name, config_file)
     log_message(logging.INFO, f"Output directory: {speakerdir}")
 
     # Rest of the function remains the same, but use log_message instead of print
@@ -353,12 +364,12 @@ def extract_speaker(
         load_config(app, view, config_file)
         view.type_keys("{F5}")
         set_parameters(app)
-        extract_spl(app, view, output_dir, speaker_name)
-        extract_sensitivity(app, view, output_dir, speaker_name)
-        extract_maxspl(app, view, output_dir, speaker_name)
+        extract_spl(app, view, output_dir, speaker_name, config_file)
+        extract_sensitivity(app, view, output_dir, speaker_name, config_file)
+        extract_maxspl(app, view, output_dir, speaker_name, config_file)
         view.close()
 
-    if generate_zip(output_dir, speaker_name):
+    if generate_zip(output_dir, speaker_name, config_file):
         log_message(logging.INFO, "Success for {}!".format(speaker_name))
         return True
 
