@@ -208,7 +208,8 @@ def build_zipfilename(
     speaker_dir = build_speaker_dir(output_dir, speaker_name, config_file)
     zipname = "{}\\{}".format(speaker_dir, speaker_name)
     if config_file is not None:
-        zipname += "-" + config_file[:-5]
+        config_suffix = os.path.basename(config_file)[:-5]
+        zipname += "-" + config_suffix
     zipname += ".zip"
     return zipname.replace("/", "\\")
 
