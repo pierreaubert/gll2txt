@@ -23,7 +23,7 @@ from app_speaker_properties import SpeakerPropertiesDialog
 
 
 class MissingSpeakerDialog(QDialog):
-    def __init__(self, settings, gll_files, parent=None, test_mode=False):
+    def __init__(self, settings, gll_files, parent, test_mode, speaker_db):
         super().__init__(parent)
         logging.debug("Initializing MissingSpeakerDialog")
         self.setWindowTitle("Speaker Data Management")
@@ -38,8 +38,7 @@ class MissingSpeakerDialog(QDialog):
         main_layout = QVBoxLayout()
 
         # Speaker Database
-        self.speaker_db = SpeakerDatabase(settings.value("database_path"))
-        logging.debug("Created SpeakerDatabase")
+        self.speaker_db = speaker_db
 
         # Separate lists for missing and existing speaker data
         self.missing_gll_files = []
@@ -401,38 +400,36 @@ class MissingSpeakerDialog(QDialog):
 
         print(f"Initial dir: {initial_dir}")  # Debug print
 
-        # Create and configure the file dialog
-        file_dialog = QFileDialog(self)
-        file_dialog.setWindowTitle("Select Config File")
-        file_dialog.setDirectory(initial_dir)
-        file_dialog.setNameFilter("Config Files (*.xglc);;All Files (*)")
-        file_dialog.setFileMode(QFileDialog.ExistingFile)
-        file_dialog.setViewMode(QFileDialog.Detail)
-        file_dialog.setOption(QFileDialog.DontUseNativeDialog, True)  # Force Qt dialog
+        # Force Qt dialog instead of native dialog
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
 
-        if file_dialog.exec() == QDialog.Accepted:
-            selected_files = file_dialog.selectedFiles()
-            if selected_files:
-                file_path = selected_files[0]
-                print(f"Selected file: {file_path}")  # Debug print
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Select Config File",
+            initial_dir,
+            "Config Files (*.xglc);;All Files (*)",
+            options=options,
+        )
 
-                row = config_table.rowCount()
-                config_table.insertRow(row)
-                logging.debug("Added row to config_table")
+        if file_path:
+            row = config_table.rowCount()
+            config_table.insertRow(row)
+            logging.debug("Added row to config_table")
 
-                # Path
-                path_item = QTableWidgetItem(file_path)
-                path_item.setFlags(path_item.flags() & ~Qt.ItemIsEditable)
-                config_table.setItem(row, 0, path_item)
+            # Path
+            path_item = QTableWidgetItem(file_path)
+            path_item.setFlags(path_item.flags() & ~Qt.ItemIsEditable)
+            config_table.setItem(row, 0, path_item)
 
-                # Remove button
-                remove_btn = QPushButton("Remove")
-                remove_btn.clicked.connect(
-                    lambda checked, r=row: self.remove_config_file(config_table, r)
-                )
-                config_table.setCellWidget(row, 1, remove_btn)
+            # Remove button
+            remove_btn = QPushButton("Remove")
+            remove_btn.clicked.connect(
+                lambda checked, r=row: self.remove_config_file(config_table, r)
+            )
+            config_table.setCellWidget(row, 1, remove_btn)
 
-                print("Added new row to table")  # Debug print
+            print("Added new row to table")  # Debug print
 
     def remove_config_file(self, config_table, row):
         """Remove a config file from the table"""
@@ -648,15 +645,19 @@ class ConfigFilesDialog(QDialog):
         self.config_table.setCellWidget(row, 1, remove_btn)
 
     def add_new_config_file(self):
-        file_dialog = QFileDialog(self)
-        file_dialog.setWindowTitle("Select Config File")
-        file_dialog.setNameFilter("Config Files (*.xglc);;All Files (*)")
-        file_dialog.setFileMode(QFileDialog.ExistingFile)
+        # Force Qt dialog instead of native dialog
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
 
-        if file_dialog.exec() == QDialog.Accepted:
-            selected_files = file_dialog.selectedFiles()
-            if selected_files:
-                self.add_config_file(selected_files[0])
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Select Config File",
+            "",
+            "Config Files (*.xglc);;All Files (*)",
+            options=options,
+        )
+        if file_path:
+            self.add_config_file(file_path)
 
     def remove_config_file(self, row):
         self.config_table.removeRow(row)
