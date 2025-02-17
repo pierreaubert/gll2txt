@@ -45,7 +45,11 @@ def dialog(qapp, tmp_path, settings):
     for gll_file in gll_files:
         Path(gll_file).touch()
 
-    dialog = MissingSpeakerDialog(settings, gll_files, test_mode=True)
+    # Create a test database
+    db_path = tmp_path / "test.db"
+    speaker_db = SpeakerDatabase(db_path)
+
+    dialog = MissingSpeakerDialog(settings, gll_files, parent=None, test_mode=True, speaker_db=speaker_db)
     return dialog
 
 
@@ -686,7 +690,7 @@ def test_delete_speaker_cancel(qapp, tmp_path, monkeypatch):
     settings.setValue("database_path", str(db_path))
 
     # Create dialog with test_mode=False to test confirmation
-    dialog = MissingSpeakerDialog(settings, [gll_file], test_mode=False)
+    dialog = MissingSpeakerDialog(settings, [gll_file], parent=None, test_mode=False, speaker_db=speaker_db)
     dialog.missing_gll_files = [gll_file]  # Set missing files
     dialog.update_existing_table()
 

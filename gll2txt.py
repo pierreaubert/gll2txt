@@ -5,9 +5,13 @@ import os
 import time
 import zipfile
 
-import pywinauto as win
-from pywinauto.application import Application, WindowSpecification
-from pywinauto.controls.win32_controls import ComboBoxWrapper, ListBoxWrapper
+try:
+    import pywinauto as win
+    from pywinauto.application import Application, WindowSpecification
+    from pywinauto.controls.win32_controls import ComboBoxWrapper, ListBoxWrapper
+except ModuleNotFoundError:
+    pass
+
 
 from logger import log_message
 

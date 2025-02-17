@@ -3,6 +3,7 @@ from unittest.mock import MagicMock
 
 from PySide6.QtCore import QSettings
 from app_processmanager import ProcessManager
+from database import SpeakerDatabase
 
 
 @pytest.fixture
@@ -14,9 +15,11 @@ def settings():
 
 
 @pytest.fixture
-def process_manager(settings):
+def process_manager(settings, tmp_path):
     """Create ProcessManager instance"""
-    return ProcessManager(settings)
+    db_path = tmp_path / "test.db"
+    speaker_db = SpeakerDatabase(db_path)
+    return ProcessManager(settings, speaker_db)
 
 
 def test_process_manager_init(process_manager):

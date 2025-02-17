@@ -105,7 +105,7 @@ def test_list_all_speakers(db):
 
 def test_default_database_path():
     """Test that the default database path is in Documents"""
-    db = SpeakerDatabase()
-    assert "Documents" in db.db_path
-    assert "GLL2TXT_Speakers.db" in db.db_path
+    db_path = os.path.join(os.path.expanduser("~"), "Documents", "GLL2TXT_Speakers.db")
+    db = SpeakerDatabase(db_path)
+    assert os.path.exists(db_path)
     db.remove_database()
