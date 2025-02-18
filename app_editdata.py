@@ -83,13 +83,13 @@ class MissingSpeakerDialog(QDialog):
             header.setSectionResizeMode(2, QHeaderView.Fixed)  # Config Files
             header.setSectionResizeMode(3, QHeaderView.Fixed)  # Properties
             header.setSectionResizeMode(4, QHeaderView.Fixed)  # Skip
-            
+
             # Set initial column widths
             self.missing_table.setColumnWidth(0, 500)  # GLL File
             self.missing_table.setColumnWidth(1, 200)  # Speaker Name
             self.missing_table.setColumnWidth(2, 80)  # Config Files
             self.missing_table.setColumnWidth(3, 80)  # Properties
-            self.missing_table.setColumnWidth(4, 40)   # Skip
+            self.missing_table.setColumnWidth(4, 40)  # Skip
             logging.debug("Initialized missing_table")
 
             self.missing_table.setRowCount(len(self.missing_gll_files))
@@ -173,13 +173,13 @@ class MissingSpeakerDialog(QDialog):
         header.setSectionResizeMode(3, QHeaderView.Fixed)  # Properties
         header.setSectionResizeMode(4, QHeaderView.Fixed)  # Skip
         header.setSectionResizeMode(5, QHeaderView.Fixed)  # Actions
-            
+
         # Set initial column widths
         self.existing_table.setColumnWidth(0, 300)  # GLL File
         self.existing_table.setColumnWidth(1, 200)  # Speaker Name
         self.existing_table.setColumnWidth(2, 100)  # Config Files
         self.existing_table.setColumnWidth(3, 100)  # Properties
-        self.existing_table.setColumnWidth(4, 50)   # Skip
+        self.existing_table.setColumnWidth(4, 50)  # Skip
         self.existing_table.setColumnWidth(5, 100)  # Actions
         logging.debug("Initialized existing_table")
 
@@ -210,17 +210,17 @@ class MissingSpeakerDialog(QDialog):
 
         # Split the path into components
         path_parts = gll_file.split(os.sep)
-        
+
         # Find the brand name - it's the second to last directory
         brand = ""
-        for i in range(len(path_parts)-2, -1, -1):
+        for i in range(len(path_parts) - 2, -1, -1):
             if path_parts[i] != "GLL":
                 brand = path_parts[i]
                 break
 
         # Get the model name (file name without .GLL extension)
         model = os.path.splitext(path_parts[-1])[0]
-        model = model.replace('GLL-', '')
+        model = model.replace("GLL-", "")
 
         # Combine brand and model
         suggested_name = f"{brand} {model}".strip()
