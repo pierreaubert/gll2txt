@@ -20,40 +20,23 @@ from pathlib import Path
 
 
 @pytest.fixture
-def settings(tmp_path):
+def settings(temp_dir):
     """Create test settings"""
     settings = QSettings()
     settings.clear()
-    settings.setValue("database_path", str(tmp_path / "test.db"))
-    settings.setValue("gll_files_directory", str(tmp_path))
+    settings.setValue("database_path", str(temp_dir / "test.db"))
+    settings.setValue("gll_files_directory", str(temp_dir))
     return settings
 
 
 @pytest.fixture
-def qapp():
-    """Create a Qt application instance"""
-    app = QApplication.instance()
-    if app is None:
-        app = QApplication([])
-    return app
-
-
-@pytest.fixture
-def dialog(qapp, tmp_path, settings):
+def dialog(qapp, temp_dir, settings, db, gll_files):
     """Create a dialog for testing"""
-    gll_files = [str(tmp_path / f"test{i}.GLL") for i in range(3)]
-    for gll_file in gll_files:
-        Path(gll_file).touch()
-
-    # Create a test database
-    db_path = tmp_path / "test.db"
-    speaker_db = SpeakerDatabase(db_path)
-
-    dialog = MissingSpeakerDialog(settings, gll_files, parent=None, test_mode=True, speaker_db=speaker_db)
+    dialog = MissingSpeakerDialog(settings, gll_files, parent=None, test_mode=True, speaker_db=db)
     return dialog
 
 
-def test_dialog_init(dialog, tmp_path):
+def test_dialog_init(dialog, temp_dir):
     """Test dialog initialization"""
     logging.debug("Starting test_dialog_init")
     missing_table = dialog.findChild(QTableWidget, "missing_table")
@@ -65,7 +48,7 @@ def test_dialog_init(dialog, tmp_path):
     logging.debug("Finished test_dialog_init")
 
 
-def test_update_existing_table(dialog, tmp_path):
+def test_update_existing_table(dialog, temp_dir):
     """Test updating existing speakers table"""
     # Add a test speaker to the database
     test_gll = "test.GLL"
@@ -82,12 +65,12 @@ def test_update_existing_table(dialog, tmp_path):
     assert table.rowCount() > 0
 
 
-def test_add_config_files(dialog, tmp_path):
+def test_add_config_files(dialog, temp_dir):
     """Test adding config files"""
     # Create test config files
     config_files = []
     for i in range(2):
-        file_path = tmp_path / f"config{i}.txt"
+        file_path = temp_dir / f"config{i}.txt"
         file_path.touch()
         config_files.append(str(file_path))
 
@@ -110,7 +93,7 @@ def test_add_config_files(dialog, tmp_path):
     assert config_btn.text() == "Add Config Files"
 
 
-def test_save_all_changes(dialog, tmp_path):
+def test_save_all_changes(dialog, temp_dir):
     """Test saving all changes"""
     # Add the GLL file to gll_files and missing_gll_files
     if "test.GLL" not in dialog.gll_files:
@@ -132,7 +115,7 @@ def test_save_all_changes(dialog, tmp_path):
     assert data["speaker_name"] == "Test Speaker"
 
 
-def test_on_skip_changed(dialog, tmp_path):
+def test_on_skip_changed(dialog, temp_dir):
     """Test skip checkbox handling"""
     # Add the GLL file to gll_files and missing_gll_files
     if "test.GLL" not in dialog.gll_files:
@@ -168,12 +151,12 @@ def test_on_skip_changed(dialog, tmp_path):
     assert data["skip"]
 
 
-def test_edit_config_files_dialog(dialog, tmp_path):
+def test_edit_config_files_dialog(dialog, temp_dir):
     """Test opening and closing the config files dialog"""
     # Create test config files
     config_files = []
     for i in range(2):
-        file_path = tmp_path / f"config{i}.txt"
+        file_path = temp_dir / f"config{i}.txt"
         file_path.touch()
         config_files.append(str(file_path))
 
@@ -203,7 +186,7 @@ def test_edit_config_files_dialog(dialog, tmp_path):
     config_dialog.reject()
 
 
-def test_edit_properties_dialog(dialog, tmp_path):
+def test_edit_properties_dialog(dialog, temp_dir):
     """Test opening and closing the properties dialog"""
     # Add a test speaker to the database with properties
     test_properties = {
@@ -248,7 +231,7 @@ def test_edit_properties_dialog(dialog, tmp_path):
         properties_dialog.accept()
 
 
-def test_save_properties(dialog, tmp_path):
+def test_save_properties(dialog, temp_dir):
     """Test saving speaker properties"""
     # Add a test speaker to the database with initial properties
     initial_properties = {
@@ -319,12 +302,12 @@ def test_save_properties(dialog, tmp_path):
             assert abs(saved_data[key] - value) < 0.1
 
 
-def test_save_config_files(dialog, tmp_path):
+def test_save_config_files(dialog, temp_dir):
     """Test saving config files"""
     # Create test config files
     config_files = []
     for i in range(2):
-        file_path = tmp_path / f"config{i}.txt"
+        file_path = temp_dir / f"config{i}.txt"
         file_path.touch()
         config_files.append(str(file_path))
 
@@ -366,7 +349,7 @@ def test_save_config_files(dialog, tmp_path):
         assert file_path in saved_data["config_files"]
 
 
-def test_edit_existing_speaker(dialog, tmp_path):
+def test_edit_existing_speaker(dialog, temp_dir):
     """Test editing an existing speaker"""
     # Add a test speaker to the database
     test_gll = "test.GLL"
@@ -397,7 +380,7 @@ def test_edit_existing_speaker(dialog, tmp_path):
     assert data["speaker_name"] == "Updated Speaker"
 
 
-def test_skip_existing_speaker(dialog, tmp_path):
+def test_skip_existing_speaker(dialog, temp_dir):
     """Test skipping an existing speaker"""
     # Add a test speaker to the database
     test_gll = "test.GLL"
@@ -432,7 +415,7 @@ def test_skip_existing_speaker(dialog, tmp_path):
     assert data["skip"]
 
 
-def test_existing_speaker_widgets(dialog, tmp_path):
+def test_existing_speaker_widgets(dialog, temp_dir):
     """Test widgets in existing speakers table"""
     # Add a test speaker first
     test_gll = "test.GLL"
@@ -500,7 +483,7 @@ def test_existing_speaker_widgets(dialog, tmp_path):
         assert abs(saved_data["depth"] - new_values["depth"]) < 0.1
 
 
-def test_edit_missing_properties_dialog(dialog, tmp_path):
+def test_edit_missing_properties_dialog(dialog, temp_dir):
     """Test editing properties for a missing speaker"""
     if not dialog.missing_gll_files:
         return
@@ -528,7 +511,7 @@ def test_edit_missing_properties_dialog(dialog, tmp_path):
         assert abs(dialog.missing_properties[row][key] - test_properties[key]) < 0.1
 
 
-def test_save_missing_speaker_with_properties(dialog, tmp_path):
+def test_save_missing_speaker_with_properties(dialog, temp_dir):
     """Test saving a missing speaker with properties"""
     if not dialog.missing_gll_files:
         return
@@ -562,7 +545,7 @@ def test_save_missing_speaker_with_properties(dialog, tmp_path):
         assert abs(saved_data[key] - value) < 0.1
 
 
-def test_edit_existing_speaker_properties(dialog, tmp_path):
+def test_edit_existing_speaker_properties(dialog, temp_dir):
     """Test editing properties for an existing speaker"""
     # Add a test speaker
     test_data = {
@@ -650,7 +633,7 @@ def test_edit_existing_speaker_properties(dialog, tmp_path):
             assert abs(saved_data[key] - value) < 0.1
 
 
-def test_delete_speaker(dialog, tmp_path):
+def test_delete_speaker(dialog, temp_dir):
     """Test deleting a speaker"""
     # Add a test speaker to the database
     test_gll = "test.GLL"
@@ -673,10 +656,10 @@ def test_delete_speaker(dialog, tmp_path):
     assert dialog.speaker_db.get_speaker_data("test.GLL") is None
 
 
-def test_delete_speaker_cancel(qapp, tmp_path, monkeypatch):
+def test_delete_speaker_cancel(qapp, temp_dir, monkeypatch):
     """Test canceling speaker deletion"""
     # Create test database
-    db_path = tmp_path / "test_db.json"
+    db_path = temp_dir / "test_db.json"
     speaker_db = SpeakerDatabase(db_path)
 
     # Add test speaker
@@ -722,7 +705,7 @@ def test_suggest_speaker_name(dialog):
     assert suggested_name == "Brand Model"
 
 
-def test_missing_table_initialization(dialog, tmp_path):
+def test_missing_table_initialization(dialog, temp_dir):
     """Test initialization of missing speakers table"""
     missing_table = dialog.findChild(QTableWidget, "missing_table")
     if dialog.missing_gll_files:
@@ -748,7 +731,7 @@ def test_existing_table_initialization(dialog):
     assert existing_table.horizontalHeaderItem(5).text() == "Actions"
 
 
-def test_missing_speaker_widgets(dialog, tmp_path):
+def test_missing_speaker_widgets(dialog, temp_dir):
     """Test widgets in missing speakers table"""
     if not dialog.missing_gll_files:
         return
@@ -771,7 +754,7 @@ def test_missing_speaker_widgets(dialog, tmp_path):
     # Test properties button
     properties_btn = missing_table.cellWidget(first_row, 3)
     assert isinstance(properties_btn, QPushButton)
-    assert properties_btn.text() == "Edit Properties"
+    assert properties_btn.text() == "Edit"
 
     # Test skip checkbox
     skip_widget = missing_table.cellWidget(first_row, 4)

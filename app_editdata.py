@@ -1,5 +1,6 @@
 import os
 import logging
+import re
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
@@ -75,9 +76,20 @@ class MissingSpeakerDialog(QDialog):
             self.missing_table.setHorizontalHeaderLabels(
                 ["GLL File", "Speaker Name", "Config Files", "Properties", "Skip"]
             )
-            self.missing_table.horizontalHeader().setSectionResizeMode(
-                QHeaderView.Stretch
-            )
+            # Set column sizes - first two columns larger
+            header = self.missing_table.horizontalHeader()
+            header.setSectionResizeMode(0, QHeaderView.Interactive)  # GLL File
+            header.setSectionResizeMode(1, QHeaderView.Interactive)  # Speaker Name
+            header.setSectionResizeMode(2, QHeaderView.Fixed)  # Config Files
+            header.setSectionResizeMode(3, QHeaderView.Fixed)  # Properties
+            header.setSectionResizeMode(4, QHeaderView.Fixed)  # Skip
+            
+            # Set initial column widths
+            self.missing_table.setColumnWidth(0, 500)  # GLL File
+            self.missing_table.setColumnWidth(1, 200)  # Speaker Name
+            self.missing_table.setColumnWidth(2, 80)  # Config Files
+            self.missing_table.setColumnWidth(3, 80)  # Properties
+            self.missing_table.setColumnWidth(4, 40)   # Skip
             logging.debug("Initialized missing_table")
 
             self.missing_table.setRowCount(len(self.missing_gll_files))
@@ -110,7 +122,7 @@ class MissingSpeakerDialog(QDialog):
                 self.missing_table.setCellWidget(row, 2, config_btn)
 
                 # Properties column
-                properties_btn = QPushButton("Edit Properties")
+                properties_btn = QPushButton("Edit")
                 properties_btn.setObjectName("properties_btn")
                 properties_btn.clicked.connect(
                     lambda checked, row=row: self.edit_missing_properties(row)
@@ -153,7 +165,22 @@ class MissingSpeakerDialog(QDialog):
                 "Actions",
             ]
         )
-        self.existing_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        # Set column sizes - first two columns larger
+        header = self.existing_table.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.Interactive)  # GLL File
+        header.setSectionResizeMode(1, QHeaderView.Interactive)  # Speaker Name
+        header.setSectionResizeMode(2, QHeaderView.Fixed)  # Config Files
+        header.setSectionResizeMode(3, QHeaderView.Fixed)  # Properties
+        header.setSectionResizeMode(4, QHeaderView.Fixed)  # Skip
+        header.setSectionResizeMode(5, QHeaderView.Fixed)  # Actions
+            
+        # Set initial column widths
+        self.existing_table.setColumnWidth(0, 300)  # GLL File
+        self.existing_table.setColumnWidth(1, 200)  # Speaker Name
+        self.existing_table.setColumnWidth(2, 100)  # Config Files
+        self.existing_table.setColumnWidth(3, 100)  # Properties
+        self.existing_table.setColumnWidth(4, 50)   # Skip
+        self.existing_table.setColumnWidth(5, 100)  # Actions
         logging.debug("Initialized existing_table")
 
         main_layout.addWidget(self.existing_table)
@@ -181,21 +208,22 @@ class MissingSpeakerDialog(QDialog):
         The last directory in the path is the brand name and the file name (without extension) is the model name."""
         logging.debug(f"Suggesting speaker name for GLL file: {gll_file}")
 
-        # Get the directory path and file name
-        path = os.path.dirname(gll_file)
-        file_name = os.path.basename(gll_file)
-        logging.debug(f"Path: {path}, File name: {file_name}")
-
-        # Get the brand name (last directory in path)
-        brand = os.path.basename(path)
-        logging.debug(f"Brand name (from last directory): {brand}")
+        # Split the path into components
+        path_parts = gll_file.split(os.sep)
+        
+        # Find the brand name - it's the second to last directory
+        brand = ""
+        for i in range(len(path_parts)-2, -1, -1):
+            if path_parts[i] != "GLL":
+                brand = path_parts[i]
+                break
 
         # Get the model name (file name without .GLL extension)
-        model = os.path.splitext(file_name)[0]
-        logging.debug(f"Model name (without extension): {model}")
+        model = os.path.splitext(path_parts[-1])[0]
+        model = model.replace('GLL-', '')
 
         # Combine brand and model
-        suggested_name = f"{brand} {model}"
+        suggested_name = f"{brand} {model}".strip()
         logging.debug(f"Suggested speaker name: {suggested_name}")
 
         return suggested_name
