@@ -1,0 +1,9 @@
+- All functions and classes have tests and docstrings
+- All cli are in the main directory, all other code is in the src directory
+- All tests are in the tests directory and they always pass before proposing a change
+- Python specific: all code is linted with ruff check and pyright except the windows specific code
+- Python specific: code is formatted with ruff format
+- Python specific: testing is done with pytest
+- Python specific: code coverage is done with pytest --cov
+
+
