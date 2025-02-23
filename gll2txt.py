@@ -362,32 +362,97 @@ def generate_zip(output_dir: str, speaker_name: str, config_file: str | None) ->
     return True
 
 
+def find_gll_view(app: Application, speaker_name: str, gll_file: str) -> WindowSpecification | None:
+    """
+    Find the GLL viewer window using multiple strategies.
+    
+    Args:
+        app: The pywinauto Application instance
+        speaker_name: Name of the speaker being processed
+        gll_file: Path to the GLL file being processed
+        
+    Returns:
+        WindowSpecification if found, None otherwise
+    """
+    view: WindowSpecification | None = None
+    gll_file = os.path.basename(gll_file)
+    
+    # Method 1: Try exact match with speaker name and file
+    maybe_view = "ViewGLL: {} [{}]".format(speaker_name, gll_file)
+    if maybe_view in app:
+        view = app[maybe_view]
+        log_message(logging.DEBUG, f"Found view using exact match: {maybe_view}")
+        return view
+    
+    # Method 2: Try to find any ViewGLL window with matching speaker name
+    for key in app.keys():
+        if "ViewGLL" in key and speaker_name in key:
+            view = app[key]
+            log_message(logging.DEBUG, f"Found view using speaker name: {key}")
+            return view
+    
+    # Method 3: Look for any window with a title containing ViewGLL
+    for key in app.keys():
+        try:
+            window = app[key]
+            title = window.window_text()
+            if title and "ViewGLL" in title:
+                view = window
+                log_message(logging.DEBUG, f"Found view using window title: {title}")
+                return view
+        except Exception:
+            continue
+    
+    # Method 4: Last resort - try any non-empty window
+    for key in app.keys():
+        try:
+            window = app[key]
+            if window.window_text():
+                view = window
+                log_message(logging.DEBUG, f"Found view using last resort method: {key}")
+                return view
+        except Exception:
+            continue
+    
+    return None
+
+
 def extract_speaker(
     output_dir: str, speaker_name: str, gll_file: str, config_file: str | None
 ) -> bool:
-    log_message(logging.INFO, f"Processing speaker: {speaker_name}")
-    log_message(logging.INFO, f"GLL File: {gll_file}")
-    # Create speaker directory
-    speakerdir = build_speaker_dir(output_dir, speaker_name, config_file)
-    log_message(logging.INFO, f"Output directory: {speakerdir}")
+    """Extract all the data for a speaker.
+    
+    Args:
+        output_dir: Directory where to save the extracted data
+        speaker_name: Name of the speaker
+        gll_file: Path to the GLL file
+        config_file: Optional path to a config file
+        
+    Returns:
+        bool: True if extraction was successful, False otherwise
+    """
+    try:
+        app = Application(backend="win32").start(ease_full)  
+        log_message(logging.INFO, "Connected to EASE GLLViewer")
+    except Exception as e:
+        log_message(logging.ERROR, f"Could not connect to EASE GLLViewer: {str(e)}")
+        return False
 
-    # Rest of the function remains the same, but use log_message instead of print
-    if not check_all_files(output_dir, speaker_name, config_file):
-        app = Application(backend="win32").start(ease_full)
+    try:
         load_gll(app, gll_file)
-        # not ideal
-        gll_file = os.path.basename(gll_file)
-        view = None
-        maybe_view = "ViewGLL: {} [{}]".format(speaker_name, gll_file)
-        if maybe_view in app:
-            view = app[maybe_view]
-        else:
-            options_views = app.keys()
-            for option_view in options_views:
-                view = app[option_view]
-                if view.window_text():
-                    break
+        time.sleep(1)
+
+        # Find the appropriate view
+        view = find_gll_view(app, speaker_name, gll_file)
+        
         if view is not None:
+            # Verify we have the right window
+            try:
+                title = view.window_text()
+                log_message(logging.DEBUG, f"Selected window title: {title}")
+            except Exception as e:
+                log_message(logging.WARNING, f"Could not get window title: {str(e)}")
+            
             load_config(app, view, config_file)
             time.sleep(1)
             view.type_keys("{F5}")
@@ -396,6 +461,7 @@ def extract_speaker(
             extract_spl(app, view, output_dir, speaker_name, config_file)
             extract_sensitivity(app, view, output_dir, speaker_name, config_file)
             extract_maxspl(app, view, output_dir, speaker_name, config_file)
+            view.close()
         else:
             log_message(
                 logging.ERROR,
@@ -403,14 +469,18 @@ def extract_speaker(
                     speaker_name, gll_file, app.keys()
                 ),
             )
-        view.close()
+            return False
 
-    if generate_zip(output_dir, speaker_name, config_file):
-        log_message(logging.INFO, "Success for {}!".format(speaker_name))
-        return True
+        if generate_zip(output_dir, speaker_name, config_file):
+            log_message(logging.INFO, "Success for {}!".format(speaker_name))
+            return True
 
-    log_message(logging.WARNING, "Failed for {}!".format(speaker_name))
-    return False
+        log_message(logging.WARNING, "Failed for {}!".format(speaker_name))
+        return False
+        
+    except Exception as e:
+        log_message(logging.ERROR, f"Error extracting speaker data: {str(e)}")
+        return False
 
 
 if __name__ == "__main__":
