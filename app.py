@@ -260,7 +260,16 @@ class MainWindow(QMainWindow):
         # Search for both .GLL and .gll files using pathlib
         gll_files = []
         for ext in [".GLL", ".gll"]:
-            gll_files.extend(gll_path.rglob(f"*{ext}"))
+            # Use rglob but filter out directories that start or end with __
+            for file in gll_path.rglob(f"*{ext}"):
+                # Check each directory in the path
+                skip_file = False
+                for part in file.parts:
+                    if part.startswith("__") or part.endswith("__"):
+                        skip_file = True
+                        break
+                if not skip_file:
+                    gll_files.append(file)
 
         # Convert Path objects to strings and remove duplicates
         gll_files = [str(f) for f in gll_files]

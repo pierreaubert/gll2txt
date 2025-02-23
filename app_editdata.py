@@ -76,6 +76,10 @@ class MissingSpeakerDialog(QDialog):
             self.missing_table.setHorizontalHeaderLabels(
                 ["GLL File", "Speaker Name", "Config Files", "Properties", "Skip"]
             )
+            
+            # Enable sorting
+            self.missing_table.setSortingEnabled(True)
+            
             # Set column sizes - first two columns larger
             header = self.missing_table.horizontalHeader()
             header.setSectionResizeMode(0, QHeaderView.Interactive)  # GLL File
@@ -100,49 +104,7 @@ class MissingSpeakerDialog(QDialog):
             self.missing_skip_states = [False for _ in self.missing_gll_files]
             self.missing_properties = {}  # Change from list to dict
 
-            for row, gll_file in enumerate(self.missing_gll_files):
-                logging.debug(f"Adding row for {gll_file}")
-                # GLL File column
-                file_item = QTableWidgetItem(gll_file)
-                file_item.setFlags(file_item.flags() & ~Qt.ItemIsEditable)
-                self.missing_table.setItem(row, 0, file_item)
-
-                # Speaker Name column
-                speaker_input = QLineEdit()
-                speaker_input.setObjectName("speaker_input")
-                speaker_input.setText(self.suggest_speaker_name(gll_file))
-                self.missing_table.setCellWidget(row, 1, speaker_input)
-
-                # Config Files column
-                config_btn = QPushButton("Add Config Files")
-                config_btn.setObjectName("config_btn")
-                config_btn.clicked.connect(
-                    lambda checked, r=row: self.add_config_files(r, is_missing=True)
-                )
-                self.missing_table.setCellWidget(row, 2, config_btn)
-
-                # Properties column
-                properties_btn = QPushButton("Edit")
-                properties_btn.setObjectName("properties_btn")
-                properties_btn.clicked.connect(
-                    lambda checked, row=row: self.edit_missing_properties(row)
-                )
-                logging.debug(f"Created properties button for row {row}")
-                self.missing_table.setCellWidget(row, 3, properties_btn)
-
-                # Skip checkbox column
-                skip_checkbox = QCheckBox()
-                skip_checkbox.setObjectName("skip_checkbox")
-                skip_checkbox.setChecked(False)
-                skip_checkbox.stateChanged.connect(
-                    lambda state, r=row: self.on_missing_skip_changed(r, state)
-                )
-                skip_cell_widget = QWidget()
-                skip_layout = QHBoxLayout(skip_cell_widget)
-                skip_layout.addWidget(skip_checkbox)
-                skip_layout.setAlignment(Qt.AlignCenter)
-                skip_layout.setContentsMargins(0, 0, 0, 0)
-                self.missing_table.setCellWidget(row, 4, skip_cell_widget)
+            self.populate_missing_table()
 
             main_layout.addWidget(self.missing_table)
 
@@ -286,6 +248,51 @@ class MissingSpeakerDialog(QDialog):
             delete_btn = QPushButton("Delete")
             delete_btn.clicked.connect(lambda checked, d=data: self.delete_speaker(d))
             self.existing_table.setCellWidget(row, 5, delete_btn)
+
+    def populate_missing_table(self):
+        logging.debug("Populating missing table")
+        for row, gll_file in enumerate(self.missing_gll_files):
+            # GLL File column - show only filename with ellipsis
+            gll_item = QTableWidgetItem(f"...{os.path.basename(gll_file)}")
+            gll_item.setToolTip(gll_file)  # Show full path on hover
+            self.missing_table.setItem(row, 0, gll_item)
+
+            # Speaker Name column
+            speaker_input = QLineEdit()
+            speaker_input.setObjectName("speaker_input")
+            speaker_input.setText(self.suggest_speaker_name(gll_file))
+            self.missing_table.setCellWidget(row, 1, speaker_input)
+
+            # Config Files column
+            config_btn = QPushButton("Add Config Files")
+            config_btn.setObjectName("config_btn")
+            config_btn.clicked.connect(
+                lambda checked, r=row: self.add_config_files(r, is_missing=True)
+            )
+            self.missing_table.setCellWidget(row, 2, config_btn)
+
+            # Properties column
+            properties_btn = QPushButton("Edit")
+            properties_btn.setObjectName("properties_btn")
+            properties_btn.clicked.connect(
+                lambda checked, row=row: self.edit_missing_properties(row)
+            )
+            logging.debug(f"Created properties button for row {row}")
+            self.missing_table.setCellWidget(row, 3, properties_btn)
+
+            # Skip checkbox column
+            skip_checkbox = QCheckBox()
+            skip_checkbox.setObjectName("skip_checkbox")
+            skip_checkbox.setChecked(False)
+            skip_checkbox.stateChanged.connect(
+                lambda state, r=row: self.on_missing_skip_changed(r, state)
+            )
+            skip_cell_widget = QWidget()
+            skip_layout = QHBoxLayout(skip_cell_widget)
+            skip_layout.addWidget(skip_checkbox)
+            skip_layout.setAlignment(Qt.AlignCenter)
+            skip_layout.setContentsMargins(0, 0, 0, 0)
+            self.missing_table.setCellWidget(row, 4, skip_cell_widget)
 
     def edit_config_files(self, data):
         """Open dialog to edit config files for an existing entry"""
