@@ -278,7 +278,27 @@ def extract_spl(
             app.wait_cpu_usage_lower(threshold=5)
 
 
+def app_close(app):
+    if app is not None:
+        app.kill()
+
+
+def view_close(view):
+    if view is not None:
+        view.type_keys("%fe")
+        view.close()
+
+
 def extract_sensitivity(app, view, output_dir, speaker_name, config_file):
+    sensitivity_file = build_sensitivity_filename(output_dir, speaker_name, config_file)
+    if os.path.exists(sensitivity_file):
+        log_message(
+            logging.DEBUG,
+            "Skipping sensitivity for {} because it already exists".format(
+                speaker_name
+            ),
+        )
+        return
     # go to graphs -> frequency spectrum
     app.wait_cpu_usage_lower(threshold=5)
     view.wait("visible")
@@ -292,7 +312,6 @@ def extract_sensitivity(app, view, output_dir, speaker_name, config_file):
     export.wait("visible")
     # copy filename
     export.type_keys("%n{BACKSPACE}")
-    sensitivity_file = build_sensitivity_filename(output_dir, speaker_name, config_file)
     export.type_keys(process_type_keys(sensitivity_file), with_spaces=True)
     export.type_keys("{ENTER}")
     export.wait_not("visible")
@@ -300,6 +319,13 @@ def extract_sensitivity(app, view, output_dir, speaker_name, config_file):
 
 
 def extract_maxspl(app, view, output_dir, speaker_name, config_file):
+    maxspl_file = build_maxspl_filename(output_dir, speaker_name, config_file)
+    if os.path.exists(maxspl_file):
+        log_message(
+            logging.DEBUG,
+            "Skipping maxspl for {} because it already exists".format(speaker_name),
+        )
+        return
     # go to graphs -> frequency spectrum
     app.wait_cpu_usage_lower(threshold=5)
     view.wait("visible")
@@ -313,7 +339,6 @@ def extract_maxspl(app, view, output_dir, speaker_name, config_file):
     export.wait("visible")
     # copy filename
     export.type_keys("%n{BACKSPACE}")
-    maxspl_file = build_maxspl_filename(output_dir, speaker_name, config_file)
     export.type_keys(process_type_keys(maxspl_file), with_spaces=True)
     export.type_keys("{ENTER}")
     export.wait_not("visible")
@@ -335,6 +360,9 @@ def check_all_files(
     if not os.path.exists(
         build_sensitivity_filename(output_dir, speaker_name, config_file)
     ):
+        return False
+
+    if not os.path.exists(build_maxspl_filename(output_dir, speaker_name, config_file)):
         return False
 
     return True
@@ -362,138 +390,79 @@ def generate_zip(output_dir: str, speaker_name: str, config_file: str | None) ->
     return True
 
 
-def find_gll_view(app: Application, speaker_name: str, gll_file: str) -> WindowSpecification | None:
-    """
-    Find the GLL viewer window using multiple strategies.
-    
-    Args:
-        app: The pywinauto Application instance
-        speaker_name: Name of the speaker being processed
-        gll_file: Path to the GLL file being processed
-        
-    Returns:
-        WindowSpecification if found, None otherwise
-    """
-    view: WindowSpecification | None = None
-    gll_file = os.path.basename(gll_file)
-    
-    # Method 1: Try exact match with speaker name and file
-    maybe_view = "ViewGLL: {} [{}]".format(speaker_name, gll_file)
-    if maybe_view in app:
-        view = app[maybe_view]
-        log_message(logging.DEBUG, f"Found view using exact match: {maybe_view}")
-        return view
-    
-    # Method 2: Try to find any ViewGLL window with matching speaker name
-    for key in app.keys():
-        if "ViewGLL" in key and speaker_name in key:
-            view = app[key]
-            log_message(logging.DEBUG, f"Found view using speaker name: {key}")
-            return view
-    
-    # Method 3: Look for any window with a title containing ViewGLL
-    for key in app.keys():
-        try:
-            window = app[key]
-            title = window.window_text()
-            if title and "ViewGLL" in title:
-                view = window
-                log_message(logging.DEBUG, f"Found view using window title: {title}")
-                return view
-        except Exception:
-            continue
-    
-    # Method 4: Last resort - try any non-empty window
-    for key in app.keys():
-        try:
-            window = app[key]
-            if window.window_text():
-                view = window
-                log_message(logging.DEBUG, f"Found view using last resort method: {key}")
-                return view
-        except Exception:
-            continue
-    
-    return None
-
-
 def extract_speaker(
     output_dir: str, speaker_name: str, gll_file: str, config_file: str | None
 ) -> bool:
     """Extract all the data for a speaker.
-    
+
     Args:
         output_dir: Directory where to save the extracted data
         speaker_name: Name of the speaker
         gll_file: Path to the GLL file
         config_file: Optional path to a config file
-        
+
     Returns:
         bool: True if extraction was successful, False otherwise
     """
+    app = None
     try:
-        app = Application(backend="win32").start(ease_full)  
+        app = Application(backend="win32").start(ease_full)
         log_message(logging.INFO, "Connected to EASE GLLViewer")
     except Exception as e:
         log_message(logging.ERROR, f"Could not connect to EASE GLLViewer: {str(e)}")
         return False
 
+    view = None
     try:
         load_gll(app, gll_file)
         time.sleep(1)
 
         # Find the appropriate view
-        view = find_gll_view(app, speaker_name, gll_file)
-        
-        if view is not None:
-            # Verify we have the right window
-            try:
-                title = view.window_text()
-                log_message(logging.DEBUG, f"Selected window title: {title}")
-            except Exception as e:
-                log_message(logging.WARNING, f"Could not get window title: {str(e)}")
-            
-            load_config(app, view, config_file)
-            time.sleep(1)
-            view.type_keys("{F5}")
-            set_parameters(app)
-            time.sleep(1)
-            extract_spl(app, view, output_dir, speaker_name, config_file)
-            extract_sensitivity(app, view, output_dir, speaker_name, config_file)
-            extract_maxspl(app, view, output_dir, speaker_name, config_file)
-            view.close()
-        else:
-            log_message(
-                logging.ERROR,
-                "Could not find ViewGLL: {} [{} with possible keys {}]".format(
-                    speaker_name, gll_file, app.keys()
-                ),
-            )
+        view = app.window()
+
+        if view is None:
+            log_message(logging.WARNING, "Failed for {}!".format(speaker_name))
+            app_close(app)
             return False
 
+        # Verify we have the right window
+        load_config(app, view, config_file)
+        time.sleep(1)
+        view.type_keys("{F5}")
+        set_parameters(app)
+        time.sleep(1)
+        extract_spl(app, view, output_dir, speaker_name, config_file)
+        extract_sensitivity(app, view, output_dir, speaker_name, config_file)
+        extract_maxspl(app, view, output_dir, speaker_name, config_file)
+        view_close(view)
         if generate_zip(output_dir, speaker_name, config_file):
             log_message(logging.INFO, "Success for {}!".format(speaker_name))
-            return True
-
-        log_message(logging.WARNING, "Failed for {}!".format(speaker_name))
-        return False
-        
+        app_close(app)
+        return True
     except Exception as e:
         log_message(logging.ERROR, f"Error extracting speaker data: {str(e)}")
-        return False
+
+    view_close(view)
+    app_close(app)
+    return False
 
 
 if __name__ == "__main__":
     to_be_processed = (
         # name of speaker,        name of gll file        name of config file
-        ("RCF NXW 44-A", "Z:\\GLL\\RCF\\GLL-NXW 44-A.gll", None),
-        ("RCF NX 945-A", "Z:\\GLL\\RCF\\GLL-NX 945-A.gll", None),
-        ("RCF NX 932-A", "Z:\\GLL\\RCF\\GLL-NX 932-A.gll", None),
         (
-            "Alcons Audio LR7",
-            "Z:\\GLL\\Alcons Audio\\LR7-V1_32.gll",
-            "Z:\\GLL\\Alcons Audio\\Alcons Audio LR7 - single.xglc",
+            "Meyer Sound UP-4slim",
+            "C:\\Users\\pierre\\Documents\\GLL\Meyer Sound\\up-4slim.gll",
+            None,
         ),
+        #        ("RCF NXW 44-A", "Z:\\GLL\\RCF\\GLL-NXW 44-A.gll", None),
+        #        ("RCF NX 945-A", "Z:\\GLL\\RCF\\GLL-NX 945-A.gll", None),
+        #        ("RCF NX 932-A", "Z:\\GLL\\RCF\\GLL-NX 932-A.gll", None),
+        #        (
+        #            "Alcons Audio LR7",
+        #            "Z:\\GLL\\Alcons Audio\\LR7-V1_32.gll",
+        #            "Z:\\GLL\\Alcons Audio\\Alcons Audio LR7 - single.xglc",
+        #        ),
     )
 
     # Timings.slow()
