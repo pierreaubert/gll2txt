@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import logging
-import re
 import sys
 import traceback
 import webbrowser
@@ -386,8 +385,16 @@ class MainWindow(QMainWindow):
         """Determine if a log message at the given level should be shown based on filter settings"""
         # Find the lowest checked level
         lowest_checked = None
-        for check_level in [logging.DEBUG, logging.INFO, logging.WARNING, logging.ERROR]:
-            if check_level in self.log_filter_buttons and self.log_filter_buttons[check_level].isChecked():
+        for check_level in [
+            logging.DEBUG,
+            logging.INFO,
+            logging.WARNING,
+            logging.ERROR,
+        ]:
+            if (
+                check_level in self.log_filter_buttons
+                and self.log_filter_buttons[check_level].isChecked()
+            ):
                 lowest_checked = check_level
                 break
 
@@ -407,7 +414,11 @@ class MainWindow(QMainWindow):
                     btn.setChecked(check_level == level)
             else:
                 # Don't allow unchecking if it's the only checked button
-                if not any(btn.isChecked() for btn in self.log_filter_buttons.values() if btn != self.log_filter_buttons[level]):
+                if not any(
+                    btn.isChecked()
+                    for btn in self.log_filter_buttons.values()
+                    if btn != self.log_filter_buttons[level]
+                ):
                     self.log_filter_buttons[level].setChecked(True)
                     return
 

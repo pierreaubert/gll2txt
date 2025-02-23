@@ -284,9 +284,9 @@ def app_close(app):
 
 
 def view_close(view):
-    if view is not None:
-        view.type_keys("%fe")
-        view.close()
+    pass
+    # if view is not None:
+    #    view.close()
 
 
 def extract_sensitivity(app, view, output_dir, speaker_name, config_file):
@@ -368,13 +368,25 @@ def check_all_files(
     return True
 
 
+def check_zip_file(output_dir: str, speaker_name: str, config_file: str | None) -> bool:
+    zfname = build_zipfilename(output_dir, speaker_name, config_file)
+    if os.path.exists(zfname):
+        return True
+    return False
+
+
+def check_work(output_dir: str, speaker_name: str, config_file: str | None) -> bool:
+    all_files = check_all_files(output_dir, speaker_name, config_file)
+    zip_file = check_zip_file(output_dir, speaker_name, config_file)
+    return all_files and zip_file
+
+
 def generate_zip(output_dir: str, speaker_name: str, config_file: str | None) -> bool:
     if not check_all_files(output_dir, speaker_name, config_file):
         log_message(logging.ERROR, "Not all files have been generated")
         return False
     zfname = build_zipfilename(output_dir, speaker_name, config_file)
     if os.path.exists(zfname):
-        log_message(logging.INFO, "Nothing to do {} already exist!".format(zfname))
         return True
     with zipfile.ZipFile(zfname, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         meridians = get_meridians()
@@ -404,6 +416,9 @@ def extract_speaker(
     Returns:
         bool: True if extraction was successful, False otherwise
     """
+    if check_work(output_dir, speaker_name, config_file):
+        log_message(logging.INFO, f"Processing done for {speaker_name}!")
+        return
     app = None
     try:
         app = Application(backend="win32").start(ease_full)
@@ -452,17 +467,29 @@ if __name__ == "__main__":
         # name of speaker,        name of gll file        name of config file
         (
             "Meyer Sound UP-4slim",
-            "C:\\Users\\pierre\\Documents\\GLL\Meyer Sound\\up-4slim.gll",
+            "C:\\Users\\pierre\\Documents\\GLL\\Meyer Sound\\up-4slim.gll",
             None,
         ),
-        #        ("RCF NXW 44-A", "Z:\\GLL\\RCF\\GLL-NXW 44-A.gll", None),
-        #        ("RCF NX 945-A", "Z:\\GLL\\RCF\\GLL-NX 945-A.gll", None),
-        #        ("RCF NX 932-A", "Z:\\GLL\\RCF\\GLL-NX 932-A.gll", None),
-        #        (
-        #            "Alcons Audio LR7",
-        #            "Z:\\GLL\\Alcons Audio\\LR7-V1_32.gll",
-        #            "Z:\\GLL\\Alcons Audio\\Alcons Audio LR7 - single.xglc",
-        #        ),
+        (
+            "RCF NXW 44-A",
+            "C:\\Users\\pierre\\Documents\\GLL\\RCF\\GLL-NXW 44-A.gll",
+            None,
+        ),
+        (
+            "RCF NX 945-A",
+            "C:\\Users\\pierre\\Documents\\GLL\\RCF\\GLL-NX 945-A.gll",
+            None,
+        ),
+        (
+            "RCF NX 932-A",
+            "C:\\Users\\pierre\\Documents\\GLL\\RCF\\GLL-NX 932-A.gll",
+            None,
+        ),
+        (
+            "Alcons Audio LR7",
+            "C:\\Users\\pierre\\Documents\\GLL\\Alcons Audio\\LR7-V1_32.gll",
+            "C:\\Users\\pierre\\Documents\\GLL\\Alcons Audio\\Alcons Audio LR7 - single.xglc",
+        ),
     )
 
     # Timings.slow()

@@ -14,7 +14,7 @@ class ProcessManager(QObject):
     progress_signal = Signal(int)
     process_complete_signal = Signal(bool)
     speaker_data_required_signal = Signal(list)  # Signal to request speaker data
-    
+
     # Class-level lock for GLLViewer access
     _gll_viewer_lock = threading.Lock()
 
@@ -34,21 +34,21 @@ class ProcessManager(QObject):
         """Clean up resources"""
         if hasattr(self, "speaker_db"):
             self.speaker_db = None
-            
+
     def acquire_gll_viewer(self) -> bool:
         """Try to acquire the GLLViewer lock.
-        
+
         Returns:
             bool: True if lock was acquired, False if another instance is running
         """
         if not self._gll_viewer_lock.acquire(blocking=False):
             self.log_message(
                 logging.ERROR,
-                "Another GLLViewer instance is already running. Please wait."
+                "Another GLLViewer instance is already running. Please wait.",
             )
             return False
         return True
-        
+
     def release_gll_viewer(self):
         """Release the GLLViewer lock if held."""
         try:
@@ -124,7 +124,7 @@ class ProcessManager(QObject):
             for index, gll_file in enumerate(gll_files, 1):
                 if self.stop_process:
                     break
-                    
+
                 input_path = gll_file
 
                 # Try to get speaker data from database
@@ -187,7 +187,7 @@ class ProcessManager(QObject):
                 self.process_complete_signal.emit(False)
             else:
                 self.process_complete_signal.emit(True)
-                
+
         except Exception as e:
             self.log_message(logging.ERROR, f"Process failed: {str(e)}")
             self.process_complete_signal.emit(False)
