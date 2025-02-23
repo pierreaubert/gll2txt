@@ -1,8 +1,8 @@
-import pytest
 import logging
 from unittest.mock import MagicMock
 
-from PySide6.QtWidgets import QMessageBox, QFileDialog
+import pytest
+from PySide6.QtWidgets import QFileDialog, QMessageBox
 
 from app import MainWindow
 

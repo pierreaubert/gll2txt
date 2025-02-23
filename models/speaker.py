@@ -1,5 +1,6 @@
 from typing import List, Optional
-from sqlalchemy import String, Boolean, Float
+
+from sqlalchemy import Boolean, Float, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 

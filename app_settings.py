@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
-from app_misc import get_windows_documents_path, DEFAULT_EASE_PATH
+from app_misc import DEFAULT_EASE_PATH, get_windows_documents_path
 
 
 class SettingsDialog(QDialog):

@@ -1,18 +1,20 @@
+import asyncio
+from typing import Dict, List, Optional
+
 from PySide6.QtWidgets import (
     QDialog,
+    QDoubleSpinBox,
     QFormLayout,
     QHBoxLayout,
-    QDoubleSpinBox,
-    QPushButton,
-    QVBoxLayout,
-    QMessageBox,
-    QListWidget,
     QLabel,
+    QListWidget,
+    QMessageBox,
+    QPushButton,
     QTextEdit,
+    QVBoxLayout,
 )
-from typing import Dict, List, Optional
-import asyncio
-from crawler import SpecificationCrawler, SpecData
+
+from crawler import SpecData, SpecificationCrawler
 
 
 class SpecificationConflictDialog(QDialog):

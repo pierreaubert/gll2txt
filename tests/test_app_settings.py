@@ -1,7 +1,6 @@
 import pytest
-
 from PySide6.QtCore import QSettings
-from PySide6.QtWidgets import QLineEdit, QPushButton, QFileDialog
+from PySide6.QtWidgets import QFileDialog, QLineEdit, QPushButton
 
 from app_settings import SettingsDialog
 

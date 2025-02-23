@@ -1,14 +1,15 @@
 """Database module for storing speaker information"""
 
-import os
 import logging
-from typing import Dict, List, Any
-from sqlalchemy import create_engine, text, select
-from sqlalchemy.orm import sessionmaker
-from PySide6.QtCore import QObject, Signal
+import os
+from typing import Any, Dict, List
 
-from models.speaker import Base, Speaker
+from PySide6.QtCore import QObject, Signal
+from sqlalchemy import create_engine, select, text
+from sqlalchemy.orm import sessionmaker
+
 from models.config_file import ConfigFile
+from models.speaker import Base, Speaker
 
 
 class SpeakerDatabase(QObject):
@@ -51,8 +52,8 @@ class SpeakerDatabase(QObject):
             self.engine = create_engine(f"sqlite:///{db_path}")
 
             # Run migrations
-            from alembic.config import Config
             from alembic import command
+            from alembic.config import Config
 
             alembic_cfg = Config("alembic.ini")
             alembic_cfg.set_main_option("sqlalchemy.url", f"sqlite:///{db_path}")

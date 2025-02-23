@@ -1,9 +1,9 @@
-import os
 import logging
-import re
+import os
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
+    QCheckBox,
     QDialog,
     QFileDialog,
     QHBoxLayout,
@@ -15,7 +15,6 @@ from PySide6.QtWidgets import (
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
-    QCheckBox,
     QWidget,
 )
 
@@ -76,10 +75,10 @@ class MissingSpeakerDialog(QDialog):
             self.missing_table.setHorizontalHeaderLabels(
                 ["GLL File", "Speaker Name", "Config Files", "Properties", "Skip"]
             )
-            
+
             # Enable sorting
             self.missing_table.setSortingEnabled(True)
-            
+
             # Set column sizes - first two columns larger
             header = self.missing_table.horizontalHeader()
             header.setSectionResizeMode(0, QHeaderView.Interactive)  # GLL File

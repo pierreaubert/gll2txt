@@ -1,7 +1,7 @@
 from app_misc import (
     create_default_settings,
-    validate_settings,
     get_windows_documents_path,
+    validate_settings,
 )
 
 

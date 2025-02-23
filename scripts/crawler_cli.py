@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """CLI tool for fetching speaker specifications."""
 
-import sys
-import asyncio
 import argparse
+import asyncio
 import logging
+import sys
 from typing import Optional
-from crawler import SpecificationCrawler, SpecData
+
+from crawler import SpecData, SpecificationCrawler
 
 
 def setup_logging(verbose: bool = False) -> None:

@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 
 import logging
+import re
 import sys
-import webbrowser
 import traceback
+import webbrowser
 from pathlib import Path
 
+from PySide6.QtGui import QTextCursor
 from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
     QHBoxLayout,
+    QLabel,
     QMainWindow,
     QMessageBox,
     QProgressBar,
@@ -19,13 +22,13 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from logger import log_level_pretty
-from app_misc import create_default_settings, validate_settings
 from app_editdata import MissingSpeakerDialog
+from app_misc import create_default_settings, validate_settings
 from app_processmanager import ProcessManager
 from app_processthread import ProcessThread
 from app_settings import SettingsDialog
 from database import SpeakerDatabase
+from logger import log_level_pretty
 
 
 class MainWindow(QMainWindow):
@@ -44,6 +47,7 @@ class MainWindow(QMainWindow):
             self.process_button = None
             self.exit_button = None
             self.manage_speakers_button = None
+            self.log_filter_buttons = {}
 
             self.setWindowTitle("GLL2TXT Converter")
             self.resize(1000, 700)
@@ -79,6 +83,28 @@ class MainWindow(QMainWindow):
 
                 # Create menu bar
                 self.create_menu_bar()
+
+                # Log filter controls
+                log_filter_layout = QHBoxLayout()
+                log_filter_label = QLabel("Log Level Filter:")
+                log_filter_layout.addWidget(log_filter_label)
+
+                for level in [
+                    logging.DEBUG,
+                    logging.INFO,
+                    logging.WARNING,
+                    logging.ERROR,
+                ]:
+                    btn = QPushButton(log_level_pretty(level))
+                    btn.setCheckable(True)
+                    btn.setChecked(True)  # All levels shown by default
+                    btn.clicked.connect(
+                        lambda checked, lvl=level: self.update_log_filter(lvl, checked)
+                    )
+                    log_filter_layout.addWidget(btn)
+                    self.log_filter_buttons[level] = btn
+
+                main_layout.addLayout(log_filter_layout)
 
                 # Log area
                 self.log_area = QTextEdit()
@@ -327,31 +353,124 @@ class MainWindow(QMainWindow):
         self.process_thread.start()
 
     def log_message(self, level, message):
-        """Add a colored log message to the log area"""
-        # Define colors for different log levels
-        colors = {
-            logging.DEBUG: "#808080",  # Gray
-            logging.INFO: "#014421",  # Green
-            logging.WARNING: "#FFA500",  # Orange
-            logging.ERROR: "#FF0000",  # Red
-            logging.CRITICAL: "#8B0000",  # Dark Red
-        }
+        """Log a message to the log area with color based on level"""
+        try:
+            if not self.should_show_log_level(level):
+                return
 
-        # Get the color for this level
-        color = colors.get(level, "#000000")
+            color = {
+                logging.DEBUG: "gray",
+                logging.INFO: "black",
+                logging.WARNING: "orange",
+                logging.ERROR: "red",
+                logging.CRITICAL: "darkred",
+            }.get(level, "black")
 
-        # Create HTML formatted text with color
-        level_txt = log_level_pretty(level)
-        formatted_text = f'<span style="color: {color};">{level_txt} {message}</span>'
+            formatted_message = f'<font color="{color}">[{log_level_pretty(level)}] {message}</font><br>'
+            self.log_area.moveCursor(QTextCursor.End)
+            self.log_area.insertHtml(formatted_message)
 
-        # Append the text to the log area
-        previous = self.log_area.toHtml()
-        self.log_area.setHtml(previous + formatted_text)
+            # Scroll to bottom
+            scrollbar = self.log_area.verticalScrollBar()
+            scrollbar.setValue(scrollbar.maximum())
 
-        # Scroll to the bottom
-        self.log_area.verticalScrollBar().setValue(
-            self.log_area.verticalScrollBar().maximum()
-        )
+        except Exception as e:
+            print(f"Error logging message: {str(e)}")
+            traceback.print_exc()
+
+    def should_show_log_level(self, level):
+        """Determine if a log message at the given level should be shown based on filter settings"""
+        # If this level's button is checked, show the message
+        if (
+            level in self.log_filter_buttons
+            and self.log_filter_buttons[level].isChecked()
+        ):
+            return True
+
+        # If a higher level is checked, and this level is lower, show the message
+        for check_level in [
+            logging.ERROR,
+            logging.WARNING,
+            logging.INFO,
+            logging.DEBUG,
+        ]:
+            if check_level < level:  # We've gone past our level without finding a match
+                break
+            if (
+                check_level in self.log_filter_buttons
+                and self.log_filter_buttons[check_level].isChecked()
+            ):
+                return True
+        return False
+
+    def update_log_filter(self, level, checked):
+        """Update log filter when a button is toggled"""
+        try:
+            # When unchecking a level, uncheck all lower levels
+            if not checked:
+                for check_level in [
+                    logging.DEBUG,
+                    logging.INFO,
+                    logging.WARNING,
+                    logging.ERROR,
+                ]:
+                    if check_level <= level and check_level in self.log_filter_buttons:
+                        self.log_filter_buttons[check_level].setChecked(False)
+            # When checking a level, check all higher levels
+            else:
+                for check_level in [
+                    logging.ERROR,
+                    logging.WARNING,
+                    logging.INFO,
+                    logging.DEBUG,
+                ]:
+                    if check_level >= level and check_level in self.log_filter_buttons:
+                        self.log_filter_buttons[check_level].setChecked(True)
+
+            # Refresh the log view
+            self.refresh_log_view()
+
+        except Exception as e:
+            print(f"Error updating log filter: {str(e)}")
+            traceback.print_exc()
+
+    def refresh_log_view(self):
+        """Clear and rebuild the log view based on current filter settings"""
+        try:
+            # Store the current HTML content
+            current_html = self.log_area.toHtml()
+            self.log_area.clear()
+
+            # Split into messages and reapply filtering
+            messages = []
+            for line in current_html.split("<br>"):
+                if "[" in line and "]" in line:  # Only process log lines
+                    level_match = re.search(r"\[(\w+)\]", line)
+                    if level_match:
+                        level_str = level_match.group(1)
+                        level = {
+                            "DEBUG": logging.DEBUG,
+                            "INFO": logging.INFO,
+                            "WARNING": logging.WARNING,
+                            "ERROR": logging.ERROR,
+                            "CRITICAL": logging.CRITICAL,
+                        }.get(level_str)
+
+                        if level is not None and self.should_show_log_level(level):
+                            messages.append(line + "<br>")
+
+            # Reinsert filtered messages
+            self.log_area.moveCursor(QTextCursor.End)
+            for message in messages:
+                self.log_area.insertHtml(message)
+
+            # Scroll to bottom
+            scrollbar = self.log_area.verticalScrollBar()
+            scrollbar.setValue(scrollbar.maximum())
+
+        except Exception as e:
+            print(f"Error refreshing log view: {str(e)}")
+            traceback.print_exc()
 
     def update_progress(self, value):
         self.progress_bar.setValue(value)

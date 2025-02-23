@@ -1,6 +1,7 @@
 import logging
-from pathlib import Path
 import os
+from pathlib import Path
+
 from PySide6.QtCore import QObject, Signal
 
 from gll2txt import extract_speaker as gll_extract_speaker

@@ -1,7 +1,7 @@
-from pathlib import Path
 import os
 import sys
-from typing import Tuple, List
+from pathlib import Path
+from typing import List, Tuple
 
 from PySide6.QtCore import QSettings
 

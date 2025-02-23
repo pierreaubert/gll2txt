@@ -6,7 +6,7 @@ import time
 import zipfile
 
 try:
-    import pywinauto as win
+    import pywinauto as win  # noqa: F401
     from pywinauto.application import Application, WindowSpecification
     from pywinauto.controls.win32_controls import ComboBoxWrapper, ListBoxWrapper
 except ModuleNotFoundError:
@@ -377,15 +377,32 @@ def extract_speaker(
         load_gll(app, gll_file)
         # not ideal
         gll_file = os.path.basename(gll_file)
-        view = app["ViewGLL: {} [{}]".format(speaker_name, gll_file)]
-        load_config(app, view, config_file)
-        time.sleep(1)
-        view.type_keys("{F5}")
-        set_parameters(app)
-        time.sleep(1)
-        extract_spl(app, view, output_dir, speaker_name, config_file)
-        extract_sensitivity(app, view, output_dir, speaker_name, config_file)
-        extract_maxspl(app, view, output_dir, speaker_name, config_file)
+        view = None
+        maybe_view = "ViewGLL: {} [{}]".format(speaker_name, gll_file)
+        if maybe_view in app:
+            view = app[maybe_view]
+        else:
+            options_views = app.keys()
+            for option_view in options_views:
+                view = app[option_view]
+                if view.window_text():
+                    break
+        if view is not None:
+            load_config(app, view, config_file)
+            time.sleep(1)
+            view.type_keys("{F5}")
+            set_parameters(app)
+            time.sleep(1)
+            extract_spl(app, view, output_dir, speaker_name, config_file)
+            extract_sensitivity(app, view, output_dir, speaker_name, config_file)
+            extract_maxspl(app, view, output_dir, speaker_name, config_file)
+        else:
+            log_message(
+                logging.ERROR,
+                "Could not find ViewGLL: {} [{} with possible keys {}]".format(
+                    speaker_name, gll_file, app.keys()
+                ),
+            )
         view.close()
 
     if generate_zip(output_dir, speaker_name, config_file):

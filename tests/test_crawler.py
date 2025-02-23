@@ -1,9 +1,10 @@
 """Tests for the crawler module."""
 
 import os
-import pytest
-from crawler import SpecificationCrawler, SpecData
 
+import pytest
+
+from crawler import SpecData, SpecificationCrawler
 
 # Test data directory
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), "test_data")

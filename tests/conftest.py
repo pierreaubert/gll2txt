@@ -1,8 +1,9 @@
-import pytest
 import tempfile
 from pathlib import Path
 
+import pytest
 from PySide6.QtWidgets import QApplication
+
 from database import SpeakerDatabase
 
 

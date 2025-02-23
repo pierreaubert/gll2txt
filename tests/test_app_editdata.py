@@ -1,22 +1,20 @@
-import pytest
 import logging
 
-from PySide6.QtCore import Qt, QSettings
+import pytest
+from PySide6.QtCore import QSettings, Qt
 from PySide6.QtWidgets import (
+    QCheckBox,
+    QHBoxLayout,
     QLineEdit,
+    QMessageBox,
+    QPushButton,
     QTableWidget,
     QTableWidgetItem,
     QWidget,
-    QHBoxLayout,
-    QPushButton,
-    QApplication,
-    QMessageBox,
-    QCheckBox,
 )
 
 from app_editdata import MissingSpeakerDialog
 from database import SpeakerDatabase
-from pathlib import Path
 
 
 @pytest.fixture

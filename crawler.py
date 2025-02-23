@@ -1,10 +1,11 @@
 """Module for crawling and extracting speaker specifications from web content."""
 
-import re
-import logging
 import asyncio
+import logging
+import re
 from dataclasses import dataclass
-from typing import List, Optional, Dict, Tuple
+from typing import Dict, List, Optional, Tuple
+
 import aiohttp
 from bs4 import BeautifulSoup
 

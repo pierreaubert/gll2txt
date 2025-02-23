@@ -1,7 +1,8 @@
-import pytest
 from unittest.mock import MagicMock
 
+import pytest
 from PySide6.QtCore import QSettings
+
 from app_processmanager import ProcessManager
 from database import SpeakerDatabase
 

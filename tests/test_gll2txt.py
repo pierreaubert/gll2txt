@@ -1,5 +1,7 @@
 import sys
+
 import pytest
+
 from gll2txt import extract_speaker
 
 windows_only = pytest.mark.skipif(
