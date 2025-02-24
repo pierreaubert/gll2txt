@@ -104,6 +104,35 @@ def test_list_all_speakers(db):
         assert speaker_data["config_files"] == configs
 
 
+def test_save_speaker_with_config_files(db):
+    """Test saving speaker data with config files"""
+    # Create
+    test_file = "test.gll"
+    test_name = "Test Speaker"
+    test_configs = ["config1.txt", "config2.txt"]
+
+    # Save with config files
+    db.save_speaker_data(test_file, test_name, test_configs)
+    data = db.get_speaker_data(test_file)
+
+    assert data is not None
+    assert data["speaker_name"] == test_name
+    assert data["config_files"] == test_configs
+
+    # Update with new config files
+    new_configs = ["new_config1.txt", "new_config2.txt"]
+    db.save_speaker_data(test_file, test_name, new_configs)
+    data = db.get_speaker_data(test_file)
+
+    assert data["config_files"] == new_configs
+
+    # Save with empty config files
+    db.save_speaker_data(test_file, test_name, [])
+    data = db.get_speaker_data(test_file)
+
+    assert data["config_files"] == []
+
+
 def test_default_database_path():
     """Test that the default database path is in Documents"""
     db_path = os.path.join(os.path.expanduser("~"), "Documents", "GLL2TXT_Speakers.db")

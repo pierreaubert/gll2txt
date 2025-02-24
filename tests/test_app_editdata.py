@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from app_editdata import MissingSpeakerDialog
+from app_editdata import EditSpeakerDialog
 from database import SpeakerDatabase
 
 
@@ -30,7 +30,7 @@ def settings(temp_dir):
 @pytest.fixture
 def dialog(qapp, temp_dir, settings, db, gll_files):
     """Create a dialog for testing"""
-    dialog = MissingSpeakerDialog(
+    dialog = EditSpeakerDialog(
         settings, gll_files, parent=None, test_mode=True, speaker_db=db
     )
     return dialog
@@ -673,7 +673,7 @@ def test_delete_speaker_cancel(qapp, temp_dir, monkeypatch):
     settings.setValue("database_path", str(db_path))
 
     # Create dialog with test_mode=False to test confirmation
-    dialog = MissingSpeakerDialog(
+    dialog = EditSpeakerDialog(
         settings, [gll_file], parent=None, test_mode=False, speaker_db=speaker_db
     )
     dialog.missing_gll_files = [gll_file]  # Set missing files

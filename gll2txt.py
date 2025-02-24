@@ -18,7 +18,7 @@ from logger import log_message
 # constants
 debug = False
 ease_full = "C:\\Program Files (x86)\\AFMG\\EASE GLLViewer\\EASE GLLViewer.exe"
-output_dir = "C:\\Users\\pierre\\Documents"
+output_dir = "C:\\Users\\pierre\\Documents\\GLL"
 
 
 def dump(widget) -> None:
@@ -417,12 +417,12 @@ def extract_speaker(
         bool: True if extraction was successful, False otherwise
     """
     if check_work(output_dir, speaker_name, config_file):
-        log_message(logging.INFO, f"Processing done for {speaker_name}!")
-        return
+        log_message(logging.DEBUG, "Processing done for {}!".format(speaker_name))
+        return True
     app = None
     try:
         app = Application(backend="win32").start(ease_full)
-        log_message(logging.INFO, "Connected to EASE GLLViewer")
+        log_message(logging.DEBUG, "Connected to EASE GLLViewer")
     except Exception as e:
         log_message(logging.ERROR, f"Could not connect to EASE GLLViewer: {str(e)}")
         return False
@@ -451,7 +451,7 @@ def extract_speaker(
         extract_maxspl(app, view, output_dir, speaker_name, config_file)
         view_close(view)
         if generate_zip(output_dir, speaker_name, config_file):
-            log_message(logging.INFO, "Success for {}!".format(speaker_name))
+            log_message(logging.DEBUG, "Success for {}!".format(speaker_name))
         app_close(app)
         return True
     except Exception as e:

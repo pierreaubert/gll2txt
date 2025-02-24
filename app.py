@@ -21,7 +21,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from app_editdata import MissingSpeakerDialog
+from app_editdata import EditSpeakerDialog
 from app_misc import create_default_settings, validate_settings
 from app_processmanager import ProcessManager
 from app_processthread import ProcessThread
@@ -154,7 +154,7 @@ class MainWindow(QMainWindow):
                 self.process_manager.log_signal.connect(self.log_message)
                 self.process_manager.progress_signal.connect(self.update_progress)
                 self.process_manager.speaker_data_required_signal.connect(
-                    self.request_speaker_data
+                    self.open_speaker_management
                 )
 
                 # Display initial information
@@ -310,7 +310,7 @@ class MainWindow(QMainWindow):
             return
 
         # Open MissingSpeakerDialog with all GLL files
-        speaker_dialog = MissingSpeakerDialog(
+        speaker_dialog = EditSpeakerDialog(
             settings=self.settings,
             gll_files=gll_files,
             parent=self,
@@ -450,12 +450,6 @@ class MainWindow(QMainWindow):
 
     def update_progress(self, value):
         self.progress_bar.setValue(value)
-
-    def request_speaker_data(self, input_paths):
-        """Handle the request for speaker data by opening a dialog"""
-        logging.debug(f"Opening MissingSpeakerDialog for paths: {input_paths}")
-        speaker_dialog = MissingSpeakerDialog(self.settings, input_paths, self)
-        speaker_dialog.exec()
 
     def open_files(self):
         """Open file dialog to select GLL files"""
