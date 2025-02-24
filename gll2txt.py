@@ -2,6 +2,7 @@
 
 import logging
 import os
+import sys
 import time
 import zipfile
 
@@ -17,8 +18,8 @@ from logger import log_message
 
 # constants
 debug = False
-ease_full = "C:\\Program Files (x86)\\AFMG\\EASE GLLViewer\\EASE GLLViewer.exe"
-output_dir = "C:\\Users\\pierre\\Documents\\GLL"
+default_ease_full = "C:\\Program Files (x86)\\AFMG\\EASE GLLViewer\\EASE GLLViewer.exe"
+default_gll_output_dir = "C:\\Users\\pierre\\Documents\\GLL"
 
 
 def dump(widget) -> None:
@@ -81,16 +82,16 @@ def dump(widget) -> None:
             pass
 
 
-def process_type_keys(input: str) -> str:
-    return input.replace("+", "{+}")
+def process_type_keys(input_keys: str) -> str:
+    return input_keys.replace("+", "{+}")
 
 
 def load_gll(app, gll_file: str):
-    openGLLFile = app.OpenGLLFile
-    openGLLFile.wait("visible")
-    openGLLFile.set_focus()
-    openGLLFile.type_keys(process_type_keys(gll_file), with_spaces=True)
-    openGLLFile.type_keys("{ENTER}")
+    open_gll_file = app["OpenGLLFile"]
+    open_gll_file.wait("visible")
+    open_gll_file.set_focus()
+    open_gll_file.type_keys(process_type_keys(gll_file), with_spaces=True)
+    open_gll_file.type_keys("{ENTER}")
 
 
 def load_config(app, view, config_file: str | None):
@@ -98,13 +99,13 @@ def load_config(app, view, config_file: str | None):
         return
     view.wait("visible")
     view.type_keys("%fc")
-    openConfigFile = app.OpenGLLConfigurationFile
-    openConfigFile.wait("visible")
-    openConfigFile.set_focus()
-    openConfigFile.type_keys(
+    open_config_file = app["OpenGLLConfigurationFile"]
+    open_config_file.wait("visible")
+    open_config_file.set_focus()
+    open_config_file.type_keys(
         process_type_keys(config_file).replace("/", "\\"), with_spaces=True
     )
-    openConfigFile.type_keys("{ENTER}")
+    open_config_file.type_keys("{ENTER}")
 
 
 def set_parameters_balloon(parameters):
@@ -421,7 +422,7 @@ def extract_speaker(
         return True
     app = None
     try:
-        app = Application(backend="win32").start(ease_full)
+        app = Application(backend="win32").start(default_ease_full)
         log_message(logging.DEBUG, "Connected to EASE GLLViewer")
     except Exception as e:
         log_message(logging.ERROR, f"Could not connect to EASE GLLViewer: {str(e)}")
@@ -462,7 +463,7 @@ def extract_speaker(
     return False
 
 
-if __name__ == "__main__":
+def main():
     to_be_processed = (
         # name of speaker,        name of gll file        name of config file
         (
@@ -494,4 +495,8 @@ if __name__ == "__main__":
 
     # Timings.slow()
     for speaker_name, gll_file, config_file in to_be_processed:
-        extract_speaker(output_dir, speaker_name, gll_file, config_file)
+        extract_speaker(default_gll_output_dir, speaker_name, gll_file, config_file)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
