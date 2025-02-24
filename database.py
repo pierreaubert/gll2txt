@@ -2,6 +2,7 @@
 
 import logging
 import os
+import pathlib
 from typing import Any, Dict, List
 
 from PySide6.QtCore import QObject, Signal
@@ -17,7 +18,7 @@ class SpeakerDatabase(QObject):
 
     log_signal = Signal(int, str)  # level and message
 
-    def __init__(self, db_path: str):
+    def __init__(self, db_path: pathlib.Path | str) -> None:
         """
         Initialize the database connection and schema
 

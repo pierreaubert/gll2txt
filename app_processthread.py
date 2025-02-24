@@ -11,13 +11,17 @@ class ProcessThread(QThread):
         self.process_manager = process_manager
 
         # Disconnect any existing connections to prevent duplicate calls
-        try:
-            self.process_manager.log_signal.disconnect()
-            self.process_manager.progress_signal.disconnect()
-            self.process_manager.process_complete_signal.disconnect()
-        except TypeError:
-            # Ignore if no connections exist
-            pass
+        # Handle each signal disconnection separately
+        for signal_name, signal in [
+            ("log_signal", self.process_manager.log_signal),
+            ("progress_signal", self.process_manager.progress_signal),
+            ("process_complete_signal", self.process_manager.process_complete_signal),
+        ]:
+            try:
+                signal.disconnect()
+            except (TypeError, RuntimeError):
+                # Ignore if no connections exist or if disconnection fails
+                pass
 
         # Connect signals from process manager
         self.process_manager.log_signal.connect(self.log_signal.emit)

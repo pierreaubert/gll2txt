@@ -6,6 +6,7 @@ import traceback
 import webbrowser
 from pathlib import Path
 
+from qt_init import init_qt
 from PySide6.QtGui import QTextCursor
 from PySide6.QtWidgets import (
     QApplication,
@@ -408,19 +409,14 @@ class MainWindow(QMainWindow):
     def update_log_filter(self, level, checked):
         """Update log filter when a button is toggled"""
         try:
-            if checked:
-                # When checking a level, uncheck all other levels
-                for check_level, btn in self.log_filter_buttons.items():
-                    btn.setChecked(check_level == level)
-            else:
-                # Don't allow unchecking if it's the only checked button
-                if not any(
-                    btn.isChecked()
-                    for btn in self.log_filter_buttons.values()
-                    if btn != self.log_filter_buttons[level]
-                ):
-                    self.log_filter_buttons[level].setChecked(True)
-                    return
+            # Don't allow unchecking if it's the only checked button
+            if not checked and not any(
+                btn.isChecked()
+                for btn in self.log_filter_buttons.values()
+                if btn != self.log_filter_buttons[level]
+            ):
+                self.log_filter_buttons[level].setChecked(True)
+                return
 
             # Refresh the display from stored messages
             self.refresh_log_view()
@@ -463,6 +459,10 @@ class MainWindow(QMainWindow):
 
 def main():
     try:
+        # Initialize Qt before creating QApplication
+        init_qt()
+        app = QApplication(sys.argv)
+
         # Configure logging
         logging.basicConfig(
             level=logging.DEBUG,
@@ -470,8 +470,6 @@ def main():
             handlers=[logging.FileHandler("gll2txt.log"), logging.StreamHandler()],
         )
         logging.info("Starting GLL2TXT application")
-
-        app = QApplication(sys.argv)
 
         # Set up global exception handler for Qt
         def handle_exception(exc_type, exc_value, exc_traceback):

@@ -366,7 +366,7 @@ class EditSpeakerDialog(QDialog):
                 selected_files = file_dialog.selectedFiles()
                 if selected_files:
                     if is_missing:
-                        self.missing_config_files[row].extend(selected_files)
+                        self.missing_config_files[row].extend(list(selected_files))
                         config_btn = self.missing_table.cellWidget(row, 2)
                         config_btn.setText(
                             f"Config Files ({len(self.missing_config_files[row])})"
