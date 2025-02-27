@@ -17,14 +17,20 @@ except ModuleNotFoundError:
 from logger import log_message
 
 # constants
-debug = False
-default_ease_full = "C:\\Program Files (x86)\\AFMG\\EASE GLLViewer\\EASE GLLViewer.exe"
-default_gll_output_dir = "C:\\Users\\pierre\\Documents\\GLL"
+DEBUG = False
+DEFAULT_EASE_FULL = "C:\\Program Files (x86)\\AFMG\\EASE GLLViewer\\EASE GLLViewer.exe"
+DEFAULT_GLL_INPUT_DIR = "C:\\Users\\pierre\\Documents\\GLL"
+DEFAULT_GLL_OUTPUT_DIR = "C:\\Users\\pierre\\Documents\\GLL2TXT"
+
+# can be 2.5, 5 or 10
+PARALLEL_OFFSET = 5
+# 90 computes horizontals an verticals
+MERIDIAN_OFFSET = 90
 
 
 def dump(widget) -> None:
     """Small debug layer"""
-    if not debug:
+    if not DEBUG:
         return
     log_message(
         logging.DEBUG,
@@ -82,90 +88,6 @@ def dump(widget) -> None:
             pass
 
 
-def process_type_keys(input_keys: str) -> str:
-    return input_keys.replace("+", "{+}")
-
-
-def load_gll(app, gll_file: str):
-    open_gll_file = app["OpenGLLFile"]
-    open_gll_file.wait("visible")
-    open_gll_file.set_focus()
-    open_gll_file.type_keys(process_type_keys(gll_file), with_spaces=True)
-    open_gll_file.type_keys("{ENTER}")
-
-
-def load_config(app, view, config_file: str | None):
-    if config_file is None:
-        return
-    view.wait("visible")
-    view.type_keys("%fc")
-    open_config_file = app["OpenGLLConfigurationFile"]
-    open_config_file.wait("visible")
-    open_config_file.set_focus()
-    open_config_file.type_keys(
-        process_type_keys(config_file).replace("/", "\\"), with_spaces=True
-    )
-    open_config_file.type_keys("{ENTER}")
-
-
-def set_parameters_balloon(parameters):
-    if debug:
-        balloon = parameters["Balloon Parameters"]
-        dump(balloon)
-
-    resolution = parameters["Resolution :ComboBox"]
-    angles = {a: i for i, a in enumerate(resolution.item_texts())}
-    resolution.select(angles["Intermediate (5°)"])
-
-    distance = parameters["Distance [m] :ComboBox"]
-    if debug:
-        dump(distance)
-    meters = {a: i for i, a in enumerate(distance.item_texts())}
-    distance.select(meters["10"])
-
-
-def set_parameters_air_properties(parameters):
-    if debug:
-        air_properties = parameters["Air Properties"]
-        dump(air_properties)
-
-    enable_air_attenuation = parameters["Enable Air Attenuation"]
-    if debug:
-        dump(enable_air_attenuation)
-
-    # not a checkbox
-    enable_air_attenuation.click()
-
-
-def set_parameters_input_signal(parameters):
-    if debug:
-        input_signal = parameters["Input Signal"]
-        dump(input_signal)
-
-    aes2 = parameters["AES2 Broadband (Pink Noise)Button"]
-    if debug:
-        dump(aes2)
-    aes2.check_by_click()
-
-
-def set_parameters(app):
-    parameters = app.CalculationParameters
-    parameters.wait("visible")
-    set_parameters_balloon(parameters)
-    set_parameters_air_properties(parameters)
-    set_parameters_input_signal(parameters)
-    ok_button = parameters["&OKButton"]
-    ok_button.click()
-
-
-def get_meridians() -> list[str]:
-    return ["{}°".format(k) for k in range(0, 360, 90)]
-
-
-def get_parallels() -> list[str]:
-    return ["{}°".format(k) for k in range(0, 190, 10)]
-
-
 def build_speaker_dir(
     output_dir: str, speaker_name: str, config_file: str | None
 ) -> str:
@@ -219,6 +141,144 @@ def build_zipfilename(
     return zipname.replace("/", "\\")
 
 
+def check_sensitivity_files(
+    output_dir: str, speaker_name: str, config_file: str | None
+) -> bool:
+    sensitivity_txt = build_sensitivity_filename(output_dir, speaker_name, config_file)
+    sensitivity_png = sensitivity_txt.replace(".txt", ".png")
+    if not os.path.exists(sensitivity_txt) or not os.path.exists(sensitivity_png):
+        return False
+    return True
+
+
+def check_maxspl_files(
+    output_dir: str, speaker_name: str, config_file: str | None
+) -> bool:
+    maxspl_txt = build_maxspl_filename(output_dir, speaker_name, config_file)
+    maxspl_png = maxspl_txt.replace(".txt", ".png")
+    if not os.path.exists(maxspl_txt) or not os.path.exists(maxspl_png):
+        return False
+    return True
+
+
+def check_all_files(
+    output_dir: str, speaker_name: str, config_file: str | None
+) -> bool:
+    meridians = get_meridians()
+    parallels = get_parallels()
+
+    for m in meridians:
+        for p in parallels:
+            f = build_spl_filename(output_dir, speaker_name, config_file, m, p)
+            if not os.path.exists(f):
+                return False
+
+    if not check_sensitivity_files(output_dir, speaker_name, config_file):
+        return False
+
+    if not check_maxspl_files(output_dir, speaker_name, config_file):
+        return False
+
+    return True
+
+
+def check_zip_file(output_dir: str, speaker_name: str, config_file: str | None) -> bool:
+    zfname = build_zipfilename(output_dir, speaker_name, config_file)
+    if os.path.exists(zfname):
+        return True
+    return False
+
+
+def check_work(output_dir: str, speaker_name: str, config_file: str | None) -> bool:
+    all_files = check_all_files(output_dir, speaker_name, config_file)
+    zip_file = check_zip_file(output_dir, speaker_name, config_file)
+    return all_files and zip_file
+
+
+def process_type_keys(input_keys: str) -> str:
+    return input_keys.replace("+", "{+}")
+
+
+def load_gll(app, gll_file: str):
+    open_gll_file = app["OpenGLLFile"]
+    open_gll_file.wait("visible")
+    open_gll_file.set_focus()
+    open_gll_file.type_keys(process_type_keys(gll_file), with_spaces=True)
+    open_gll_file.type_keys("{ENTER}")
+
+
+def load_config(app, view, config_file: str | None):
+    if config_file is None:
+        return
+    view.wait("visible")
+    view.type_keys("%fc")
+    open_config_file = app["OpenGLLConfigurationFile"]
+    open_config_file.wait("visible")
+    open_config_file.set_focus()
+    open_config_file.type_keys(
+        process_type_keys(config_file).replace("/", "\\"), with_spaces=True
+    )
+    open_config_file.type_keys("{ENTER}")
+
+
+def set_parameters_balloon(parameters):
+    if DEBUG:
+        balloon = parameters["Balloon Parameters"]
+        dump(balloon)
+
+    resolution = parameters["Resolution :ComboBox"]
+    angles = {a: i for i, a in enumerate(resolution.item_texts())}
+    resolution.select(angles["Intermediate (5°)"])
+
+    distance = parameters["Distance [m] :ComboBox"]
+    if DEBUG:
+        dump(distance)
+    meters = {a: i for i, a in enumerate(distance.item_texts())}
+    distance.select(meters["10"])
+
+
+def set_parameters_air_properties(parameters):
+    if DEBUG:
+        air_properties = parameters["Air Properties"]
+        dump(air_properties)
+
+    enable_air_attenuation = parameters["Enable Air Attenuation"]
+    if DEBUG:
+        dump(enable_air_attenuation)
+
+    # not a checkbox
+    enable_air_attenuation.click()
+
+
+def set_parameters_input_signal(parameters):
+    if DEBUG:
+        input_signal = parameters["Input Signal"]
+        dump(input_signal)
+
+    aes2 = parameters["AES2 Broadband (Pink Noise)Button"]
+    if DEBUG:
+        dump(aes2)
+    aes2.check_by_click()
+
+
+def set_parameters(app):
+    parameters = app.CalculationParameters
+    parameters.wait("visible")
+    set_parameters_balloon(parameters)
+    set_parameters_air_properties(parameters)
+    set_parameters_input_signal(parameters)
+    ok_button = parameters["&OKButton"]
+    ok_button.click()
+
+
+def get_meridians() -> list[str]:
+    return ["{}°".format(k) for k in range(0, 360, MERIDIAN_OFFSET)]
+
+
+def get_parallels() -> list[str]:
+    return ["{}°".format(k) for k in range(0, 180 + PARALLEL_OFFSET, PARALLEL_OFFSET)]
+
+
 def extract_spl(
     app,
     view,
@@ -229,13 +289,14 @@ def extract_spl(
     # go to graphs -> frequency spectrum
     app.wait_cpu_usage_lower(threshold=5)
     view.wait("visible")
-    view.type_keys("^+F")
+    # use transfer function to get spl and phase
+    view.type_keys("^+T")
     time.sleep(1)
 
     # got the 2 boxes
     wm = view["Meridian : ComboBox"]
     wp = view["Parallel : Combobox"]
-    if debug:
+    if DEBUG:
         dump(wm)
         dump(wp)
 
@@ -291,8 +352,7 @@ def view_close(view):
 
 
 def extract_sensitivity(app, view, output_dir, speaker_name, config_file):
-    sensitivity_file = build_sensitivity_filename(output_dir, speaker_name, config_file)
-    if os.path.exists(sensitivity_file):
+    if check_sensitivity_files(output_dir, speaker_name, config_file):
         log_message(
             logging.DEBUG,
             "Skipping sensitivity for {} because it already exists".format(
@@ -300,28 +360,47 @@ def extract_sensitivity(app, view, output_dir, speaker_name, config_file):
             ),
         )
         return
+
     # go to graphs -> frequency spectrum
     app.wait_cpu_usage_lower(threshold=5)
     view.wait("visible")
     view.type_keys("^+S")
 
-    export = app["Export Graph Data"]
+    sensitivity_txt = build_sensitivity_filename(output_dir, speaker_name, config_file)
 
-    # go to File -> Send Table To -> File
-    app.wait_cpu_usage_lower(threshold=5)
-    view.type_keys("%ftf")
-    export.wait("visible")
-    # copy filename
-    export.type_keys("%n{BACKSPACE}")
-    export.type_keys(process_type_keys(sensitivity_file), with_spaces=True)
-    export.type_keys("{ENTER}")
-    export.wait_not("visible")
-    app.wait_cpu_usage_lower(threshold=5)
+    if not os.path.exists(sensitivity_txt):
+        # go to File -> Send Table To -> File
+        app.wait_cpu_usage_lower(threshold=5)
+        view.type_keys("%ftf")
+        export_txt = app["Export Graph Data"]
+        export_txt.wait("visible")
+
+        # copy filename
+        export_txt.type_keys("%n{BACKSPACE}")
+        export_txt.type_keys(process_type_keys(sensitivity_txt), with_spaces=True)
+        export_txt.type_keys("{ENTER}")
+        export_txt.wait_not("visible")
+        app.wait_cpu_usage_lower(threshold=5)
+
+    sensitivity_png = sensitivity_txt.replace(".txt", ".png")
+    if not os.path.exists(sensitivity_png):
+        # go to File -> Send Picture To -> File
+        app.wait_cpu_usage_lower(threshold=5)
+        # sadly no shortcut
+        view.type_keys("%f{DOWN 7}{ENTER}{DOWN}{ENTER}")
+        export_png = app["Save Picture"]
+        export_png.wait("visible")
+        app.wait_cpu_usage_lower(threshold=5)
+        # copy filename
+        export_png.type_keys("%n{BACKSPACE}")
+        export_png.type_keys(process_type_keys(sensitivity_png), with_spaces=True)
+        export_png.type_keys("{ENTER}")
+        export_png.wait_not("visible")
+        app.wait_cpu_usage_lower(threshold=5)
 
 
 def extract_maxspl(app, view, output_dir, speaker_name, config_file):
-    maxspl_file = build_maxspl_filename(output_dir, speaker_name, config_file)
-    if os.path.exists(maxspl_file):
+    if check_maxspl_files(output_dir, speaker_name, config_file):
         log_message(
             logging.DEBUG,
             "Skipping maxspl for {} because it already exists".format(speaker_name),
@@ -330,56 +409,39 @@ def extract_maxspl(app, view, output_dir, speaker_name, config_file):
     # go to graphs -> frequency spectrum
     app.wait_cpu_usage_lower(threshold=5)
     view.wait("visible")
-    view.type_keys("^+M")
+    view.type_keys("^+S")
 
-    export = app["Export Graph Data"]
+    maxspl_txt = build_maxspl_filename(output_dir, speaker_name, config_file)
 
-    # go to File -> Send Table To -> File
-    app.wait_cpu_usage_lower(threshold=5)
-    view.type_keys("%ftf")
-    export.wait("visible")
-    # copy filename
-    export.type_keys("%n{BACKSPACE}")
-    export.type_keys(process_type_keys(maxspl_file), with_spaces=True)
-    export.type_keys("{ENTER}")
-    export.wait_not("visible")
-    app.wait_cpu_usage_lower(threshold=5)
+    if not os.path.exists(maxspl_txt):
+        # go to File -> Send Table To -> File
+        app.wait_cpu_usage_lower(threshold=5)
+        view.type_keys("%ftf")
+        export_txt = app["Export Graph Data"]
+        export_txt.wait("visible")
 
+        # copy filename
+        export_txt.type_keys("%n{BACKSPACE}")
+        export_txt.type_keys(process_type_keys(maxspl_txt), with_spaces=True)
+        export_txt.type_keys("{ENTER}")
+        export_txt.wait_not("visible")
+        app.wait_cpu_usage_lower(threshold=5)
 
-def check_all_files(
-    output_dir: str, speaker_name: str, config_file: str | None
-) -> bool:
-    meridians = get_meridians()
-    parallels = get_parallels()
-
-    for m in meridians:
-        for p in parallels:
-            f = build_spl_filename(output_dir, speaker_name, config_file, m, p)
-            if not os.path.exists(f):
-                return False
-
-    if not os.path.exists(
-        build_sensitivity_filename(output_dir, speaker_name, config_file)
-    ):
-        return False
-
-    if not os.path.exists(build_maxspl_filename(output_dir, speaker_name, config_file)):
-        return False
-
-    return True
-
-
-def check_zip_file(output_dir: str, speaker_name: str, config_file: str | None) -> bool:
-    zfname = build_zipfilename(output_dir, speaker_name, config_file)
-    if os.path.exists(zfname):
-        return True
-    return False
-
-
-def check_work(output_dir: str, speaker_name: str, config_file: str | None) -> bool:
-    all_files = check_all_files(output_dir, speaker_name, config_file)
-    zip_file = check_zip_file(output_dir, speaker_name, config_file)
-    return all_files and zip_file
+    maxspl_png = maxspl_txt.replace(".txt", ".png")
+    if not os.path.exists(maxspl_png):
+        # go to File -> Send Picture To -> File
+        app.wait_cpu_usage_lower(threshold=5)
+        # sadly no shortcut
+        view.type_keys("%f{DOWN 7}{ENTER}{DOWN}{ENTER}")
+        export_png = app["Save Picture"]
+        export_png.wait("visible")
+        app.wait_cpu_usage_lower(threshold=5)
+        # copy filename
+        export_png.type_keys("%n{BACKSPACE}")
+        export_png.type_keys(process_type_keys(maxspl_png), with_spaces=True)
+        export_png.type_keys("{ENTER}")
+        export_png.wait_not("visible")
+        app.wait_cpu_usage_lower(threshold=5)
 
 
 def generate_zip(output_dir: str, speaker_name: str, config_file: str | None) -> bool:
@@ -396,10 +458,14 @@ def generate_zip(output_dir: str, speaker_name: str, config_file: str | None) ->
             for p in parallels:
                 f = build_spl_filename(output_dir, speaker_name, config_file, m, p)
                 zf.write(f)
-        s = build_sensitivity_filename(output_dir, speaker_name, config_file)
-        zf.write(s)
-        m = build_maxspl_filename(output_dir, speaker_name, config_file)
-        zf.write(m)
+        s_txt = build_maxspl_filename(output_dir, speaker_name, config_file)
+        zf.write(s_txt)
+        s_png = s_txt.replace(".txt", ".png")
+        zf.write(s_png)
+        m_txt = build_maxspl_filename(output_dir, speaker_name, config_file)
+        zf.write(m_txt)
+        m_png = m_txt.replace(".txt", ".png")
+        zf.write(m_png)
     return True
 
 
@@ -422,7 +488,7 @@ def extract_speaker(
         return True
     app = None
     try:
-        app = Application(backend="win32").start(default_ease_full)
+        app = Application(backend="win32").start(DEFAULT_EASE_FULL)
         log_message(logging.DEBUG, "Connected to EASE GLLViewer")
     except Exception as e:
         log_message(logging.ERROR, f"Could not connect to EASE GLLViewer: {str(e)}")
@@ -468,34 +534,34 @@ def main():
         # name of speaker,        name of gll file        name of config file
         (
             "Meyer Sound UP-4slim",
-            "C:\\Users\\pierre\\Documents\\GLL\\Meyer Sound\\up-4slim.gll",
+            "{}\\Meyer Sound\\up-4slim.gll".format(DEFAULT_GLL_INPUT_DIR),
             None,
         ),
         (
             "RCF NXW 44-A",
-            "C:\\Users\\pierre\\Documents\\GLL\\RCF\\GLL-NXW 44-A.gll",
+            "{}\\RCF\\GLL-NXW 44-A.gll".format(DEFAULT_GLL_INPUT_DIR),
             None,
         ),
         (
             "RCF NX 945-A",
-            "C:\\Users\\pierre\\Documents\\GLL\\RCF\\GLL-NX 945-A.gll",
+            "{}\\RCF\\GLL-NX 945-A.gll".format(DEFAULT_GLL_INPUT_DIR),
             None,
         ),
         (
             "RCF NX 932-A",
-            "C:\\Users\\pierre\\Documents\\GLL\\RCF\\GLL-NX 932-A.gll",
+            "{}\\RCF\\GLL-NX 932-A.gll".format(DEFAULT_GLL_INPUT_DIR),
             None,
         ),
         (
             "Alcons Audio LR7",
-            "C:\\Users\\pierre\\Documents\\GLL\\Alcons Audio\\LR7-V1_32.gll",
-            "C:\\Users\\pierre\\Documents\\GLL\\Alcons Audio\\Alcons Audio LR7 - single.xglc",
+            "{}\\Alcons Audio\\LR7-V1_32.gll".format(DEFAULT_GLL_INPUT_DIR),
+            "{}\\Alcons Audio\\Alcons Audio LR7 - single.xglc".format(DEFAULT_GLL_INPUT_DIR),
         ),
     )
 
     # Timings.slow()
     for speaker_name, gll_file, config_file in to_be_processed:
-        extract_speaker(default_gll_output_dir, speaker_name, gll_file, config_file)
+        extract_speaker(DEFAULT_GLL_OUTPUT_DIR, speaker_name, gll_file, config_file)
 
 
 if __name__ == "__main__":
