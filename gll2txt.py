@@ -409,7 +409,7 @@ def extract_maxspl(app, view, output_dir, speaker_name, config_file):
     # go to graphs -> frequency spectrum
     app.wait_cpu_usage_lower(threshold=5)
     view.wait("visible")
-    view.type_keys("^+S")
+    view.type_keys("^+M")
 
     maxspl_txt = build_maxspl_filename(output_dir, speaker_name, config_file)
 

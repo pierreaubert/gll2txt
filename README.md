@@ -1,7 +1,5 @@
 # gll2txt
-Process GLL files and extract data into text files
-
-Note that the level of quality is *alpha*.
+Process GLL files and extract data into text files. The app is far from perfect but it is usable and it has converted hundreds of GLL files.
 
 # Ideas
 
