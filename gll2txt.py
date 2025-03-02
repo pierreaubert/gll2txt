@@ -458,10 +458,12 @@ def generate_zip(output_dir: str, speaker_name: str, config_file: str | None) ->
             for p in parallels:
                 f = build_spl_filename(output_dir, speaker_name, config_file, m, p)
                 zf.write(f)
-        s_txt = build_maxspl_filename(output_dir, speaker_name, config_file)
+        # sensitivity
+        s_txt = build_sensitivity_filename(output_dir, speaker_name, config_file)
         zf.write(s_txt)
         s_png = s_txt.replace(".txt", ".png")
         zf.write(s_png)
+        # maxspl
         m_txt = build_maxspl_filename(output_dir, speaker_name, config_file)
         zf.write(m_txt)
         m_png = m_txt.replace(".txt", ".png")
@@ -555,7 +557,9 @@ def main():
         (
             "Alcons Audio LR7",
             "{}\\Alcons Audio\\LR7-V1_32.gll".format(DEFAULT_GLL_INPUT_DIR),
-            "{}\\Alcons Audio\\Alcons Audio LR7 - single.xglc".format(DEFAULT_GLL_INPUT_DIR),
+            "{}\\Alcons Audio\\Alcons Audio LR7 - single.xglc".format(
+                DEFAULT_GLL_INPUT_DIR
+            ),
         ),
     )
 
